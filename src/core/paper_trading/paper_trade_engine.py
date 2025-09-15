@@ -22,6 +22,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from core.analytics.trade_ledger import TradeLedgerManager, TradeRecord
+from core.monitoring.prometheus_metrics import get_metrics_collector, record_trade_metrics
 from core.utils.logger import Logger
 
 class OrderBookSnapshot:
@@ -235,6 +236,9 @@ class PaperTradeEngine:
         
         # Trade ledger
         self.trade_ledger = TradeLedgerManager(data_dir="data/paper_trades", logger=self.logger)
+        
+        # Prometheus metrics collector
+        self.metrics_collector = get_metrics_collector(port=8001, logger=self.logger)
         
         # Order management
         self.pending_orders = {}
@@ -521,6 +525,9 @@ class PaperTradeEngine:
         
         # Record in trade ledger
         self.trade_ledger.record_trade(trade_data)
+        
+        # Record metrics
+        record_trade_metrics(trade_data, self.metrics_collector)
         
         # Log trade
         self.logger.info(f"📊 [PAPER_TRADE] {side} {quantity:.3f} {self.symbol} @ ${price:.4f} "

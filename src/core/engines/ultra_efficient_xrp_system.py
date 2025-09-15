@@ -16,6 +16,7 @@ from src.core.api.hyperliquid_api import HyperliquidAPI
 from src.core.utils.logger import Logger
 from src.core.utils.config_manager import ConfigManager
 from src.core.analytics.trade_ledger import TradeLedgerManager
+from src.core.monitoring.prometheus_metrics import get_metrics_collector, record_trade_metrics
 
 class UltraEfficientXRPSystem:
     """Ultra-efficient XRP trading system with zero unnecessary API calls"""
@@ -43,9 +44,13 @@ class UltraEfficientXRPSystem:
         # Initialize Trade Ledger Manager
         self.trade_ledger = TradeLedgerManager(data_dir="data/trades", logger=logger)
         
+        # Initialize Prometheus metrics collector
+        self.metrics_collector = get_metrics_collector(port=8000, logger=logger)
+        
         self.logger.info("🎯 [ULTRA_EFFICIENT_XRP] Ultra-Efficient XRP Trading System initialized")
         self.logger.info("🎯 [ULTRA_EFFICIENT_XRP] ZERO unnecessary API calls - 100% XRP focused")
         self.logger.info("📊 [ULTRA_EFFICIENT_XRP] Trade Ledger Manager initialized for comprehensive trade tracking")
+        self.logger.info("📊 [ULTRA_EFFICIENT_XRP] Prometheus metrics collector initialized")
     
     async def start_trading(self):
         """Start the ultra-efficient XRP trading system"""
@@ -98,6 +103,10 @@ class UltraEfficientXRPSystem:
                 if self.cycle_count % 20 == 0:  # Save every 20 cycles (10 seconds)
                     self.trade_ledger.save_to_parquet()
                 
+                # 11. 📊 PROMETHEUS METRICS: Update system metrics
+                if self.cycle_count % 10 == 0:  # Update every 10 cycles (5 seconds)
+                    self._update_system_metrics(xrp_data, performance_metrics)
+                
                 # Calculate loop performance
                 loop_time = time.perf_counter() - loop_start
                 if loop_time > 0.5:  # If loop takes more than 0.5 seconds
@@ -109,6 +118,63 @@ class UltraEfficientXRPSystem:
         except Exception as e:
             self.logger.error(f"❌ [ULTRA_EFFICIENT_XRP] Error in trading loop: {e}")
             await self.shutdown()
+    
+    def _update_system_metrics(self, xrp_data: Dict[str, Any], performance_metrics: Dict[str, Any]):
+        """Update Prometheus metrics with current system state"""
+        try:
+            # Update market data metrics
+            self.metrics_collector.update_market_data(
+                symbol="XRP",
+                price=xrp_data.get('xrp_price', 0.0),
+                price_change_24h=0.0,  # Would need historical data
+                volume_24h=0.0,  # Would need volume data
+                spread_bps=0.0  # Would need order book data
+            )
+            
+            # Update funding rate
+            self.metrics_collector.update_funding_rate("XRP", xrp_data.get('funding_rate', 0.0))
+            
+            # Update system performance
+            uptime = time.time() - getattr(self, 'start_time', time.time())
+            self.metrics_collector.update_system_performance(
+                strategy="Ultra-Efficient XRP System",
+                uptime_seconds=uptime,
+                cycle_count=self.cycle_count,
+                emergency_mode=self.emergency_mode,
+                margin_usage_percentage=0.0  # Would need margin data
+            )
+            
+            # Update PnL metrics
+            self.metrics_collector.update_pnl(
+                strategy="Ultra-Efficient XRP System",
+                symbol="XRP",
+                total_pnl=self.total_profit,
+                realized_pnl=self.total_profit,
+                unrealized_pnl=0.0,
+                pnl_percentage=(self.total_profit / 10000.0) * 100 if self.total_profit != 0 else 0.0
+            )
+            
+            # Update position metrics
+            self.metrics_collector.update_position(
+                strategy="Ultra-Efficient XRP System",
+                symbol="XRP",
+                position_size=0.0,  # Would need position data
+                position_value=0.0,
+                avg_entry_price=0.0
+            )
+            
+            # Update strategy performance
+            win_rate = (self.successful_trades / self.total_trades * 100) if self.total_trades > 0 else 0.0
+            self.metrics_collector.update_strategy_performance(
+                strategy="Ultra-Efficient XRP System",
+                symbol="XRP",
+                win_rate=win_rate,
+                profit_factor=1.0,  # Would need profit/loss calculation
+                sharpe_ratio=0.0  # Would need volatility calculation
+            )
+            
+        except Exception as e:
+            self.logger.error(f"❌ [METRICS] Error updating system metrics: {e}")
     
     async def _monitor_account_health(self):
         """🏗️ HYPERLIQUID EXCHANGE ARCHITECT: Monitor account health efficiently"""
@@ -443,6 +509,9 @@ class UltraEfficientXRPSystem:
                         trade_id = self.trade_ledger.record_trade(trade_data)
                         self.logger.info(f"📊 [TRADE_LEDGER] Trade recorded: {trade_id}")
                         
+                        # Record metrics
+                        record_trade_metrics(trade_data, self.metrics_collector)
+                        
                         return {
                             'success': True,
                             'profit': 0.0,  # Will be calculated when position is closed
@@ -587,6 +656,9 @@ class UltraEfficientXRPSystem:
                         
                         trade_id = self.trade_ledger.record_trade(trade_data)
                         self.logger.info(f"📊 [TRADE_LEDGER] Scalp trade recorded: {trade_id}")
+                        
+                        # Record metrics
+                        record_trade_metrics(trade_data, self.metrics_collector)
                         
                         return {
                             'success': True,
@@ -739,6 +811,9 @@ class UltraEfficientXRPSystem:
                             
                             trade_id = self.trade_ledger.record_trade(trade_data)
                             self.logger.info(f"📊 [TRADE_LEDGER] Funding arbitrage trade recorded: {trade_id}")
+                            
+                            # Record metrics
+                            record_trade_metrics(trade_data, self.metrics_collector)
                             
                             return {
                                 'success': True,
