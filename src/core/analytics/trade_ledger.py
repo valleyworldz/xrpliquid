@@ -256,8 +256,10 @@ class TradeLedgerManager:
             df = pd.DataFrame([asdict(trade) for trade in self.trades])
             
             # Convert complex fields to JSON strings
-            df['tags'] = df['tags'].apply(json.dumps)
-            df['metadata'] = df['metadata'].apply(json.dumps)
+            if 'tags' in df.columns:
+                df['tags'] = df['tags'].apply(json.dumps)
+            if 'metadata' in df.columns:
+                df['metadata'] = df['metadata'].apply(json.dumps)
             
             df.to_csv(self.csv_path, index=False)
             self.logger.info(f"💾 Saved {len(self.trades)} trades to CSV: {self.csv_path}")
@@ -276,8 +278,10 @@ class TradeLedgerManager:
             df = pd.DataFrame([asdict(trade) for trade in self.trades])
             
             # Convert complex fields to JSON strings
-            df['tags'] = df['tags'].apply(json.dumps)
-            df['metadata'] = df['metadata'].apply(json.dumps)
+            if 'tags' in df.columns:
+                df['tags'] = df['tags'].apply(json.dumps)
+            if 'metadata' in df.columns:
+                df['metadata'] = df['metadata'].apply(json.dumps)
             
             df.to_parquet(self.parquet_path, index=False)
             self.logger.info(f"💾 Saved {len(self.trades)} trades to Parquet: {self.parquet_path}")
@@ -386,8 +390,10 @@ class TradeLedgerManager:
                     df = df[df['datetime'] <= end_date]
             
             # Convert complex fields to JSON strings
-            df['tags'] = df['tags'].apply(json.dumps)
-            df['metadata'] = df['metadata'].apply(json.dumps)
+            if 'tags' in df.columns:
+                df['tags'] = df['tags'].apply(json.dumps)
+            if 'metadata' in df.columns:
+                df['metadata'] = df['metadata'].apply(json.dumps)
             
             exported_files = {}
             

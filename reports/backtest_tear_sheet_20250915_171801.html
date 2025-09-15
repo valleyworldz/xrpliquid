@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra-Efficient XRP Trading System - Backtest Tear Sheet</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .chart-section {
+            padding: 30px;
+            border-top: 1px solid #eee;
+        }
+        .chart-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .chart-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th,
+        .summary-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .summary-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .summary-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Ultra-Efficient XRP Trading System</h1>
+            <p>Deterministic Backtest Tear Sheet</p>
+            <p>Generated on 2025-09-15 17:18:01</p>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value positive">
+                    0.10%
+                </div>
+                <div class="metric-label">Total Return</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value positive">
+                    0.00%
+                </div>
+                <div class="metric-label">Annualized Return</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">
+                    -24.32
+                </div>
+                <div class="metric-label">Sharpe Ratio</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value negative">
+                    -0.03%
+                </div>
+                <div class="metric-label">Max Drawdown</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">
+                    32.4%
+                </div>
+                <div class="metric-label">Win Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">
+                    1.42
+                </div>
+                <div class="metric-label">Profit Factor</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">
+                    991
+                </div>
+                <div class="metric-label">Total Trades</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">
+                    0.08%
+                </div>
+                <div class="metric-label">Volatility</div>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h2 class="chart-title">📈 Portfolio Performance</h2>
+            <div class="chart-container">
+                <pre>Portfolio Value Over Time:
+==================================================
+2024-01-01: $1,000.00 
+2024-01-19: $1,000.17 █████
+2024-02-06: $1,000.32 █████████
+2024-02-25: $1,000.39 ███████████
+2024-03-14: $1,000.40 ████████████
+2024-04-01: $1,000.36 ██████████
+2024-04-19: $1,000.44 █████████████
+2024-05-07: $1,000.44 █████████████
+2024-05-26: $1,000.45 █████████████
+2024-06-13: $1,000.23 ██████
+2024-07-01: $1,000.46 █████████████
+2024-07-19: $1,000.49 ██████████████
+2024-08-06: $1,000.65 ███████████████████
+2024-08-25: $1,000.76 ██████████████████████
+2024-09-12: $1,000.86 █████████████████████████
+2024-09-30: $1,000.81 ████████████████████████
+2024-10-18: $1,000.77 ███████████████████████
+2024-11-05: $1,000.87 █████████████████████████
+2024-11-24: $1,000.82 ████████████████████████
+2024-12-12: $1,000.71 █████████████████████
+2024-12-30: $1,001.00 █████████████████████████████</pre>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h2 class="chart-title">📊 Returns Distribution</h2>
+            <div class="chart-container">
+                <pre>Returns Distribution:
+========================================
+-0.000:  17 
+-0.000:  89 
+-0.000: 125 
+-0.000: 164 
+-0.000:  81 
+-0.000:  18 
+-0.000:   1 
+-0.000:   0 
+-0.000:   0 
+-0.000: 845 ██
+-0.000: 6799 ████████████████████
+0.000: 115 
+0.000:   0 
+0.000:   0 
+0.000:   0 
+0.000:   6 
+0.000: 130 
+0.000: 146 
+0.000: 134 
+0.000:  80 </pre>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h2 class="chart-title">📉 Drawdown Analysis</h2>
+            <div class="chart-container">
+                <pre>Drawdown Analysis:
+==============================
+Maximum Drawdown: -0.03%
+Current Drawdown: -0.00%
+Worst Drawdown Date: 2024-06-15 22:00:00</pre>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h2 class="chart-title">🎯 Trade Analysis</h2>
+            <div class="chart-container">
+                <pre>Trade Analysis:
+====================
+Total Trades: 991
+Winning Trades: 321
+Losing Trades: 174
+Average Win: $0.01
+Average Loss: $-0.01
+Win Rate: 32.4%</pre>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <h2 class="chart-title">📋 Performance Summary</h2>
+            <table class="summary-table">
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Initial Capital</td>
+                    <td>$1,000.00</td>
+                    <td>Starting portfolio value</td>
+                </tr>
+                <tr>
+                    <td>Final Capital</td>
+                    <td>$1,001.00</td>
+                    <td>Ending portfolio value</td>
+                </tr>
+                <tr>
+                    <td>Total PnL</td>
+                    <td class="positive">
+                        $1.00
+                    </td>
+                    <td>Total profit/loss</td>
+                </tr>
+                <tr>
+                    <td>Winning Trades</td>
+                    <td>321</td>
+                    <td>Number of profitable trades</td>
+                </tr>
+                <tr>
+                    <td>Losing Trades</td>
+                    <td>174</td>
+                    <td>Number of losing trades</td>
+                </tr>
+                <tr>
+                    <td>Calmar Ratio</td>
+                    <td>0.14</td>
+                    <td>Annual return / Max drawdown</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>🎯 Ultra-Efficient XRP Trading System - Deterministic Backtest Engine</p>
+            <p>Generated with comprehensive trade ledger and analytics</p>
+        </div>
+    </div>
+</body>
+</html>
+        

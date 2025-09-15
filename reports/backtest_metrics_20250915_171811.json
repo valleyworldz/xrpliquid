@@ -1,0 +1,16 @@
+{
+  "total_return": -0.0001127190007932768,
+  "annualized_return": -4.707088135824655e-06,
+  "volatility": 0.0006311577099736638,
+  "sharpe_ratio": -31.695259001067356,
+  "max_drawdown": -0.0004904196908512653,
+  "calmar_ratio": -0.009598081446636333,
+  "win_rate": 24.643320363164722,
+  "profit_factor": 0.9234761290491673,
+  "total_trades": 2313,
+  "winning_trades": 570,
+  "losing_trades": 586,
+  "initial_capital": 1000.0,
+  "final_capital": 999.8872809992067,
+  "total_pnl": -0.11271900079327679
+}
