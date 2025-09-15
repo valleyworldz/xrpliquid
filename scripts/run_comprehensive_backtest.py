@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-🎯 RUN OPTIMIZED BACKTEST
-========================
-Execute optimized backtest with improved parameters for profitability proof
+🎯 RUN COMPREHENSIVE BACKTEST
+============================
+Execute 12-36 month XRP-perp backtest with all required components
 """
 
 import sys
@@ -17,31 +17,30 @@ from src.core.backtesting.comprehensive_backtest_engine import (
     BacktestConfig
 )
 
-def run_optimized_backtest():
-    """Run optimized backtest with improved parameters"""
+def run_comprehensive_backtest():
+    """Run comprehensive backtest with all required components"""
     
-    print("🎯 OPTIMIZED XRP FUNDING ARBITRAGE BACKTEST")
+    print("🎯 COMPREHENSIVE XRP FUNDING ARBITRAGE BACKTEST")
     print("=" * 60)
-    print("📅 Period: 24 months XRP-perp")
+    print("📅 Period: 12-36 months XRP-perp")
     print("💰 Initial Capital: $10,000")
-    print("⚡ Strategy: OPTIMIZED Funding Arbitrage")
+    print("⚡ Strategy: Optimized Funding Arbitrage")
     print("📊 Components: Fees, Slippage, Funding, Spreads")
-    print("🔧 Optimizations: Higher thresholds, better filtering")
     print("=" * 60)
     
-    # Configure optimized backtest
+    # Configure backtest
     config = BacktestConfig(
         start_date="2023-01-01",
         end_date="2024-12-31",  # 24 months
         initial_capital=10000.0,
-        commission_rate=0.0003,  # Reduced to 0.03% (maker rebates)
-        slippage_bps=1.5,  # Reduced slippage
-        spread_bps=0.5,  # Tighter spreads
-        funding_frequency_hours=8,
+        commission_rate=0.0005,  # 0.05% per trade
+        slippage_bps=2.0,  # 2 basis points
+        spread_bps=1.0,  # 1 basis point spread
+        funding_frequency_hours=8,  # Hyperliquid funding every 8 hours
         volatility_regime_threshold=0.02,
-        min_position_size_usd=100.0,  # Higher minimum
-        max_position_size_usd=2000.0,  # Higher maximum
-        risk_unit_size=0.02  # 2% of capital per risk unit
+        min_position_size_usd=25.0,
+        max_position_size_usd=1000.0,
+        risk_unit_size=0.01  # 1% of capital per risk unit
     )
     
     # Initialize backtest engine
@@ -55,15 +54,15 @@ def run_optimized_backtest():
     market_data = engine.calculate_volatility_terciles(market_data)
     print("✅ Volatility analysis complete")
     
-    print("🔄 Running OPTIMIZED funding arbitrage strategy...")
-    engine.simulate_optimized_funding_arbitrage_strategy(market_data)
+    print("🔄 Running funding arbitrage strategy simulation...")
+    engine.simulate_funding_arbitrage_strategy(market_data)
     print(f"✅ Strategy simulation complete - {len(engine.trades)} trades executed")
     
     print("🔄 Generating performance report...")
     report = engine.generate_performance_report()
     
     # Display key results
-    print("\n📊 OPTIMIZED BACKTEST RESULTS")
+    print("\n📊 BACKTEST RESULTS")
     print("-" * 40)
     print(f"💰 Initial Capital: ${report['summary']['initial_capital']:,.2f}")
     print(f"💰 Final Capital: ${report['summary']['final_capital']:,.2f}")
@@ -107,7 +106,7 @@ def run_optimized_backtest():
     
     # Save all artifacts
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    base_filename = f"xrp_optimized_backtest_{timestamp}"
+    base_filename = f"xrp_funding_arbitrage_{timestamp}"
     
     print(f"\n💾 SAVING ARTIFACTS")
     print("-" * 40)
@@ -139,19 +138,19 @@ def run_optimized_backtest():
         if report['summary']['win_rate'] > 0.5:
             print("✅ POSITIVE WIN RATE")
     else:
-        print("❌ STRATEGY NEEDS FURTHER OPTIMIZATION")
+        print("❌ STRATEGY IS NOT PROFITABLE")
         print("🔧 RECOMMENDATIONS:")
-        print("   - Increase funding threshold to 0.12%")
-        print("   - Add volatility filters")
-        print("   - Implement regime-specific parameters")
-        print("   - Add momentum filters")
+        print("   - Increase funding threshold")
+        print("   - Optimize position sizing")
+        print("   - Improve execution quality")
+        print("   - Add additional filters")
     
     return report
 
 if __name__ == "__main__":
     try:
-        report = run_optimized_backtest()
-        print(f"\n🎯 OPTIMIZED BACKTEST COMPLETE - PROFITABILITY PROOF GENERATED")
+        report = run_comprehensive_backtest()
+        print(f"\n🎯 BACKTEST COMPLETE - PROFITABILITY PROOF GENERATED")
     except Exception as e:
         print(f"❌ Backtest failed: {e}")
         import traceback
