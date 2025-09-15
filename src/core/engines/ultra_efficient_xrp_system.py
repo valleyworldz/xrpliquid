@@ -43,6 +43,14 @@ class UltraEfficientXRPSystem:
         self.last_xrp_price = 0.0
         self.price_change_threshold = 0.001
         
+        # Rate limiting and error handling
+        self.last_api_call = 0.0
+        self.api_call_interval = 1.0  # Minimum 1 second between API calls
+        self.consecutive_errors = 0
+        self.max_consecutive_errors = 5
+        self.error_backoff_time = 5.0  # 5 seconds backoff on errors
+        self.last_error_time = 0.0
+        
         # Initialize Trade Ledger Manager
         self.trade_ledger = TradeLedgerManager(data_dir="data/trades", logger=logger)
         
@@ -71,6 +79,41 @@ class UltraEfficientXRPSystem:
         self.logger.info("📊 [ULTRA_EFFICIENT_XRP] Trade Ledger Manager initialized for comprehensive trade tracking")
         self.logger.info("📊 [ULTRA_EFFICIENT_XRP] Prometheus metrics collector initialized")
     
+    def _should_make_api_call(self) -> bool:
+        """Check if enough time has passed since last API call to avoid rate limiting"""
+        current_time = time.time()
+        time_since_last_call = current_time - self.last_api_call
+        time_since_last_error = current_time - self.last_error_time
+        
+        # If we're in error backoff, wait longer
+        if self.consecutive_errors > 0 and time_since_last_error < self.error_backoff_time:
+            return False
+        
+        # Normal rate limiting
+        return time_since_last_call >= self.api_call_interval
+    
+    def _handle_api_error(self, error: Exception):
+        """Handle API errors with exponential backoff"""
+        self.consecutive_errors += 1
+        self.last_error_time = time.time()
+        
+        if self.consecutive_errors >= self.max_consecutive_errors:
+            self.logger.error(f"🚨 [API_ERROR] Too many consecutive errors ({self.consecutive_errors}), entering emergency mode")
+            self.emergency_mode = True
+            self.error_backoff_time = min(30.0, self.error_backoff_time * 2)  # Exponential backoff, max 30s
+        
+        if "429" in str(error):
+            self.logger.warning(f"⚠️ [RATE_LIMIT] API rate limited, backing off for {self.error_backoff_time}s")
+        else:
+            self.logger.warning(f"⚠️ [API_ERROR] API error: {error}")
+    
+    def _reset_error_count(self):
+        """Reset error count on successful API call"""
+        if self.consecutive_errors > 0:
+            self.logger.info(f"✅ [API_RECOVERY] API calls recovered after {self.consecutive_errors} errors")
+        self.consecutive_errors = 0
+        self.error_backoff_time = 5.0  # Reset backoff time
+    
     async def start_trading(self):
         """Start the ultra-efficient XRP trading system"""
         self.running = True
@@ -86,11 +129,13 @@ class UltraEfficientXRPSystem:
                 # 🎯 CHIEF QUANTITATIVE STRATEGIST: Generate perfect hat scores
                 hat_scores = self._generate_perfect_scores()
                 
-                # 📊 MARKET MICROSTRUCTURE ANALYST: Get ONLY XRP data
+                # 📊 MARKET MICROSTRUCTURE ANALYST: Get ONLY XRP data (with rate limiting)
                 xrp_data = await self._get_xrp_only_data()
                 
-                # 🛡️ RISK OVERSIGHT OFFICER: Monitor account health
-                await self._monitor_account_health()
+                # 🛡️ RISK OVERSIGHT OFFICER: Monitor account health (with rate limiting)
+                if self._should_make_api_call():
+                    await self._monitor_account_health()
+                    self.last_api_call = time.time()
                 
                 # 🧠 MACHINE LEARNING RESEARCH SCIENTIST: Create intelligent decisions
                 hat_decisions = self._create_hat_decisions(hat_scores, xrp_data)
@@ -99,7 +144,7 @@ class UltraEfficientXRPSystem:
                 unified_decision = self._make_unified_decision(hat_decisions, xrp_data)
                 
                 # ⚡ LOW-LATENCY ENGINEER: Execute trades with maximum efficiency
-                if unified_decision['action'] != 'monitor':
+                if unified_decision['action'] != 'monitor' and not self.emergency_mode:
                     trade_result = await self._execute_xrp_trades(unified_decision)
                     
                     if trade_result.get('success'):
@@ -118,12 +163,13 @@ class UltraEfficientXRPSystem:
                 
                 # Calculate cycle time and sleep
                 cycle_time = time.time() - cycle_start
-                sleep_time = max(0, 0.5 - cycle_time)  # 0.5 second cycles
+                target_cycle_time = 1.0 if self.emergency_mode else 0.5  # Slower in emergency mode
+                sleep_time = max(0, target_cycle_time - cycle_time)
                 
                 if sleep_time > 0:
                     await asyncio.sleep(sleep_time)
                 else:
-                    self.logger.warning(f"⚠️ [CYCLE_OVERLOAD] Cycle took {cycle_time:.3f}s (target: 0.5s)")
+                    self.logger.warning(f"⚠️ [CYCLE_OVERLOAD] Cycle took {cycle_time:.3f}s (target: {target_cycle_time}s)")
                 
         except KeyboardInterrupt:
             self.logger.info("🛑 [ULTRA_EFFICIENT_XRP] Trading stopped by user")
@@ -137,6 +183,8 @@ class UltraEfficientXRPSystem:
         """🛡️ RISK OVERSIGHT OFFICER: Monitor account health and margin usage"""
         try:
             user_state = self.api.get_user_state()
+            self._reset_error_count()  # Reset error count on successful API call
+            
             if user_state and "marginSummary" in user_state:
                 account_value = float(user_state["marginSummary"].get("accountValue", 0))
                 total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
@@ -157,13 +205,15 @@ class UltraEfficientXRPSystem:
                     self.logger.info(f"💰 [ACCOUNT HEALTH] Value: ${account_value:.2f}, Available: ${available_margin:.2f}, Usage: {margin_ratio:.1%}")
                     
         except Exception as e:
-            self.logger.warning(f"⚠️ [ACCOUNT MONITOR] Could not check account health: {e}")
+            self._handle_api_error(e)
     
     async def _get_xrp_only_data(self) -> Dict[str, Any]:
         """📊 MARKET MICROSTRUCTURE ANALYST: Get ONLY XRP market data - zero unnecessary calls"""
         try:
             # Get ONLY XRP price - no other assets
             market_data = self.api.info_client.all_mids()
+            self._reset_error_count()  # Reset error count on successful API call
+            
             xrp_price = None
             
             # Efficiently find XRP price only
@@ -178,7 +228,7 @@ class UltraEfficientXRPSystem:
             if not xrp_price:
                 xrp_price = 0.52  # Fallback price
             
-            # Get funding rate for XRP only
+            # Get funding rate for XRP only (with error handling)
             current_funding = 0.0
             try:
                 funding_data = self.api.info_client.funding_history("XRP", 1)
@@ -187,7 +237,8 @@ class UltraEfficientXRPSystem:
                         current_funding = float(funding_data[0].get('funding', 0))
                     else:
                         current_funding = 0.0001
-            except Exception:
+            except Exception as e:
+                self._handle_api_error(e)
                 current_funding = 0.0001
             
             # Calculate price change
@@ -206,10 +257,10 @@ class UltraEfficientXRPSystem:
             }
             
         except Exception as e:
-            self.logger.error(f"❌ [ULTRA_EFFICIENT_XRP] Error getting XRP data: {e}")
+            self._handle_api_error(e)
             return {
                 'timestamp': time.time(),
-                'xrp_price': 0.52,
+                'xrp_price': self.last_xrp_price or 0.52,
                 'funding_rate': 0.0001,
                 'price_change': 0.0,
                 'market_data_source': 'fallback'

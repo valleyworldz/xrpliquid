@@ -2,8 +2,8 @@ import time
 import os
 import sys
 import json
-from core.utils.logger import Logger
-from core.utils.config_manager import ConfigManager
+from src.core.utils.logger import Logger
+from src.core.utils.config_manager import ConfigManager
 
 class EmergencyHandler:
     def __init__(self):

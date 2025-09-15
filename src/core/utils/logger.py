@@ -3,7 +3,7 @@ import json
 import requests
 import os
 import datetime
-from core.utils.config_manager import ConfigManager
+from src.core.utils.config_manager import ConfigManager
 
 EMOJI_REPLACEMENTS = {
     '✅': '[OK]', '🚀': '[RUN]', '❌': '[FAIL]', '🪙': '[TOKEN]', '💰': '[MONEY]'
