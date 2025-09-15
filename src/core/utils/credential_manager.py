@@ -10,7 +10,7 @@ except ImportError:
         """Dummy function when dotenv is not available"""
         pass
 
-from core.utils.secure_credential_handler import SecureCredentialHandler
+from src.core.utils.secure_credential_handler import SecureCredentialHandler
 
 class CredentialManager:
     def __init__(self):
