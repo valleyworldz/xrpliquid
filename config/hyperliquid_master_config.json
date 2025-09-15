@@ -1,0 +1,229 @@
+{
+  "hyperliquid_master_strategy": {
+    "enabled": true,
+    "version": "2.0",
+    "description": "Ultimate Hyperliquid 24/7 100% Success Strategy",
+    
+    "funding_rate_arbitrage": {
+      "enabled": true,
+      "description": "Exploit Hyperliquid's hourly funding rates vs 8h on other platforms",
+      "min_funding_rate": 0.001,
+      "max_funding_rate": 0.04,
+      "funding_interval": 3600,
+      "position_hold_time": 7200,
+      "funding_threshold": 0.005,
+      "target_symbols": ["BTC", "ETH", "SOL", "AVAX", "DYDX"],
+      "max_positions_per_symbol": 1,
+      "profit_target": 0.02,
+      "stop_loss": 0.01
+    },
+    
+    "liquidation_flow_capture": {
+      "enabled": true,
+      "description": "Capture liquidation flow with no clearance fees",
+      "backstop_threshold": 0.67,
+      "partial_liquidation_size": 100000,
+      "liquidation_cooldown": 30,
+      "liquidation_buffer": 0.05,
+      "max_liquidation_exposure": 0.1,
+      "liquidation_profit_target": 0.015,
+      "liquidation_stop_loss": 0.005
+    },
+    
+    "hlp_vault_optimization": {
+      "enabled": true,
+      "description": "Optimize HLP vault for passive income",
+      "target_allocation": 0.2,
+      "min_deposit": 100,
+      "auto_compound": true,
+      "rebalance_threshold": 0.05,
+      "max_allocation": 0.3,
+      "min_apy_threshold": 0.15
+    },
+    
+    "maker_taker_optimization": {
+      "enabled": true,
+      "description": "Optimize maker-taker for continuous rebates",
+      "maker_rebate_target": 0.004,
+      "taker_fee_max": 0.045,
+      "spread_target": 0.001,
+      "order_refresh_interval": 30,
+      "min_order_size": 10,
+      "max_order_size": 1000,
+      "spread_multiplier": 1.5
+    },
+    
+    "margin_tier_optimization": {
+      "enabled": true,
+      "description": "Optimize margin tiers for maximum leverage efficiency",
+      "btc_max_leverage": 40,
+      "eth_max_leverage": 25,
+      "sol_max_leverage": 20,
+      "other_max_leverage": 10,
+      "maintenance_margin_ratio": 0.5,
+      "leverage_buffer": 0.8,
+      "margin_efficiency_target": 0.9,
+      "auto_leverage_adjustment": true
+    },
+    
+    "oracle_arbitrage": {
+      "enabled": true,
+      "description": "Exploit oracle vs mark price discrepancies",
+      "oracle_update_interval": 3,
+      "price_discrepancy_threshold": 0.002,
+      "arbitrage_window": 5,
+      "max_arbitrage_size": 0.05,
+      "arbitrage_profit_target": 0.005,
+      "arbitrage_stop_loss": 0.002
+    },
+    
+    "volatility_capture": {
+      "enabled": true,
+      "description": "Capture volatility with momentum and mean reversion",
+      "volatility_threshold": 0.02,
+      "momentum_window": 300,
+      "mean_reversion_window": 1800,
+      "position_sizing": 0.1,
+      "momentum_threshold": 0.01,
+      "mean_reversion_threshold": 0.02,
+      "profit_target": 0.03,
+      "stop_loss": 0.015
+    },
+    
+    "cross_margin_optimization": {
+      "enabled": true,
+      "description": "Optimize cross-margin for maximum efficiency",
+      "max_positions": 5,
+      "correlation_threshold": 0.7,
+      "diversification_target": 0.8,
+      "margin_efficiency": 0.9,
+      "position_consolidation": true,
+      "correlation_reduction": true
+    },
+    
+    "risk_management": {
+      "enabled": true,
+      "description": "Advanced risk management for 24/7 operation",
+      "max_drawdown": 0.05,
+      "max_exposure_per_asset": 0.2,
+      "max_total_exposure": 0.8,
+      "liquidation_buffer": 0.3,
+      "emergency_stop_loss": 0.1,
+      "position_sizing_method": "kelly_criterion",
+      "dynamic_position_sizing": true,
+      "correlation_limits": true
+    },
+    
+    "execution_optimization": {
+      "enabled": true,
+      "description": "Optimize execution for maximum success rate",
+      "order_types": {
+        "use_ioc_for_market": true,
+        "use_gtc_for_limit": true,
+        "use_alo_for_making": true,
+        "use_twap_for_large": true
+      },
+      "nonce_management": {
+        "use_api_wallets": true,
+        "nonce_window": 86400000,
+        "batch_orders": true,
+        "separate_batches": true
+      },
+      "latency_optimization": {
+        "use_co_location": false,
+        "target_latency": 0.2,
+        "max_latency": 0.9,
+        "connection_pooling": true
+      },
+      "throughput_optimization": {
+        "max_orders_per_sec": 100,
+        "batch_size": 5,
+        "batch_interval": 0.1,
+        "rate_limiting": true
+      }
+    },
+    
+    "performance_monitoring": {
+      "enabled": true,
+      "description": "Continuous performance monitoring and optimization",
+      "metrics_tracking": {
+        "success_rate": true,
+        "profit_loss": true,
+        "funding_payments": true,
+        "maker_rebates": true,
+        "liquidation_captures": true,
+        "oracle_arbitrage": true,
+        "volatility_captures": true
+      },
+      "optimization_cycles": {
+        "short_term": 60,
+        "medium_term": 3600,
+        "long_term": 86400
+      },
+      "adaptive_parameters": {
+        "enabled": true,
+        "learning_rate": 0.01,
+        "adaptation_threshold": 0.05
+      }
+    },
+    
+    "platform_specific": {
+      "hyperliquid_advantages": {
+        "hourly_funding": true,
+        "no_clearance_fees": true,
+        "backstop_liquidations": true,
+        "partial_liquidations": true,
+        "hlp_vault": true,
+        "maker_rebates": true,
+        "self_trade_prevention": true,
+        "robust_price_indices": true
+      },
+      "oracle_integration": {
+        "use_validator_oracle": true,
+        "oracle_update_interval": 3,
+        "weighted_median": true,
+        "external_sources": [
+          "Binance",
+          "OKX", 
+          "Bybit",
+          "Kraken",
+          "Kucoin",
+          "Gate IO",
+          "MEXC"
+        ]
+      },
+      "liquidity_optimization": {
+        "use_hlp_vault": true,
+        "min_liquidity_threshold": 1000,
+        "liquidity_score_weight": 0.3,
+        "avoid_low_liquidity": true
+      }
+    },
+    
+    "trading_parameters": {
+      "base_position_size": 0.05,
+      "max_position_size": 0.2,
+      "min_order_value": 5,
+      "max_order_value": 1000,
+      "profit_target_base": 0.02,
+      "stop_loss_base": 0.01,
+      "leverage_base": 5,
+      "max_leverage": 20,
+      "funding_rate_threshold": 0.001,
+      "margin_buffer": 0.2,
+      "correlation_limit": 0.7,
+      "volatility_threshold": 0.02
+    },
+    
+    "advanced_features": {
+      "ai_signal_integration": true,
+      "sentiment_analysis": true,
+      "market_regime_detection": true,
+      "dynamic_parameter_adjustment": true,
+      "portfolio_optimization": true,
+      "risk_parity": true,
+      "momentum_scaling": true,
+      "mean_reversion_scaling": true
+    }
+  }
+} 

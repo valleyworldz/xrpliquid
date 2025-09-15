@@ -1,0 +1,27 @@
+{
+  "fee_aware_settings": {
+    "min_profit_per_trade": 0.01,
+    "max_trades_per_day": 20,
+    "max_trades_per_hour": 3,
+    "min_profit_margin": 0.02,
+    "immediate_target": 0.02,
+    "daily_target": 0.25,
+    "weekly_target": 2.5
+  },
+  "profit_targets": {
+    "immediate": 0.02,
+    "short_term": 0.1,
+    "daily": 0.25,
+    "weekly": 2.5
+  },
+  "trading_limits": {
+    "max_daily_trades": 20,
+    "max_hourly_trades": 3,
+    "min_profit_margin": 0.02
+  },
+  "fee_structure": {
+    "maker_fee": 0.0015,
+    "taker_fee": 0.0045,
+    "funding_rate": 0.0001
+  }
+}

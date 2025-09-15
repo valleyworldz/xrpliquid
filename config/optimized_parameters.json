@@ -1,0 +1,24 @@
+{
+  "grid_engine": {
+    "config": {
+      "grid_count": 20,
+      "volatility_multiplier": 2.0
+    },
+    "score": 0.8789303709521806
+  },
+  "rl_engine": {
+    "config": {
+      "learning_rate": 0.01,
+      "epsilon": 0.15,
+      "gamma": 0.9
+    },
+    "score": 0.8661539388863255
+  },
+  "risk_manager": {
+    "config": {
+      "max_portfolio_risk": 0.025,
+      "max_position_size": 0.1
+    },
+    "score": 0.8780915889616234
+  }
+}

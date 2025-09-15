@@ -1,0 +1,3 @@
+# templates
+
+Configuration templates

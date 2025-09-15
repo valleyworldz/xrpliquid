@@ -1,0 +1,15 @@
+{
+  "position_sizing": {
+    "force_override": true,
+    "min_position_usd": 5.0,
+    "max_position_usd": 100.0,
+    "default_position_usd": 20.0,
+    "kelly_multiplier": 2.0,
+    "risk_per_trade": 0.02
+  },
+  "margin_management": {
+    "max_leverage": 10,
+    "default_leverage": 3,
+    "margin_buffer": 0.1
+  }
+}

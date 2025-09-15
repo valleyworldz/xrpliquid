@@ -1,0 +1,22 @@
+{
+  "real_time_metrics": {
+    "success_rate_threshold": 0.8,
+    "profit_target_daily": 0.05,
+    "max_drawdown_daily": 0.02,
+    "min_trades_per_hour": 2,
+    "max_loss_per_trade": 0.01
+  },
+  "alerts": {
+    "success_rate_below_80": "WARNING: Success rate below 80%",
+    "daily_loss_exceeded": "CRITICAL: Daily loss limit exceeded",
+    "no_trades_1_hour": "WARNING: No trades in last hour",
+    "high_drawdown": "WARNING: High drawdown detected",
+    "api_errors": "ERROR: API errors detected"
+  },
+  "optimization_triggers": {
+    "success_rate_below_70": "Trigger parameter optimization",
+    "consecutive_losses_3": "Reduce position sizes",
+    "high_volatility": "Switch to conservative mode",
+    "low_liquidity": "Focus on tier 1 tokens only"
+  }
+}

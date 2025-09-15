@@ -1,0 +1,39 @@
+{
+  "risk_parameters": {
+    "max_drawdown": 2.0,
+    "risk_per_trade": 0.1,
+    "max_position_size": 0.005,
+    "leverage_limit": 1.0,
+    "confidence_threshold": 0.99,
+    "stop_loss_multiplier": 0.5,
+    "take_profit_multiplier": 1.2,
+    "daily_loss_limit": 0.5
+  },
+  "trading_parameters": {
+    "min_profit_target": 0.05,
+    "max_trades_per_day": 5,
+    "cooldown_period": 300,
+    "position_sizing": "micro",
+    "signal_quality_threshold": 0.95
+  },
+  "recovery_plan": {
+    "phase_1": {
+      "duration": "1 hour",
+      "target": "Stop losses and stabilize",
+      "max_drawdown": 2.0,
+      "risk_per_trade": 0.1
+    },
+    "phase_2": {
+      "duration": "4 hours",
+      "target": "Micro profits ($0.05-$0.10)",
+      "max_drawdown": 1.5,
+      "risk_per_trade": 0.15
+    },
+    "phase_3": {
+      "duration": "24 hours",
+      "target": "Daily profit target ($0.25)",
+      "max_drawdown": 1.0,
+      "risk_per_trade": 0.2
+    }
+  }
+}

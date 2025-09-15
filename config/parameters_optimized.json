@@ -1,0 +1,55 @@
+{
+  "grid_engine": {
+    "grid_count": 20,
+    "volatility_multiplier": 2.0,
+    "profit_margin": 0.01,
+    "max_grid_levels": 50
+  },
+  "rl_engine": {
+    "state_size": 25,
+    "learning_rate": 0.005,
+    "epsilon": 0.1,
+    "gamma": 0.95,
+    "memory_size": 10000
+  },
+  "risk_manager": {
+    "max_portfolio_risk": 0.02,
+    "max_position_size": 0.2,
+    "max_drawdown_limit": 0.15,
+    "kelly_multiplier": 0.25
+  },
+  "intelligence_engine": {
+    "sentiment_weight": 0.5,
+      "confidence_threshold": 0.8,
+    "news_sources": [
+      "coindesk",
+      "reddit"
+    ],
+    "update_interval": 300
+  },
+  "timeframe_engine": {
+    "scalping_weight": 0.4,
+    "swing_weight": 0.4,
+    "position_weight": 0.2,
+    "timeframes": [
+      "1m",
+      "5m",
+      "15m",
+      "1h",
+      "4h",
+      "1d"
+    ]
+  },
+  "microstructure_engine": {
+    "order_book_levels": 20,
+    "volume_profile_bins": 75,
+    "tick_size": 0.01,
+    "min_liquidity": 1000
+  },
+  "risk_management": {
+    "confidence_boost": true,
+    "adaptive_sizing": true,
+    "signal_quality_filter": true,
+    "min_signal_strength": 0.6
+  }
+} 

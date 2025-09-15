@@ -1,0 +1,88 @@
+{
+  "trading_core": {
+    "confidence_threshold": 0.05,
+    "forced_trading": true,
+    "cycle_time": 3,
+    "max_positions": 5,
+    "position_size_percentage": 0.2,
+    "auto_adjust_position_sizes": true,
+    "multi_token_trading": true,
+    "dynamic_position_sizing": true,
+    "minimum_position_size_usd": 1.0,
+    "maximum_position_size_usd": 10.0,
+    "default_size": 0.001,
+    "max_leverage": 2.0,
+    "symbols": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ]
+  },
+  "risk_management": {
+    "max_daily_loss": 5.0,
+    "max_position_loss": 2.0,
+    "stop_loss_percentage": 1.5,
+    "take_profit_percentage": 3.0,
+    "trailing_stop": true,
+    "trailing_stop_distance": 0.5,
+    "max_drawdown": 10.0,
+    "emergency_stop_loss": 5.0
+  },
+  "execution_parameters": {
+    "order_timeout": 30,
+    "max_retries": 3,
+    "retry_delay": 2,
+    "slippage_tolerance": 0.1,
+    "use_market_orders": false,
+    "partial_fills": true,
+    "smart_order_routing": true,
+    "order_type": "limit",
+    "time_in_force": "Gtc",
+    "reduce_only": false
+  },
+  "api_configuration": {
+    "use_testnet": false,
+    "request_timeout": 30,
+    "rate_limit_delay": 0.1,
+    "max_requests_per_minute": 1200,
+    "base_url": "https://api.hyperliquid.xyz",
+    "websocket_url": "wss://api.hyperliquid.xyz/ws"
+  },
+  "monitoring_and_analytics": {
+    "telegram_enabled": false,
+    "log_level": "INFO",
+    "save_trades": true,
+    "performance_tracking": true,
+    "real_time_monitoring": true,
+    "alert_on_errors": true,
+    "alert_on_trades": true,
+    "alert_on_positions": true
+  },
+  "safety_and_recovery": {
+    "emergency_stop_enabled": true,
+    "auto_recovery_enabled": true,
+    "max_consecutive_errors": 3,
+    "error_cooldown_period": 60,
+    "backup_interval": 3600,
+    "state_persistence": true
+  },
+  "market_analysis": {
+    "timeframes": [
+      "1m",
+      "5m",
+      "15m",
+      "1h",
+      "4h",
+      "1d"
+    ],
+    "indicators": {
+      "moving_averages": true,
+      "rsi": true,
+      "macd": true,
+      "volume_profile": true
+    },
+    "market_regime_detection": true,
+    "volatility_analysis": true,
+    "correlation_analysis": true
+  }
+}

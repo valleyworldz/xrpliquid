@@ -1,0 +1,121 @@
+# API Rules - HyperLiquid Trading Bot
+
+## 🔗 **HyperLiquid API Guidelines**
+
+### **Always Use Current API Endpoints**
+- Use latest HyperLiquid REST API endpoints
+- Implement proper WebSocket connections for real-time data
+- Never use deprecated API methods
+- Follow HyperLiquid API documentation exactly
+
+### **Always Handle API Rate Limits**
+- Respect API rate limits and quotas
+- Implement exponential backoff for retries
+- Use proper request throttling
+- Monitor API usage and performance
+
+### **Always Validate API Responses**
+- Validate all API responses before processing
+- Handle HTTP error codes properly (422, 429, 500, etc.)
+- Implement proper error recovery mechanisms
+- Log all API interactions for debugging
+
+### **Always Secure API Credentials**
+- Use encrypted credential storage
+- Never hardcode API keys in source code
+- Implement secure credential loading
+- Rotate API keys regularly
+
+## 🛡️ **Security & Authentication**
+
+### **Always Use Secure Authentication**
+- Implement proper signature generation for HyperLiquid
+- Use secure timestamp validation
+- Validate all authentication tokens
+- Implement proper session management
+
+### **Always Validate Input Data**
+- Validate all trading parameters before API calls
+- Check position sizes and limits
+- Validate token symbols and addresses
+- Sanitize all user inputs
+
+## 📊 **Trading API Specific Rules**
+
+### **Always Implement Risk Management**
+- Check account balance before trades
+- Validate position limits
+- Implement stop-loss mechanisms
+- Monitor margin requirements
+
+### **Always Handle Trading Errors**
+- Handle insufficient margin errors
+- Implement proper order validation
+- Handle partial fills correctly
+- Implement order cancellation on errors
+
+### **Always Log Trading Activities**
+- Log all order submissions
+- Track order status changes
+- Monitor trade execution
+- Maintain audit trail
+
+## 🔄 **Real-time Data Handling**
+
+### **Always Handle WebSocket Connections**
+- Implement proper WebSocket reconnection logic
+- Handle connection drops gracefully
+- Validate real-time data integrity
+- Implement heartbeat mechanisms
+
+### **Always Process Market Data Correctly**
+- Validate market data timestamps
+- Handle missing or corrupted data
+- Implement proper data normalization
+- Monitor data quality
+
+## 🎯 **Performance Optimization**
+
+### **Always Optimize API Calls**
+- Minimize unnecessary API requests
+- Use batch operations when possible
+- Implement proper caching strategies
+- Monitor API response times
+
+### **Always Handle High-Frequency Trading**
+- Implement proper request queuing
+- Handle concurrent API calls safely
+- Optimize for low latency
+- Monitor system performance
+
+## 📝 **Error Handling & Recovery**
+
+### **Always Implement Robust Error Handling**
+- Handle network timeouts
+- Implement retry mechanisms
+- Log all errors with context
+- Provide clear error messages
+
+### **Always Implement Recovery Mechanisms**
+- Implement automatic reconnection
+- Handle partial failures gracefully
+- Implement fallback strategies
+- Monitor system health
+
+## 🔍 **Monitoring & Debugging**
+
+### **Always Monitor API Performance**
+- Track API response times
+- Monitor error rates
+- Log API usage patterns
+- Implement performance alerts
+
+### **Always Maintain Debug Information**
+- Log all API requests and responses
+- Maintain detailed error logs
+- Implement debugging tools
+- Provide clear error context
+description:
+globs:
+alwaysApply: false
+---

@@ -1,0 +1,155 @@
+{
+  "micro_profit_target": 0.003,
+  "minimum_profit_per_trade": 0.5,
+  "take_any_profit_after_minutes": 25,
+  "max_loss_per_position": -3.0,
+  "profit_optimization": {
+    "profit_taking": {
+      "enabled": true,
+      "strategies": {
+        "fixed_percentage": {
+          "enabled": true,
+          "take_profit_percentage": 0.1,
+          "partial_take_profit": {
+            "enabled": true,
+            "first_target": 0.05,
+            "first_target_size": 0.3,
+            "second_target": 0.1,
+            "second_target_size": 0.3,
+            "final_target": 0.15,
+            "final_target_size": 0.4
+          }
+        },
+        "trailing_stop": {
+          "enabled": true,
+          "trailing_percentage": 0.02,
+          "activation_threshold": 0.03,
+          "lock_profit_threshold": 0.05
+        },
+        "time_based": {
+          "enabled": true,
+          "max_hold_time_hours": 24,
+          "profit_decay_factor": 0.1,
+          "force_close_at_loss": true
+        },
+        "volatility_based": {
+          "enabled": true,
+          "high_volatility_tp": 0.08,
+          "low_volatility_tp": 0.12,
+          "volatility_threshold": 0.05
+        }
+      }
+    },
+    "loss_management": {
+      "enabled": true,
+      "stop_loss": {
+        "fixed_percentage": 0.15,
+        "trailing_stop": {
+          "enabled": true,
+          "trailing_percentage": 0.03,
+          "activation_threshold": 0.05
+        },
+        "time_based": {
+          "enabled": true,
+          "max_loss_time_hours": 12,
+          "force_close_at_timeout": true
+        }
+      },
+      "position_sizing": {
+        "reduce_size_on_loss": true,
+        "loss_threshold": 0.1,
+        "size_reduction_factor": 0.7,
+        "recovery_threshold": 0.05
+      }
+    },
+    "portfolio_optimization": {
+      "enabled": true,
+      "rebalancing": {
+        "enabled": true,
+        "frequency_hours": 6,
+        "threshold_percentage": 0.1,
+        "max_rebalance_size": 0.3
+      },
+      "correlation_management": {
+        "enabled": true,
+        "max_correlation": 0.7,
+        "correlation_lookback": 24,
+        "reduce_correlated_positions": true
+      },
+      "diversification": {
+        "enabled": true,
+        "min_positions": 5,
+        "max_single_position": 0.2,
+        "sector_limits": {
+          "defi": 0.3,
+          "layer1": 0.3,
+          "layer2": 0.2,
+          "meme": 0.1
+        }
+      }
+    },
+    "performance_tracking": {
+      "enabled": true,
+      "metrics": {
+        "sharpe_ratio": true,
+        "sortino_ratio": true,
+        "max_drawdown": true,
+        "win_rate": true,
+        "profit_factor": true,
+        "average_win_loss": true
+      },
+      "optimization": {
+        "enabled": true,
+        "optimization_interval_hours": 24,
+        "parameter_adjustment": {
+          "enabled": true,
+          "learning_rate": 0.1,
+          "max_adjustment": 0.2
+        }
+      }
+    },
+    "market_regime_adaptation": {
+      "enabled": true,
+      "regimes": {
+        "bull_market": {
+          "profit_target_multiplier": 1.2,
+          "stop_loss_multiplier": 1.1,
+          "position_size_multiplier": 1.1
+        },
+        "bear_market": {
+          "profit_target_multiplier": 0.8,
+          "stop_loss_multiplier": 0.9,
+          "position_size_multiplier": 0.7
+        },
+        "sideways_market": {
+          "profit_target_multiplier": 1.0,
+          "stop_loss_multiplier": 1.0,
+          "position_size_multiplier": 0.9
+        }
+      },
+      "regime_detection": {
+        "enabled": true,
+        "lookback_period": 48,
+        "volatility_threshold": 0.05,
+        "trend_threshold": 0.02
+      }
+    },
+    "risk_adjusted_returns": {
+      "enabled": true,
+      "target_sharpe_ratio": 1.5,
+      "max_drawdown_limit": 0.15,
+      "risk_budget": {
+        "enabled": true,
+        "daily_risk_limit": 0.02,
+        "weekly_risk_limit": 0.05,
+        "monthly_risk_limit": 0.1
+      },
+      "position_risk_allocation": {
+        "enabled": true,
+        "max_risk_per_position": 0.02,
+        "correlation_adjustment": true,
+        "volatility_adjustment": true
+      }
+    }
+  }
+}

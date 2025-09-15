@@ -1,0 +1,23 @@
+{
+  "trading": {
+    "min_position_size": 500,
+    "min_trade_interval": 300,
+    "order_type": "maker",
+    "risk_reward_ratio": 2.0,
+    "max_daily_trades": 30,
+    "profit_target_percent": 1.0,
+    "stop_loss_percent": 0.5
+  },
+  "risk_management": {
+    "max_position_size": 2000,
+    "max_daily_loss": 50,
+    "max_concurrent_positions": 2,
+    "position_sizing_method": "kelly_criterion"
+  },
+  "filters": {
+    "min_volume": 5000000,
+    "min_market_cap": 100000000,
+    "max_spread_percent": 0.05,
+    "min_volatility": 0.01
+  }
+}

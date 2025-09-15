@@ -1,0 +1,18 @@
+{
+  "regime_config": {
+    "current_regime": "NEUTRAL",
+    "risk_profile": {
+      "name": "EMERGENCY_CONSERVATIVE",
+      "leverage": 2.0,
+      "risk_per_trade": 0.5,
+      "max_drawdown": 5.0,
+      "confidence_threshold": 0.9
+    },
+    "regime_transitions": {
+      "NEUTRAL": "CONSERVATIVE",
+      "BULL": "NEUTRAL",
+      "BEAR": "EMERGENCY"
+    },
+    "last_updated": "2025-09-10T22:38:47.931121"
+  }
+}

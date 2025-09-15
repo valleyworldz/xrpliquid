@@ -1,0 +1,7 @@
+{
+  "batch_processing": true,
+  "async_execution": true,
+  "timeout_ms": 1000,
+  "fallback_enabled": true,
+  "confidence_threshold": 0.5
+}

@@ -1,0 +1,150 @@
+# Ultra-Efficient XRP Trading Bot - Git Ignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Configuration and secrets
+config/secure_creds.env
+config/credentials/
+*.key
+*.pem
+.env
+.env.local
+.env.production
+
+# Data and cache
+data/
+cache/
+*.cache
+*.db
+*.sqlite
+*.sqlite3
+
+# Trading data
+trades_log.csv
+trade_logs/
+consolidated_logs/
+backups/
+emergency_backup_*/
+
+# Performance data
+performance_cache.json
+*.performance
+
+# Model files
+models/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Documentation
+docs/_build/
+site/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# System files
+*.pid
+*.seed
+*.pid.lock
+
+# Node.js (if any frontend components)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Kubernetes
+k8s/
+*.yaml
+*.yml
+
+# Backup files
+*.bak
+*.backup
+*_backup_*
+
+# Archive files
+archive/
+legacy/
+old_versions/
+
+# Memory files
+memory/
+
+# Specific to this project
+XRP_LOGS/
+critical_drawdown_fix_backup_*/
+drawdown_reset_backup_*/
+emergency_backup_*/

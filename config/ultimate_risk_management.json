@@ -1,0 +1,41 @@
+{
+  "risk_management": {
+    "max_leverage_ratio": 5.0,
+    "max_position_concentration": 0.15,
+    "max_daily_loss": 0.1,
+    "max_drawdown": 0.2,
+    "stop_loss_percentage": 0.15,
+    "take_profit_percentage": 0.1,
+    "max_positions": 15,
+    "min_margin_buffer": 5.0,
+    "risk_tolerance": 0.3,
+    "volatility_threshold": 0.05,
+    "correlation_threshold": 0.7,
+    "emergency_margin_threshold": 3.0,
+    "position_sizing": {
+      "kelly_criterion": true,
+      "max_position_size": 0.05,
+      "min_position_size": 0.01,
+      "volatility_adjustment": true
+    },
+    "portfolio_limits": {
+      "max_crypto_exposure": 0.8,
+      "max_single_asset": 0.15,
+      "max_sector_exposure": 0.3,
+      "diversification_target": 0.7
+    },
+    "monitoring": {
+      "health_check_interval": 60,
+      "risk_recalculation_interval": 300,
+      "emergency_check_interval": 30,
+      "performance_review_interval": 3600
+    },
+    "recovery_procedures": {
+      "auto_close_losing_positions": true,
+      "reduce_position_sizes": true,
+      "emergency_margin_recovery": true,
+      "portfolio_rebalancing": true,
+      "trading_pause_threshold": 0.8
+    }
+  }
+} 

@@ -1,0 +1,26 @@
+{
+  "regime_fix": {
+    "description": "Fix regime reconfiguration error",
+    "action": "Replace string regime with proper object structure",
+    "priority": "CRITICAL",
+    "expected_improvement": "Eliminate regime errors, improve stability"
+  },
+  "performance_optimization": {
+    "description": "Improve performance score from 5.87 to 8.0+",
+    "action": "Optimize signal quality and confidence thresholds",
+    "priority": "HIGH",
+    "expected_improvement": "Better trade execution, higher win rate"
+  },
+  "signal_quality_fix": {
+    "description": "Fix signal quality (currently 0.17/10.0)",
+    "action": "Adjust MACD and EMA filters, improve confidence",
+    "priority": "CRITICAL",
+    "expected_improvement": "More accurate trade signals"
+  },
+  "auto_optimization_fix": {
+    "description": "Fix auto-optimization system",
+    "action": "Enable proper optimization algorithms",
+    "priority": "HIGH",
+    "expected_improvement": "Continuous performance improvement"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "bot_config": {
+    "symbol": "XRP",
+    "cycle_interval": 30,
+    "max_cycles": null,
+    "profit_target": 2.5,
+    "stop_loss": 1.8,
+    "auto_trade": true,
+    "max_positions": 1,
+    "min_order_size": 1.0,
+    "price_precision": 4,
+    "min_order_value": 10.0
+  },
+  "advanced_features": {
+    "pattern_analyzer": {
+      "enabled": true,
+      "confidence_threshold": 0.3,
+      "min_pattern_bars": 20,
+      "rsi_period": 14,
+      "momentum_threshold": 0.005,
+      "volatility_threshold": 0.01
+    },
+    "risk_management": {
+      "enabled": true,
+      "max_drawdown": 0.05,
+      "kelly_multiplier": 0.25,
+      "volatility_lookback": 20,
+      "emergency_profit_taking": 0.10,
+      "emergency_stop_loss": 0.05
+    },
+    "fee_optimization": {
+      "enabled": true,
+      "prefer_maker_orders": true,
+      "current_vip_tier": 0,
+      "staking_tier": "wood",
+      "track_volume": true
+    },
+    "performance_tracking": {
+      "enabled": true,
+      "log_trades": true,
+      "calculate_metrics": true,
+      "print_summary_interval": 10
+    }
+  },
+  "hyperliquid_settings": {
+    "api_url": "https://api.hyperliquid.xyz",
+    "rate_limit": {
+      "requests_per_second": 4,
+      "min_interval": 0.25
+    },
+    "order_types": {
+      "default": "limit",
+      "urgent": "market",
+      "fee_optimized": "post_only"
+    },
+    "fee_tiers": {
+      "tier_0": {"taker": 0.045, "maker": 0.015},
+      "tier_1": {"taker": 0.040, "maker": 0.012},
+      "tier_2": {"taker": 0.035, "maker": 0.008},
+      "tier_3": {"taker": 0.030, "maker": 0.004},
+      "tier_4": {"taker": 0.028, "maker": 0.000},
+      "tier_5": {"taker": 0.026, "maker": 0.000},
+      "tier_6": {"taker": 0.024, "maker": 0.000}
+    },
+    "staking_discounts": {
+      "wood": 0.05,
+      "bronze": 0.10,
+      "silver": 0.15,
+      "gold": 0.20,
+      "platinum": 0.30,
+      "diamond": 0.40
+    }
+  },
+  "trading_strategy": {
+    "signal_generation": {
+      "min_confidence": 0.1,
+      "use_advanced_patterns": true,
+      "use_basic_fallback": true,
+      "force_trading": false
+    },
+    "position_sizing": {
+      "method": "kelly_criterion",
+      "max_position_pct": 0.25,
+      "min_position_pct": 0.05,
+      "adjust_for_confidence": true
+    },
+    "entry_conditions": {
+      "trend_following": true,
+      "momentum_detection": true,
+      "rsi_signals": true,
+      "volatility_analysis": true
+    },
+    "exit_conditions": {
+      "profit_target": true,
+      "stop_loss": true,
+      "emergency_profit": true,
+      "emergency_stop": true,
+      "trend_reversal": false
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "xrp_trading_bot.log",
+    "console_output": true,
+    "trade_logging": true,
+    "performance_logging": true
+  },
+  "monitoring": {
+    "health_checks": true,
+    "performance_alerts": true,
+    "error_notifications": true,
+    "status_updates": true
+  }
+} 

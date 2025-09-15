@@ -1,0 +1,47 @@
+{
+  "hyperliquid_specific": {
+    "order_types": {
+      "use_ioc_for_market": true,
+      "use_gtc_for_limit": true,
+      "use_alo_for_making": true,
+      "use_twap_for_large": true
+    },
+    "nonce_management": {
+      "use_api_wallets": true,
+      "nonce_window": 86400000,
+      "batch_orders": true,
+      "separate_batches": true
+    },
+    "oracle_integration": {
+      "use_validator_oracle": true,
+      "oracle_update_interval": 3,
+      "weighted_median": true,
+      "external_sources": [
+        "Binance",
+        "OKX",
+        "Bybit",
+        "Kraken"
+      ]
+    },
+    "liquidity_optimization": {
+      "use_hlp_vault": true,
+      "min_liquidity_threshold": 1000,
+      "liquidity_score_weight": 0.3,
+      "avoid_low_liquidity": true
+    }
+  },
+  "performance_optimizations": {
+    "latency_optimization": {
+      "use_co_location": true,
+      "target_latency": 0.2,
+      "max_latency": 0.9,
+      "connection_pooling": true
+    },
+    "throughput_optimization": {
+      "max_orders_per_sec": 1000,
+      "batch_size": 10,
+      "batch_interval": 0.1,
+      "rate_limiting": false
+    }
+  }
+}

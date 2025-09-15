@@ -1,0 +1,27 @@
+{
+  "containment_level": "MAXIMUM",
+  "risk_parameters": {
+    "max_drawdown_percentage": 5.0,
+    "max_daily_loss": 1.0,
+    "max_position_size": 0.01,
+    "max_leverage": 1.0,
+    "min_confidence_threshold": 0.95,
+    "max_trades_per_day": 2,
+    "min_time_between_trades": 7200
+  },
+  "emergency_protocols": {
+    "auto_stop_loss": true,
+    "position_monitoring": "continuous",
+    "risk_alert_threshold": 0.03,
+    "emergency_exit_threshold": 0.05,
+    "system_shutdown_threshold": 0.1
+  },
+  "monitoring_systems": {
+    "real_time_risk_monitoring": true,
+    "continuous_position_tracking": true,
+    "automated_risk_alerts": true,
+    "emergency_response_system": true,
+    "risk_containment_verification": true
+  },
+  "created": "2025-09-10T22:42:26.446309"
+}

@@ -1,0 +1,20 @@
+{
+  "trading": {
+    "default_token": "DOGE",
+    "aggressive_35_mode": false,
+    "max_iterations": 100,
+    "min_trade_interval": 10,
+    "position_percentage": 0.1
+  },
+  "safety": {
+    "max_consecutive_errors": 5,
+    "max_trades_per_minute": 5,
+    "max_trades_per_hour": 50,
+    "emergency_stop_on_loss": 0.1
+  },
+  "monitoring": {
+    "update_interval": 5,
+    "log_level": "INFO",
+    "show_progress": true
+  }
+}

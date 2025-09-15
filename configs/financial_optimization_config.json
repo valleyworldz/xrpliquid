@@ -1,0 +1,26 @@
+{
+  "financial_optimization": {
+    "enabled": true,
+    "target_annual_return": 213,
+    "risk_tolerance": "conservative",
+    "profit_maximization": true
+  },
+  "fee_optimization": {
+    "maker_preference": 0.98,
+    "fee_threshold": 1e-05,
+    "funding_arbitrage": true,
+    "liquidity_provision": true
+  },
+  "position_management": {
+    "optimal_size": 0.005,
+    "scaling_strategy": "martingale_recovery",
+    "risk_reward_ratio": 3.0,
+    "max_positions": 3
+  },
+  "risk_management": {
+    "dynamic_stops": true,
+    "trailing_stops": true,
+    "position_hedging": true,
+    "correlation_analysis": true
+  }
+}

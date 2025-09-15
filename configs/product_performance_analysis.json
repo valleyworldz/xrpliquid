@@ -1,0 +1,29 @@
+{
+  "analysis_timestamp": "2025-09-10T22:46:42.051062",
+  "product_status": "CRITICAL_RECOVERY_REQUIRED",
+  "performance_issues": [
+    "System performance degraded",
+    "User interface unresponsive",
+    "Error handling inadequate",
+    "Recovery process unclear"
+  ],
+  "user_impact": {
+    "system_availability": "degraded",
+    "response_time": "slow",
+    "error_rate": "high",
+    "user_satisfaction": "low"
+  },
+  "product_metrics": {
+    "uptime": "95.0%",
+    "response_time": "2.5 seconds",
+    "error_rate": "15.0%",
+    "user_retention": "60.0%",
+    "feature_completeness": "50.0%"
+  },
+  "recovery_priorities": [
+    "Restore system stability",
+    "Improve user interface responsiveness",
+    "Enhance error handling",
+    "Implement clear recovery processes"
+  ]
+}

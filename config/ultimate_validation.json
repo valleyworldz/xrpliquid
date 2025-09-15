@@ -1,0 +1,9 @@
+{
+  "ultra_strict_validation": true,
+  "multiple_rounding_methods": true,
+  "auto_size_adjustment": true,
+  "margin_safety_buffer": 0.8,
+  "tick_size_precision": 1e-08,
+  "retry_attempts": 5,
+  "exponential_backoff": true
+}

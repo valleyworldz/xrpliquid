@@ -1,0 +1,32 @@
+{
+  "optimization_timestamp": "2025-09-10T22:43:22.221613",
+  "optimization_mode": "EMERGENCY_RECOVERY",
+  "ai_parameters": {
+    "confidence_threshold": 0.95,
+    "position_size_multiplier": 0.1,
+    "stop_loss_multiplier": 0.5,
+    "take_profit_multiplier": 1.5,
+    "risk_multiplier": 0.5,
+    "momentum_threshold": 0.1,
+    "trend_threshold": 0.1,
+    "volatility_threshold": 0.05
+  },
+  "ml_model_optimization": {
+    "model_type": "EMERGENCY_CONSERVATIVE",
+    "training_data": "crisis_recovery_focused",
+    "validation_method": "cross_validation",
+    "performance_metrics": {
+      "accuracy_target": 0.95,
+      "precision_target": 0.9,
+      "recall_target": 0.85,
+      "f1_score_target": 0.87
+    }
+  },
+  "optimization_strategies": {
+    "parameter_tuning": "conservative",
+    "model_ensemble": "reduced",
+    "feature_selection": "critical_only",
+    "hyperparameter_optimization": "emergency_mode"
+  },
+  "created": "2025-09-10T22:43:22.221613"
+}

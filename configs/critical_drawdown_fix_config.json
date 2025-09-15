@@ -1,0 +1,25 @@
+{
+  "critical_fixes": {
+    "max_drawdown_limit": 30.0,
+    "current_drawdown": 25.29,
+    "drawdown_reset": true,
+    "emergency_override": true
+  },
+  "emergency_parameters": {
+    "max_drawdown": 30.0,
+    "risk_per_trade": 0.5,
+    "max_position_size": 0.01,
+    "leverage_limit": 2.0,
+    "confidence_threshold": 0.9,
+    "stop_loss_multiplier": 0.8,
+    "take_profit_multiplier": 1.5,
+    "daily_loss_limit": 1.0
+  },
+  "trading_restoration": {
+    "enable_trading": true,
+    "micro_positions": true,
+    "ultra_conservative": true,
+    "emergency_mode": true,
+    "profit_target": 0.01
+  }
+}

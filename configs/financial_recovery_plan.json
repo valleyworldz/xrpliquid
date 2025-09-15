@@ -1,0 +1,30 @@
+{
+  "phase_1_immediate": {
+    "duration": "30 minutes",
+    "target": "Stabilize account value",
+    "profit_target": 0.01,
+    "max_drawdown": 1.0,
+    "risk_per_trade": 0.01
+  },
+  "phase_2_short_term": {
+    "duration": "2 hours",
+    "target": "Micro profits",
+    "profit_target": 0.05,
+    "max_drawdown": 2.0,
+    "risk_per_trade": 0.02
+  },
+  "phase_3_daily": {
+    "duration": "24 hours",
+    "target": "Daily profit target",
+    "profit_target": 0.25,
+    "max_drawdown": 5.0,
+    "risk_per_trade": 0.05
+  },
+  "phase_4_recovery": {
+    "duration": "1 week",
+    "target": "Account recovery",
+    "profit_target": 2.5,
+    "max_drawdown": 10.0,
+    "risk_per_trade": 0.1
+  }
+}

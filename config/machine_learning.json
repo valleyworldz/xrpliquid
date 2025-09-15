@@ -1,0 +1,40 @@
+{
+  "models": {
+    "price_prediction": {
+      "enabled": true,
+      "algorithm": "lstm",
+      "features": [
+        "price",
+        "volume",
+        "rsi",
+        "macd",
+        "bollinger"
+      ],
+      "prediction_horizon": 5
+    },
+    "sentiment_analysis": {
+      "enabled": true,
+      "sources": [
+        "news",
+        "social_media",
+        "market_data"
+      ],
+      "update_frequency": 300
+    },
+    "pattern_recognition": {
+      "enabled": true,
+      "patterns": [
+        "head_shoulders",
+        "double_top",
+        "triangle",
+        "flag"
+      ],
+      "confidence_threshold": 0.7
+    }
+  },
+  "training": {
+    "data_period": "1y",
+    "retrain_frequency": "1w",
+    "validation_split": 0.2
+  }
+}

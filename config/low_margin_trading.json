@@ -1,0 +1,23 @@
+{
+  "low_margin_mode": true,
+  "minimum_order_value": 6.0,
+  "emergency_trading": true,
+  "margin_efficiency": {
+    "target_utilization": 0.90,
+    "minimum_buffer": 2.0,
+    "quick_profit_taking": true,
+    "profit_threshold": 0.20
+  },
+  "position_management": {
+    "max_positions": 12,
+    "reduce_existing_first": true,
+    "close_unprofitable": true,
+    "loss_threshold": -0.30
+  },
+  "order_optimization": {
+    "use_smaller_sizes": true,
+    "dynamic_sizing": true,
+    "margin_aware_orders": true,
+    "immediate_execution": true
+  }
+} 

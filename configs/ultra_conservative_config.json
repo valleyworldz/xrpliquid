@@ -1,0 +1,25 @@
+{
+  "emergency_parameters": {
+    "max_drawdown": 2.0,
+    "risk_per_trade": 0.25,
+    "max_position_size": 0.005,
+    "leverage_limit": 1.5,
+    "confidence_threshold": 0.95,
+    "stop_loss_multiplier": 0.7,
+    "take_profit_multiplier": 1.2,
+    "daily_loss_limit": 0.5
+  },
+  "trading_restoration": {
+    "enable_trading": true,
+    "micro_positions": true,
+    "ultra_conservative": true,
+    "emergency_mode": true,
+    "profit_target": 0.01
+  },
+  "performance_optimization": {
+    "target_score": 8.0,
+    "optimization_cycles": 5,
+    "aggressive_optimization": false,
+    "safety_first": true
+  }
+}

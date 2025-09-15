@@ -1,0 +1,7 @@
+{
+  "max_main_engines": 2,
+  "max_support_processes": 4,
+  "auto_cleanup": true,
+  "memory_limit_mb": 300,
+  "restart_threshold_mb": 250
+}

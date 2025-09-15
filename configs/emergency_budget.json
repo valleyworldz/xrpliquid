@@ -1,0 +1,23 @@
+{
+  "emergency_mode": true,
+  "budget_allocation": {
+    "trading_capital": 5.0,
+    "emergency_reserve": 10.0,
+    "risk_buffer": 4.63,
+    "total_allocated": 19.63
+  },
+  "risk_limits": {
+    "max_trade_size": 0.5,
+    "max_daily_loss": 1.0,
+    "max_position_size": 0.25,
+    "stop_loss_percentage": 2.0,
+    "take_profit_percentage": 4.0
+  },
+  "recovery_targets": {
+    "week_1": 35.0,
+    "week_2": 40.0,
+    "week_3": 45.0,
+    "week_4": 50.0
+  },
+  "created": "2025-09-10T22:39:43.428879"
+}

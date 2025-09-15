@@ -1,0 +1,39 @@
+{
+  "protocol_name": "EMERGENCY_SECURITY_PROTOCOL",
+  "threat_response": {
+    "level_1": {
+      "trigger": "3% drawdown",
+      "response": "Risk alert and position review",
+      "action": "Monitor and assess"
+    },
+    "level_2": {
+      "trigger": "5% drawdown",
+      "response": "Emergency stop loss activation",
+      "action": "Stop all new positions"
+    },
+    "level_3": {
+      "trigger": "7% drawdown",
+      "response": "Position liquidation",
+      "action": "Close all positions immediately"
+    },
+    "level_4": {
+      "trigger": "10% drawdown",
+      "response": "System shutdown",
+      "action": "Complete system lockdown"
+    }
+  },
+  "security_measures": {
+    "automatic_position_closing": true,
+    "emergency_fund_protection": true,
+    "risk_monitoring_override": true,
+    "system_isolation": true,
+    "emergency_communication": true
+  },
+  "recovery_protocols": {
+    "system_restart": "Manual approval required",
+    "risk_parameter_reset": "Administrator approval",
+    "trading_resumption": "Gradual with monitoring",
+    "full_operations": "After 24-hour stability"
+  },
+  "created": "2025-09-10T22:42:26.448311"
+}

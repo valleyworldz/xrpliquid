@@ -1,0 +1,31 @@
+{
+  "tier_1": {
+    "tokens": [
+      "BTC",
+      "ETH"
+    ],
+    "min_volume": 50000000,
+    "max_spread": 0.0005,
+    "allocation": 0.6
+  },
+  "tier_2": {
+    "tokens": [
+      "SOL",
+      "AVAX",
+      "MATIC"
+    ],
+    "min_volume": 20000000,
+    "max_spread": 0.001,
+    "allocation": 0.3
+  },
+  "tier_3": {
+    "tokens": [
+      "DOT",
+      "LINK",
+      "UNI"
+    ],
+    "min_volume": 10000000,
+    "max_spread": 0.002,
+    "allocation": 0.1
+  }
+}

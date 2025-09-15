@@ -1,0 +1,6 @@
+{
+  "mode": "profit_rotation",
+  "max_positions": 6,
+  "rotation_threshold": 0.02,
+  "aggressive_profit_taking": true
+}

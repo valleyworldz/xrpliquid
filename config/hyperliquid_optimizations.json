@@ -1,0 +1,24 @@
+{
+  "order_execution": {
+    "market_order_slippage": 0.1,
+    "twap_slippage": 0.03,
+    "ioc_timeout": 0.1,
+    "use_ioc_for_closes": true,
+    "use_twap_for_large_orders": true,
+    "twap_interval": 30,
+    "max_twap_suborder_multiplier": 3
+  },
+  "liquidity_handling": {
+    "min_order_size_usd": 1.0,
+    "chunk_size_usd": 50.0,
+    "max_chunks": 10,
+    "retry_attempts": 3,
+    "retry_delay": 0.5
+  },
+  "price_validation": {
+    "tick_size_validation": true,
+    "lot_size_validation": true,
+    "max_decimals": 6,
+    "max_sig_figures": 5
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "aggressive_margin_recovery": true,
+  "close_threshold": 30,
+  "margin_safety_threshold": 15,
+  "position_consolidation": true,
+  "max_positions": 3,
+  "margin_buffer": 0.8,
+  "auto_position_sizing": true
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "check_interval": 60,
+  "alerts": {
+    "balance_change": true,
+    "large_loss": true,
+    "system_error": true,
+    "api_failure": true
+  },
+  "health_checks": [
+    "api_connection",
+    "balance_verification",
+    "order_execution",
+    "position_tracking"
+  ]
+}

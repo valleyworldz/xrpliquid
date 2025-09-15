@@ -1,0 +1,11 @@
+{
+  "token": "XRP",
+  "timestamp": 1756870734.3347466,
+  "config": {
+    "leverage": 9.0,
+    "position_risk_pct": 4.5,
+    "stop_loss_type": "tight",
+    "trading_mode": "swing"
+  },
+  "score": 63.91964461978604
+}

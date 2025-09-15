@@ -1,0 +1,9 @@
+{
+  "symbol": "XRP",
+  "cycle_interval": 30,
+  "profit_target": 2.5,
+  "stop_loss": 1.8,
+  "max_positions": 1,
+  "min_order_size": 1.0,
+  "price_precision": 4
+}

@@ -1,0 +1,26 @@
+{
+  "strategy_name": "EMERGENCY_CONSERVATIVE_RECOVERY",
+  "risk_parameters": {
+    "leverage": 1.0,
+    "position_sizing": "micro",
+    "confidence_threshold": 0.95,
+    "market_conditions": "stable_only",
+    "volatility_filter": "low",
+    "liquidity_requirement": "high"
+  },
+  "trading_rules": {
+    "max_trades_per_day": 3,
+    "min_time_between_trades": 3600,
+    "profit_target": 0.1,
+    "loss_cutoff": 0.05,
+    "daily_profit_target": 0.25,
+    "daily_loss_limit": 0.5
+  },
+  "emergency_protocols": {
+    "auto_stop_loss": true,
+    "position_monitoring": "continuous",
+    "market_condition_check": "every_trade",
+    "emergency_exit": "immediate"
+  },
+  "created": "2025-09-10T22:39:43.430873"
+}

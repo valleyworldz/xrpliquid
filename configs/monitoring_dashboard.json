@@ -1,0 +1,39 @@
+{
+  "dashboard_name": "EMERGENCY_OPERATIONAL_MONITOR",
+  "monitoring_metrics": {
+    "system_health": {
+      "cpu_usage": "real_time",
+      "memory_usage": "real_time",
+      "disk_usage": "real_time",
+      "network_status": "real_time"
+    },
+    "trading_metrics": {
+      "account_value": "real_time",
+      "drawdown_percentage": "real_time",
+      "risk_metrics": "real_time",
+      "position_status": "real_time"
+    },
+    "operational_metrics": {
+      "error_rate": "real_time",
+      "response_time": "real_time",
+      "throughput": "real_time",
+      "availability": "real_time"
+    }
+  },
+  "alerts": {
+    "critical_alerts": [
+      "Drawdown exceeds 5%",
+      "System resource usage > 90%",
+      "Error rate > 5%",
+      "Response time > 5 seconds"
+    ],
+    "warning_alerts": [
+      "Drawdown exceeds 3%",
+      "System resource usage > 80%",
+      "Error rate > 2%",
+      "Response time > 3 seconds"
+    ]
+  },
+  "refresh_interval": 5,
+  "created": "2025-09-10T22:40:36.752004"
+}

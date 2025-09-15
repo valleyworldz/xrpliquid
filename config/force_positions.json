@@ -1,0 +1,19 @@
+{
+  "force_new_positions": {
+    "enabled": true,
+    "min_signals": 1,
+    "max_positions": 10,
+    "position_spacing": 5,
+    "diversification": {
+      "max_per_symbol": 2,
+      "min_symbols": 3,
+      "correlation_threshold": 0.7
+    }
+  },
+  "signal_generation": {
+    "force_signals": true,
+    "signal_interval": 2,
+    "min_confidence": 0.001,
+    "use_all_indicators": true
+  }
+}

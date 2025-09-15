@@ -1,0 +1,11 @@
+{
+  "mark_price_fallbacks": [
+    "oracle_price",
+    "mid_price",
+    "last_trade",
+    "external_cex"
+  ],
+  "oracle_update_interval": 3,
+  "price_cache_duration": 5,
+  "max_price_deviation": 0.05
+}

@@ -1,0 +1,9 @@
+{
+  "tick_size_validation": true,
+  "price_rounding_methods": 3,
+  "size_validation": true,
+  "margin_validation": true,
+  "order_retry_logic": true,
+  "fallback_strategies": true,
+  "error_logging": true
+}

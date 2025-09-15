@@ -1,0 +1,172 @@
+# Component Structure Rules - Python Trading Bot
+
+## 📁 **Module Organization**
+
+### **Always Follow Modular Architecture**
+- Organize code into logical modules
+- Use clear separation of concerns
+- Maintain consistent file structure
+- Follow Python package conventions
+
+### **Always Use Proper Import Structure**
+- Use relative imports within packages
+- Import from specific modules, not wildcards
+- Maintain clean dependency chains
+- Avoid circular imports
+
+## 🏗️ **Core Module Structure**
+
+### **core/ - Main Trading Engine**
+```
+core/
+├── autonomous_master_engine.py    # Main trading engine
+├── api/                          # API integration layer
+├── engines/                      # Specialized trading engines
+├── strategies/                   # Trading strategies
+├── utils/                        # Utility functions
+├── monitors/                     # Performance monitoring
+└── analytics/                    # Performance analytics
+```
+
+### **Always Maintain Module Hierarchy**
+- Keep core functionality in `core/`
+- Separate API logic in `api/`
+- Organize engines by functionality
+- Maintain clear utility separation
+
+## 🔧 **File Organization Rules**
+
+### **Always Use Consistent Naming**
+- Use snake_case for Python files
+- Use descriptive, clear names
+- Maintain consistent naming patterns
+- Avoid abbreviations unless standard
+
+### **Always Structure Files Properly**
+- Start with imports
+- Define constants and configurations
+- Implement main classes and functions
+- Include proper documentation
+
+## 📦 **Class and Function Organization**
+
+### **Always Follow Class Structure**
+```python
+# imports
+import standard_library
+import third_party
+import local_modules
+
+# constants
+CONSTANT_NAME = "value"
+
+# main class
+class MainClass:
+    """Class documentation."""
+    
+    def __init__(self):
+        """Initialize the class."""
+        pass
+    
+    def public_method(self):
+        """Public method documentation."""
+        pass
+    
+    def _private_method(self):
+        """Private method documentation."""
+        pass
+```
+
+### **Always Use Proper Documentation**
+- Include docstrings for all classes and methods
+- Use clear, concise descriptions
+- Document parameters and return values
+- Include usage examples when helpful
+
+## 🔄 **Dependency Management**
+
+### **Always Manage Dependencies Properly**
+- Keep dependencies minimal and focused
+- Use requirements.txt for external packages
+- Document internal dependencies
+- Avoid tight coupling between modules
+
+### **Always Use Proper Error Handling**
+- Implement comprehensive error handling
+- Use specific exception types
+- Provide clear error messages
+- Log errors appropriately
+
+## 📊 **Configuration Management**
+
+### **Always Use External Configuration**
+- Store configuration in JSON files
+- Use environment variables for secrets
+- Implement configuration validation
+- Provide default configurations
+
+### **Always Validate Configuration**
+- Validate all configuration parameters
+- Provide clear error messages for invalid config
+- Implement configuration reloading
+- Maintain configuration documentation
+
+## 🎯 **Testing and Validation**
+
+### **Always Structure for Testing**
+- Write testable code
+- Use dependency injection
+- Implement proper mocking
+- Maintain test coverage
+
+### **Always Validate Components**
+- Validate all inputs and outputs
+- Implement proper error checking
+- Use type hints when possible
+- Maintain data integrity
+
+## 📝 **Code Quality Standards**
+
+### **Always Follow PEP 8**
+- Use proper indentation (4 spaces)
+- Follow line length guidelines
+- Use proper spacing and formatting
+- Follow naming conventions
+
+### **Always Use Type Hints**
+- Add type hints for function parameters
+- Include return type annotations
+- Use proper type imports
+- Maintain type consistency
+
+## 🔍 **Logging and Monitoring**
+
+### **Always Implement Proper Logging**
+- Use structured logging
+- Include appropriate log levels
+- Log important events and errors
+- Maintain log rotation
+
+### **Always Monitor Performance**
+- Track execution times
+- Monitor resource usage
+- Implement performance metrics
+- Alert on performance issues
+
+## 🚀 **Deployment and Distribution**
+
+### **Always Prepare for Deployment**
+- Use proper package structure
+- Include setup.py or pyproject.toml
+- Maintain version information
+- Document deployment procedures
+
+### **Always Handle Environment Differences**
+- Use environment-specific configurations
+- Handle different Python versions
+- Manage platform differences
+- Implement proper fallbacks
+description:
+globs:
+alwaysApply: false
+---

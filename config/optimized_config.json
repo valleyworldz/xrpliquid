@@ -1,0 +1,52 @@
+{
+  "trading": {
+    "min_position_size": 500,
+    "min_trade_interval": 300,
+    "order_type": "maker",
+    "risk_reward_ratio": 2.0,
+    "max_daily_trades": 30,
+    "profit_target_percent": 1.0,
+    "stop_loss_percent": 0.5
+  },
+  "risk_management": {
+    "enable_stop_loss": true,
+    "enable_take_profit": true,
+    "enable_trailing_stop": true,
+    "enable_position_sizing": true,
+    "enable_daily_limits": true
+  },
+  "filters": {
+    "min_volume": 5000000,
+    "min_market_cap": 100000000,
+    "max_spread_percent": 0.05,
+    "min_volatility": 0.01
+  },
+  "trading_parameters": {
+    "stop_loss_percentage": 0.005,
+    "take_profit_percentage": 0.01,
+    "trailing_stop_percentage": 0.003,
+    "minimum_trade_interval": 300,
+    "maximum_daily_trades": 50,
+    "cooldown_after_loss": 600,
+    "base_position_size": 5.0,
+    "max_position_size": 10.0,
+    "risk_per_trade": 0.02,
+    "minimum_signal_strength": 0.7,
+    "trend_confirmation_required": true,
+    "volume_confirmation_required": true,
+    "max_daily_loss": 0.1,
+    "max_consecutive_losses": 3,
+    "breakeven_shift": true
+  },
+  "pattern_analysis": {
+    "minimum_pattern_confidence": 0.8,
+    "pattern_timeout": 1800,
+    "require_multiple_confirmations": true
+  },
+  "performance_tracking": {
+    "track_win_rate": true,
+    "track_avg_trade_duration": true,
+    "track_fee_impact": true,
+    "track_slippage": true
+  }
+}

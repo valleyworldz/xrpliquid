@@ -1,0 +1,121 @@
+{
+  "symbol": "XRP",
+  "hours": 23284,
+  "timestamp": 1756355566,
+  "profiles": {
+    "day_trader": {
+      "params": {
+        "donchian_lb": 12,
+        "mom_lb": 6,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": 1.0832547085001494,
+        "win_rate_pct": 42.857142857142854,
+        "sharpe": 0.17464548642584038,
+        "max_dd_pct": 0.6835828313197377,
+        "overall_score": 61.778104052521925
+      }
+    },
+    "swing_trader": {
+      "params": {
+        "donchian_lb": 24,
+        "mom_lb": 8,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": 0.3599636364547365,
+        "win_rate_pct": 46.666666666666664,
+        "sharpe": 0.09232696329314195,
+        "max_dd_pct": 1.5508492178722249,
+        "overall_score": 55.07956104728171
+      }
+    },
+    "hodl_king": {
+      "params": {
+        "donchian_lb": 36,
+        "mom_lb": 8,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": 0.030750581601097338,
+        "win_rate_pct": 45.45454545454545,
+        "sharpe": 0.12299232568678274,
+        "max_dd_pct": 0.22553191473082732,
+        "overall_score": 53.71056189263282
+      }
+    },
+    "degen_mode": {
+      "params": {
+        "donchian_lb": 12,
+        "mom_lb": 4,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": 14.921636187797036,
+        "win_rate_pct": 47.61904761904761,
+        "sharpe": 0.23250313889191543,
+        "max_dd_pct": 4.661410098768936,
+        "overall_score": 69.78837063934446
+      }
+    },
+    "ai_profile": {
+      "params": {
+        "donchian_lb": 24,
+        "mom_lb": 6,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": -0.17591456477941847,
+        "win_rate_pct": 43.75,
+        "sharpe": 0.007625147748607811,
+        "max_dd_pct": 1.5631736895776638,
+        "overall_score": 50.76458980823747
+      }
+    },
+    "ai_ultimate": {
+      "params": {
+        "donchian_lb": 36,
+        "mom_lb": 12,
+        "trend_strength_thresh": 0.0015,
+        "partial_frac": 0.5,
+        "trail_k_min": 1.2
+      },
+      "stop": "tight",
+      "tp_mult": 1.2,
+      "meta": {
+        "return_pct": 213.61436285491817,
+        "win_rate_pct": 44.44444444444444,
+        "sharpe": 0.2434511455826588,
+        "max_dd_pct": 1.8622334418901394,
+        "overall_score": 71.40958454271693
+      }
+    }
+  },
+  "execution": {
+    "funding_max_long": 0.0005,
+    "funding_max_short": 0.0005,
+    "fee_buffer": 0.002,
+    "impact_buffer": 0.001
+  }
+}

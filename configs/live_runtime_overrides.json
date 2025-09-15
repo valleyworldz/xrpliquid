@@ -1,0 +1,57 @@
+{
+  "score_10_mode": true,
+  "champion_profile": "ai_ultimate",
+  "champion_score": 71.40958454271693,
+  "kfold_optimization": true,
+  "champion_leverage": 8.0,
+  "champion_position_risk_pct": 4.0,
+  "champion_stop_loss_type": "quantum_optimal",
+  "timeframe_aggregation_hours": 4,
+  "optimized_trading_params": {
+    "donchian_lb": 36,
+    "mom_lb": 12,
+    "trend_strength_thresh": 0.0015,
+    "partial_frac": 0.5,
+    "trail_k_min": 1.2
+  },
+  "execution_settings": {
+    "ultra_tight_stops": true,
+    "nano_profit_taking": true,
+    "ml_signal_confirmation": true,
+    "smart_position_sizing": true,
+    "regime_detection": true,
+    "funding_aware_entries": true,
+    "quantum_adaptive_mode": true,
+    "kfold_parameter_optimization": true,
+    "four_hour_aggregation": true
+  },
+  "quantum_optimal_stops": true,
+  "risk_management": {
+    "stop_loss_multiplier": 1.0,
+    "profit_target_ratio": 0.02,
+    "ml_threshold": 7,
+    "max_position_multiplier": 2.0,
+    "daily_loss_limit": 0.05,
+    "weekly_loss_limit": 0.15
+  },
+  "performance_targets": {
+    "target_win_rate": 44.4,
+    "min_score": 71.0,
+    "max_drawdown": 2.0,
+    "min_return": 213.6,
+    "target_leverage": 8.0,
+    "target_risk_pct": 4.0
+  },
+  "champion_validation": {
+    "validated_return_pct": 213.61,
+    "validated_win_rate": 44.4,
+    "validated_max_dd": 1.86,
+    "validated_trades": 18,
+    "backtest_period_hours": 23284,
+    "kfold_enabled": true,
+    "quantum_optimal_enabled": true
+  },
+  "timestamp": 1756355566,
+  "symbol": "XRP",
+  "backtest_hours": 23284
+}

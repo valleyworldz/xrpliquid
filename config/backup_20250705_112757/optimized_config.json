@@ -1,0 +1,19 @@
+{
+  "master_mode": true,
+  "confidence_threshold": 0.001,
+  "position_size_multiplier": 1.5,
+  "cycle_interval": 5,
+  "emergency_mode": true,
+  "ultra_strict_validation": true,
+  "aggressive_margin_recovery": true,
+  "max_retry_attempts": 3,
+  "minimum_order_value": 5.0,
+  "maximum_order_value": 30.0,
+  "emergency_margin_threshold": 20.0,
+  "force_close_threshold": 30.0,
+  "profit_taking_threshold": 0.3,
+  "stop_loss_threshold": -1.5,
+  "max_open_positions": 5,
+  "watchdog_timeout": 300,
+  "auto_restart_enabled": true
+}

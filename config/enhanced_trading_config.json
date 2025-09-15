@@ -1,0 +1,52 @@
+{
+  "trading_parameters": {
+    "min_position_size": 500,
+    "max_position_size": 2000,
+    "min_trade_interval": 300,
+    "max_daily_trades": 30,
+    "order_type": "maker",
+    "profit_target_percent": 1.0,
+    "stop_loss_percent": 0.5,
+    "risk_reward_ratio": 2.0,
+    "batch_trades": true,
+    "fee_optimization": true
+  },
+  "risk_management": {
+    "max_daily_loss": 50,
+    "max_concurrent_positions": 2,
+    "position_sizing_method": "kelly_criterion",
+    "dynamic_position_sizing": true,
+    "correlation_filter": true,
+    "volatility_filter": true
+  },
+  "market_filters": {
+    "min_volume": 5000000,
+    "min_market_cap": 100000000,
+    "max_spread_percent": 0.05,
+    "min_volatility": 0.01,
+    "max_volatility": 0.1,
+    "liquidity_threshold": 1000000
+  },
+  "strategy_optimization": {
+    "entry_confidence_threshold": 0.75,
+    "exit_confidence_threshold": 0.6,
+    "trend_following": true,
+    "mean_reversion": false,
+    "momentum_trading": true,
+    "breakout_trading": false
+  },
+  "fee_optimization": {
+    "prefer_maker_orders": true,
+    "batch_order_size": 3,
+    "min_profit_after_fees": 0.1,
+    "fee_tracking": true,
+    "fee_budget": 10
+  },
+  "performance_monitoring": {
+    "track_win_rate": true,
+    "track_sharpe_ratio": true,
+    "track_max_drawdown": true,
+    "performance_alerts": true,
+    "auto_adjustment": true
+  }
+}

@@ -1,0 +1,118 @@
+# Always Rules
+
+## Core Workflow
+- ALWAYS produce PLAN + REASONING first before any execution
+- AWAIT "GO ✅" confirmation before proceeding with implementation
+- Use lowercase, concise comments and phrasing throughout
+- Confirm understanding and articulate reasoning clearly
+
+## Response Structure
+1. **PLAN**: Clear, step-by-step approach
+2. **REASONING**: Why this approach is chosen
+3. **AWAIT**: "GO ✅" confirmation
+4. **EXECUTION**: Implement the plan
+5. **SUMMARY**: Results and next steps
+
+## Code Quality Standards
+- Follow consistent naming conventions
+- Implement proper error handling
+- Use type hints where applicable
+- Document complex logic with clear comments
+- Maintain clean, readable code structure
+
+## Communication Style
+- Be concise and direct
+- Use precise language
+- Provide clear context for decisions
+- Explain technical concepts simply
+- Maintain professional but approachable tone
+
+## Memory Management
+- Update memory files after every response
+- Document insights, mistakes, and learnings
+- Track decisions and their rationale
+- Maintain organized todo lists
+- Learn from previous interactions
+
+## Trading System Specific
+- Always verify credentials before operations
+- Implement proper balance checking
+- Use secure credential management
+- Maintain comprehensive logging
+- Handle errors gracefully in critical operations
+
+## 🎯 **Always Provide PLAN + REASONING**
+
+Before executing any code changes or complex operations:
+1. **PLAN** - Clearly outline the steps to be taken
+2. **REASONING** - Explain why this approach is chosen
+3. **EXECUTION** - Execute with clear step-by-step process
+
+## 📝 **Always Use Concise, Direct Communication**
+
+- Provide concise answers
+- Use lowercase, minimalist comments in code
+- Be precise and direct
+- Avoid unnecessary verbosity
+- Focus on actionable information
+
+## 🔧 **Always Follow Project Standards**
+
+- Use Python 3.11 syntax and best practices
+- Follow existing code patterns and naming conventions
+- Maintain modular architecture
+- Ensure proper error handling
+- Add comprehensive logging
+
+## 🛡️ **Always Prioritize Security & Safety**
+
+- Never expose sensitive credentials
+- Use encrypted storage for API keys
+- Implement proper error handling
+- Validate all inputs and outputs
+- Follow security best practices
+
+## 📊 **Always Validate & Test**
+
+- Test changes before deployment
+- Validate functionality after modifications
+- Check for errors and edge cases
+- Ensure backward compatibility
+- Monitor performance impact
+
+## 🎯 **Always Focus on User Goals**
+
+- Understand the user's primary objectives
+- Prioritize tasks that advance the main goal
+- Provide clear progress updates
+- Suggest optimizations when appropriate
+- Maintain focus on 100% success rate
+
+## 🔄 **Always Maintain Context**
+
+- Reference project history and previous decisions
+- Consider the impact on existing functionality
+- Maintain consistency with established patterns
+- Update documentation as needed
+- Preserve project memory and learnings
+
+## 📈 **Always Optimize for Performance**
+
+- Consider efficiency in all solutions
+- Minimize resource usage
+- Optimize for speed and reliability
+- Monitor and improve performance
+- Scale solutions appropriately
+
+## 🎯 **Always Confirm Understanding**
+
+- Confirm understanding before execution
+- Ask clarifying questions when needed
+- Provide clear explanations of complex concepts
+- Ensure alignment with user expectations
+- Validate assumptions before proceeding
+
+description:
+globs:
+alwaysApply: false
+---

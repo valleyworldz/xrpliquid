@@ -1,0 +1,164 @@
+# Unit Test Prompt
+
+## 🎯 **Objective**
+Create comprehensive unit tests for the specified code to ensure reliability, maintainability, and proper functionality.
+
+## 📋 **Requirements**
+
+### **Test Coverage**
+1. **Functionality Testing**
+   - Test all public methods and functions
+   - Verify expected behavior for normal inputs
+   - Test edge cases and boundary conditions
+   - Validate error handling and exceptions
+
+2. **Integration Testing**
+   - Test component interactions
+   - Verify data flow between modules
+   - Test external API integrations
+   - Validate configuration loading
+
+3. **Performance Testing**
+   - Test execution time for critical functions
+   - Validate memory usage
+   - Test scalability under load
+   - Monitor resource consumption
+
+### **Test Quality**
+1. **Test Structure**
+   - Use clear, descriptive test names
+   - Follow AAA pattern (Arrange, Act, Assert)
+   - Keep tests focused and atomic
+   - Use proper setup and teardown
+
+2. **Test Data**
+   - Use realistic test data
+   - Create comprehensive test fixtures
+   - Mock external dependencies
+   - Use parameterized tests for multiple scenarios
+
+3. **Assertions**
+   - Use specific, meaningful assertions
+   - Test both positive and negative cases
+   - Validate return values and side effects
+   - Check error conditions
+
+## 🔧 **Testing Guidelines**
+
+### **Test Organization**
+```python
+import unittest
+from unittest.mock import Mock, patch
+import pytest
+
+class TestClassName(unittest.TestCase):
+    """Test cases for ClassName."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        pass
+    
+    def tearDown(self):
+        """Clean up after tests."""
+        pass
+    
+    def test_method_name_normal_case(self):
+        """Test normal operation of method_name."""
+        # Arrange
+        # Act
+        # Assert
+    
+    def test_method_name_edge_case(self):
+        """Test edge case for method_name."""
+        # Arrange
+        # Act
+        # Assert
+    
+    def test_method_name_error_case(self):
+        """Test error handling for method_name."""
+        # Arrange
+        # Act
+        # Assert
+```
+
+### **Mocking and Stubbing**
+- Mock external API calls
+- Stub database operations
+- Mock file system operations
+- Use dependency injection for testing
+
+### **Test Categories**
+1. **Unit Tests**
+   - Test individual functions and methods
+   - Mock all external dependencies
+   - Focus on single responsibility
+
+2. **Integration Tests**
+   - Test component interactions
+   - Use real dependencies where appropriate
+   - Test end-to-end workflows
+
+3. **Performance Tests**
+   - Test execution time
+   - Validate memory usage
+   - Test under load conditions
+
+## 📊 **Test Metrics**
+
+### **Coverage Requirements**
+- Aim for 90%+ code coverage
+- Test all critical paths
+- Cover error handling paths
+- Test boundary conditions
+
+### **Quality Metrics**
+- Test execution time under 5 seconds
+- Clear, readable test names
+- Comprehensive assertions
+- Proper error messages
+
+## 🎯 **Success Criteria**
+
+### **Test Completeness**
+- All public methods tested
+- Edge cases covered
+- Error conditions tested
+- Integration points validated
+
+### **Test Reliability**
+- Tests are deterministic
+- No flaky tests
+- Proper cleanup after tests
+- Independent test execution
+
+### **Test Maintainability**
+- Clear test organization
+- Reusable test utilities
+- Comprehensive documentation
+- Easy to understand and modify
+
+## 📝 **Output Format**
+
+### **Test Plan**
+1. **Test Scope**
+   - List components to be tested
+   - Define test categories
+   - Identify critical paths
+
+2. **Test Cases**
+   - Normal operation tests
+   - Edge case tests
+   - Error condition tests
+   - Performance tests
+
+3. **Test Implementation**
+   - Test class structure
+   - Mock configurations
+   - Assertion strategies
+   - Test data setup
+
+4. **Validation Strategy**
+   - Coverage measurement
+   - Performance benchmarks
+   - Integration validation
+   - Regression testing 

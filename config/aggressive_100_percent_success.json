@@ -1,0 +1,82 @@
+{
+  "trading": {
+    "force_trading": true,
+    "aggressive_mode": true,
+    "min_confidence_threshold": 0.3,
+    "max_positions": 10,
+    "position_size_multiplier": 2.0,
+    "profit_target_pct": 0.005,
+    "stop_loss_pct": 0.01,
+    "timeout_seconds": 30,
+    "retry_attempts": 3,
+    "liquid_tokens_only": true,
+    "preferred_tokens": ["BTC", "ETH", "SOL", "AVAX", "MATIC"],
+    "min_trade_interval": 5,
+    "max_trades_per_minute": 10,
+    "emergency_stop_on_loss": 0.05
+  },
+  "execution": {
+    "order_type": "market",
+    "time_in_force": "IOC",
+    "slippage_tolerance": 0.002,
+    "batch_orders": true,
+    "max_batch_size": 3,
+    "retry_on_failure": true,
+    "use_optimal_execution": true
+  },
+  "risk_management": {
+    "max_position_size": 0.2,
+    "max_portfolio_risk": 0.1,
+    "dynamic_position_sizing": true,
+    "volatility_adjustment": true,
+    "correlation_limits": 0.7,
+    "max_drawdown": 0.05
+  },
+  "market_analysis": {
+    "multi_timeframe": true,
+    "sentiment_analysis": true,
+    "volume_analysis": true,
+    "momentum_indicators": true,
+    "support_resistance": true,
+    "market_regime_detection": true
+  },
+  "optimization": {
+    "real_time_optimization": true,
+    "parameter_adaptation": true,
+    "performance_tracking": true,
+    "strategy_rotation": true,
+    "risk_adjustment": true
+  },
+  "liquidity_focus": {
+    "preferred_tokens": ["BTC", "ETH", "SOL"],
+    "exclude_tokens": ["TRUMP", "DOGE", "SHIB", "PEPE"],
+    "min_volume_24h": 50000000,
+    "min_market_cap": 1000000000,
+    "max_spread_bps": 5,
+    "min_order_book_depth": 500000
+  },
+  "error_recovery": {
+    "auto_restart_on_error": true,
+    "max_consecutive_errors": 3,
+    "fallback_strategy": "conservative",
+    "error_cooldown": 30,
+    "retry_on_timeout": true,
+    "switch_to_paper_on_error": false
+  },
+  "performance_targets": {
+    "min_success_rate": 0.8,
+    "min_trades_per_hour": 5,
+    "max_timeout_rate": 0.1,
+    "max_error_rate": 0.05,
+    "profit_target_daily": 0.03,
+    "max_drawdown_daily": 0.01
+  },
+  "monitoring": {
+    "real_time_alerts": true,
+    "performance_tracking": true,
+    "error_logging": true,
+    "trade_logging": true,
+    "health_checks": true,
+    "auto_optimization": true
+  }
+} 

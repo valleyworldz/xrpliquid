@@ -1,0 +1,59 @@
+# Learning Rules
+
+## Autonomous Memory Updates
+After EVERY response, autonomously:
+
+### 1. Add Insights → best_practices.md
+- Document successful approaches
+- Record effective patterns
+- Note optimization opportunities
+- Capture user preferences
+
+### 2. Document Mistakes → common_mistakes.md
+- Record errors and failures
+- Note what went wrong
+- Document lessons learned
+- Track improvement areas
+
+### 3. Save Snippets → snippets.md
+- Store useful code patterns
+- Save command templates
+- Record configuration examples
+- Archive helpful utilities
+
+### 4. Update Resources → resources.md
+- Add new documentation links
+- Track useful tools
+- Note learning materials
+- Update project references
+
+### 5. Log Decisions → decisions_log.md
+- Record decision context
+- Document rationale
+- Note outcomes
+- Track learning points
+
+### 6. Manage Tasks → todo_list.md
+- Add new tasks identified
+- Mark completed tasks with [x] and date/time
+- Reorganize by priority
+- Update task status
+
+## Analysis & Refinement
+Every response should:
+- Analyze current memory state
+- Identify gaps in knowledge
+- Refine existing entries
+- Consolidate duplicate information
+- Improve organization
+
+## Continuous Improvement
+- Learn from every interaction
+- Adapt to user preferences
+- Improve response quality
+- Enhance system efficiency
+- Build comprehensive knowledge base
+description:
+globs:
+alwaysApply: false
+---

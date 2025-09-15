@@ -1,0 +1,36 @@
+{
+  "quantum_optimization": {
+    "enabled": true,
+    "level": "MAXIMUM",
+    "target_performance": 213,
+    "optimization_factors": {
+      "fee_efficiency": 0.0,
+      "win_rate": 0.0,
+      "risk_management": 0.0,
+      "position_sizing": 0.0,
+      "market_timing": 0.0
+    }
+  },
+  "trading_parameters": {
+    "fee_threshold_multi": 0.0001,
+    "maker_preference": 0.95,
+    "confidence_threshold": 0.85,
+    "max_position_size": 0.01,
+    "stop_loss_pct": 0.005,
+    "take_profit_pct": 0.015,
+    "max_daily_loss_pct": 0.02
+  },
+  "risk_management": {
+    "position_scaling": "exponential",
+    "regime_aware": true,
+    "liquidity_aware": true,
+    "sentiment_aware": true,
+    "multi_timeframe": true
+  },
+  "execution": {
+    "latency_optimization": true,
+    "slippage_minimization": true,
+    "order_routing": "optimal",
+    "timing_optimization": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "tracking_enabled": true,
+  "metrics": [
+    "total_trades",
+    "successful_trades",
+    "total_profit",
+    "win_rate",
+    "average_profit",
+    "max_drawdown",
+    "sharpe_ratio"
+  ],
+  "real_time_tracking": true,
+  "reporting_interval": 300
+}

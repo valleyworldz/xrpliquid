@@ -1,0 +1,9 @@
+{
+  "multiple_closing_strategies": true,
+  "market_order_priority": true,
+  "aggressive_pricing": true,
+  "chunked_closing": true,
+  "chunk_size_ratio": 0.33,
+  "close_delay": 2,
+  "fallback_attempts": 3
+}

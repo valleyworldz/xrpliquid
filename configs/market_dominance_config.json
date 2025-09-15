@@ -1,0 +1,47 @@
+{
+  "market_dominance_strategy": {
+    "enabled": true,
+    "target_market_share": 0.1,
+    "target_win_rate": 0.8,
+    "target_profit_margin": 0.3
+  },
+  "time_based_strategy": {
+    "focus_hours": [
+      9,
+      10,
+      11,
+      14,
+      15,
+      16
+    ],
+    "avoid_hours": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "time_zone": "UTC"
+  },
+  "volatility_strategy": {
+    "high_volatility_threshold": 0.02,
+    "low_volatility_threshold": 0.005,
+    "volatility_scaling": true
+  },
+  "momentum_strategy": {
+    "momentum_threshold": 0.01,
+    "trend_following": true,
+    "mean_reversion": true
+  },
+  "liquidity_strategy": {
+    "high_liquidity_preference": true,
+    "spread_optimization": true,
+    "slippage_minimization": true
+  },
+  "sentiment_strategy": {
+    "fear_greed_index": true,
+    "social_sentiment": true,
+    "news_sentiment": true
+  }
+}

@@ -1,0 +1,572 @@
+{
+  "hyperliquid": {
+    "api_url": "https://api.hyperliquid.xyz",
+    "testnet": false,
+    "timeout": 30,
+    "websocket_url": "wss://api.hyperliquid.xyz/ws",
+    "chain_id": 42161
+  },
+  "trading": {
+    "mode": "live",
+    "min_order_value": 15.0,
+    "max_leverage": 3.0,
+    "profit_target": 0.045,
+    "stop_loss": 0.008,
+    "max_open_positions": 6,
+    "position_timeout": 600,
+    "rebalance_threshold": 0.08,
+    "cooldown_period": 30,
+    "emergency_stop_loss": 0.06,
+    "enable_profit_maximizer": true,
+    "default_tokens": [
+      "BTC",
+      "ETH",
+      "SOL",
+      "DOGE",
+      "AVAX",
+      "TRUMP",
+      "PEPE",
+      "WIF",
+      "BONK",
+      "SHIB"
+    ],
+    "default_strategies": [
+      "scalping",
+      "mean_reversion"
+    ],
+    "loop_interval": 8,
+    "max_positions": 8,
+    "min_order_size": 0.001,
+    "asset_type": "perp",
+    "take_profit_default": 0.02,
+    "stop_loss_default": 0.015,
+    "enable_tp_sl": true,
+    "oco_enabled": true,
+    "profit_rotation": {
+      "enabled": true,
+      "profit_target_pct": 2.0,
+      "max_open_positions": 6,
+      "cooldown_minutes": 1,
+      "force_close_profitable": true,
+      "auto_reinvest": true
+    },
+    "default_leverage": 3.0,
+    "real_trading_enabled": true,
+    "paper_trading_disabled": true,
+    "position_size_pct": 0.3,
+    "profit_target_pct": 3.5,
+    "stop_loss_pct": 1.5,
+    "emergency_stop_loss_pct": 6.0,
+    "active_strategies": [
+      "scalping",
+      "mean_reversion",
+      "grid_trading",
+      "rl_ai"
+    ],
+    "position_size": 0.25,
+    "momentum_threshold": 0.007606063750171683,
+    "volatility_target": 0.016805065899601134,
+    "correlation_limit": 0.5122600972125234,
+    "cycle_interval": 6
+  },
+  "spot_trading": {
+    "enabled": false,
+    "position_size_multiplier": 0.3,
+    "max_position_percentage": 0.4,
+    "profit_target": 0.02,
+    "stop_loss": 0.008,
+    "min_order_value": 15.0,
+    "max_spread": 0.005,
+    "volume_threshold": 50000,
+    "liquidity_buffer": 0.02,
+    "compound_growth_enabled": true
+  },
+  "perpetual_trading": {
+    "enabled": true,
+    "position_size_multiplier": 0.5,
+    "max_position_percentage": 0.6,
+    "profit_target": 0.025,
+    "stop_loss": 0.008,
+    "min_order_value": 25.0,
+    "max_leverage": 5.0,
+    "funding_rate_threshold": 0.01,
+    "margin_buffer": 0.35,
+    "aggressive_sizing": true,
+    "max_positions": 6,
+    "max_position_pct": 0.5,
+    "margin_requirements": {
+      "maintenance_margin": 0.05,
+      "initial_margin": 0.1
+    },
+    "risk_management": {
+      "max_position_size": 0.2,
+      "liquidation_buffer": 0.3,
+      "funding_rate_threshold": 0.001
+    }
+  },
+  "strategies": {
+    "scalping": {
+      "enabled": true,
+      "profit_target": 0.025,
+      "stop_loss": 0.008,
+      "quick_profit_threshold": 0.015,
+      "rsi_oversold": 25,
+      "rsi_overbought": 75,
+      "volume_multiplier": 2.2,
+      "momentum_threshold": 0.006,
+      "max_holding_time": 600,
+      "adaptive_targets": true
+    },
+    "grid_trading": {
+      "enabled": true,
+      "grid_levels": 5,
+      "grid_spacing": 0.018,
+      "profit_per_grid": 0.025,
+      "max_grid_positions": 4,
+      "rebalance_frequency": 300,
+      "volatility_adjustment": true
+    },
+    "mean_reversion": {
+      "enabled": true,
+      "lookback_period": 30,
+      "deviation_threshold": 2.2,
+      "profit_target": 0.02,
+      "max_holding_time": 1800,
+      "confidence_threshold": 0.75
+    },
+    "rl_ai": {
+      "enabled": true,
+      "confidence_threshold": 0.7,
+      "profit_target": 0.022,
+      "stop_loss": 0.01,
+      "learning_rate": 0.001,
+      "exploration_rate": 0.15,
+      "memory_size": 15000,
+      "max_holding_time": 900
+    }
+  },
+  "risk_management": {
+    "max_daily_loss": 0.03,
+    "max_drawdown": 0.03,
+    "position_size_limit": 0.2,
+    "correlation_limit": 0.7,
+    "volatility_adjustment": true,
+    "dynamic_stop_loss": true,
+    "kelly_criterion_enabled": true,
+    "risk_adjusted_sizing": true,
+    "position_sizing": {
+      "kelly_criterion": true,
+      "fixed_size": 0.06
+    },
+    "emergency_stop": {
+      "enabled": true,
+      "loss_threshold": 0.05,
+      "drawdown_threshold": 0.1
+    }
+  },
+  "hpo": {
+    "enabled": true,
+    "optimization_interval": 3600,
+    "max_trials": 100,
+    "strategies": [
+      "grid_trading",
+      "scalping",
+      "mean_reversion"
+    ],
+    "metrics": [
+      "sharpe_ratio",
+      "max_drawdown",
+      "total_return"
+    ]
+  },
+  "portfolio": {
+    "enabled": true,
+    "rebalance_interval": 1800,
+    "allocation_method": "equal_weight",
+    "max_tokens": 10,
+    "min_allocation": 0.05
+  },
+  "scheduler": {
+    "enabled": true,
+    "hpo_interval": 3600,
+    "allocation_interval": 1800,
+    "risk_check_interval": 300,
+    "report_interval": 3600
+  },
+  "paper_trading": {
+    "enabled": true,
+    "duration_days": 30,
+    "initial_balance": 10000,
+    "commission_rate": 0.001
+  },
+  "automated": {
+    "enabled": true,
+    "loop_interval": 60,
+    "max_concurrent_positions": 5,
+    "auto_rebalance": true
+  },
+  "logging": {
+    "level": "info",
+    "file_enabled": true,
+    "telegram_enabled": false,
+    "telegram_token": "",
+    "telegram_chat_id": ""
+  },
+  "emergency": {
+    "kill_switch_file": "emergency_stop.txt",
+    "auto_stop_on_loss": true,
+    "max_loss_threshold": 0.1
+  },
+  "market_conditions": {
+    "bull_market_multiplier": 1.3,
+    "bear_market_multiplier": 0.7,
+    "sideways_market_multiplier": 1.1,
+    "high_volatility_threshold": 0.04,
+    "low_volatility_threshold": 0.015,
+    "trend_detection_period": 48,
+    "regime_confidence_threshold": 0.8
+  },
+  "optimization": {
+    "profit_rotation_enabled": true,
+    "compound_sizing_enabled": true,
+    "momentum_scaling_enabled": true,
+    "volatility_targeting_enabled": true,
+    "machine_learning_enabled": true,
+    "auto_parameter_tuning": true,
+    "performance_tracking_enabled": true
+  },
+  "advanced_features": {
+    "multi_timeframe_analysis": true,
+    "market_microstructure": true,
+    "order_flow_analysis": true,
+    "smart_execution": true,
+    "latency_optimization": true,
+    "slippage_minimization": true
+  },
+  "profit_optimization": {
+    "enabled": true,
+    "base_target_pct": 2.0,
+    "max_target_pct": 4.0,
+    "kelly_criterion_enabled": true,
+    "compound_growth_enabled": true,
+    "momentum_scaling_enabled": true,
+    "volatility_targeting_enabled": true,
+    "risk_reward_ratio": 2.5
+  },
+  "autonomous_engine": {
+    "enabled": true,
+    "loop_interval": 5,
+    "decision_interval": 15,
+    "optimization_interval": 300,
+    "risk_check_interval": 10,
+    "profit_rotation_interval": 30,
+    "market_analysis_interval": 20,
+    "emergency_check_interval": 5,
+    "health_check_interval": 60,
+    "auto_compound_enabled": true,
+    "adaptive_position_sizing": true,
+    "intelligent_stop_losses": true,
+    "dynamic_profit_targets": true,
+    "market_regime_adaptation": true,
+    "real_time_optimization": true,
+    "autonomous_learning": true,
+    "emergency_protection": true,
+    "performance_targets": {
+      "daily_profit_target": 0.05,
+      "hourly_profit_target": 0.002,
+      "max_daily_drawdown": 0.03,
+      "min_win_rate": 0.65,
+      "min_sharpe_ratio": 2.0,
+      "max_consecutive_losses": 3,
+      "profit_acceleration_threshold": 0.02
+    }
+  },
+  "market_intelligence": {
+    "enabled": true,
+    "sentiment_analysis": true,
+    "news_feed_monitoring": true,
+    "social_sentiment_tracking": true,
+    "whale_watching": true,
+    "funding_rate_analysis": true,
+    "order_book_analytics": true,
+    "flow_analysis": true,
+    "volatility_forecasting": true,
+    "regime_prediction": true,
+    "correlation_monitoring": true
+  },
+  "execution_optimization": {
+    "enabled": true,
+    "smart_routing": true,
+    "slippage_minimization": true,
+    "latency_optimization": true,
+    "order_splitting": true,
+    "timing_optimization": true,
+    "liquidity_seeking": true,
+    "impact_minimization": true,
+    "fill_probability_optimization": true,
+    "cost_minimization": true
+  },
+  "risk_intelligence": {
+    "enabled": true,
+    "real_time_var": true,
+    "stress_testing": true,
+    "correlation_risk": true,
+    "liquidity_risk": true,
+    "concentration_risk": true,
+    "tail_risk_protection": true,
+    "dynamic_hedging": true,
+    "portfolio_insurance": true,
+    "black_swan_protection": true
+  },
+  "autonomous_brain": {
+    "enabled": true,
+    "learning_rate": 0.001,
+    "prediction_horizon": 60,
+    "decision_confidence_threshold": 0.75,
+    "neural_layers": [
+      64,
+      32,
+      16
+    ],
+    "quantum_enhancement": true,
+    "self_improvement": true,
+    "adaptive_learning": true,
+    "real_time_training": true,
+    "multi_model_ensemble": true,
+    "decision_frequency": 10,
+    "prediction_update_frequency": 30,
+    "learning_update_frequency": 300,
+    "optimization_frequency": 600,
+    "intelligence_modes": [
+      "learning",
+      "trading",
+      "optimization",
+      "prediction"
+    ],
+    "neural_confidence_threshold": 0.7,
+    "quantum_coherence_target": 0.9,
+    "system_intelligence_target": 0.8,
+    "prediction_accuracy_target": 0.75,
+    "decision_success_target": 0.7,
+    "adaptive_thresholds": true,
+    "continuous_learning": true
+  },
+  "performance_optimizer": {
+    "enabled": true,
+    "optimization_interval": 300,
+    "parameter_bounds": {
+      "profit_target": [
+        0.01,
+        0.05
+      ],
+      "stop_loss": [
+        0.005,
+        0.02
+      ],
+      "position_size": [
+        0.05,
+        0.3
+      ],
+      "momentum_threshold": [
+        0.003,
+        0.015
+      ]
+    },
+    "optimization_modes": [
+      "conservative",
+      "balanced",
+      "aggressive",
+      "quantum",
+      "evolutionary"
+    ],
+    "quantum_enhancement": true,
+    "evolutionary_steps": 50,
+    "convergence_threshold": 0.001,
+    "multi_objective": true,
+    "adaptive_bounds": true,
+    "real_time_tuning": true,
+    "optimization_targets": [
+      "profit_maximization",
+      "risk_minimization",
+      "sharpe_ratio",
+      "max_drawdown"
+    ],
+    "scipy_optimization": true,
+    "genetic_algorithm": true,
+    "simulated_annealing": true,
+    "particle_swarm": true,
+    "performance_tracking": true,
+    "baseline_capture": true,
+    "optimization_mode": "aggressive"
+  },
+  "advanced_market_intelligence": {
+    "enabled": true,
+    "analysis_interval": 30,
+    "sentiment_sources": [
+      "price_action",
+      "volume",
+      "social",
+      "news"
+    ],
+    "regime_detection_period": 100,
+    "volatility_window": 50,
+    "correlation_window": 200,
+    "whale_threshold": 1000000,
+    "sentiment_smoothing": 0.1,
+    "trend_confirmation_threshold": 0.7,
+    "multi_timeframe": [
+      "1m",
+      "5m",
+      "15m",
+      "1h",
+      "4h",
+      "1d"
+    ],
+    "risk_monitoring": true,
+    "opportunity_detection": true,
+    "market_regimes": [
+      "bull_trend",
+      "bear_trend",
+      "sideways",
+      "high_volatility",
+      "low_volatility"
+    ],
+    "sentiment_levels": [
+      "extreme_fear",
+      "fear",
+      "neutral",
+      "greed",
+      "extreme_greed"
+    ],
+    "correlation_analysis": true,
+    "volume_profile_analysis": true,
+    "whale_activity_monitoring": true,
+    "news_sentiment_integration": true,
+    "social_sentiment_tracking": true,
+    "market_breadth_analysis": true,
+    "support_resistance_detection": true
+  },
+  "profit_acceleration": {
+    "enabled": true,
+    "base_acceleration_factor": 1.2,
+    "max_acceleration_factor": 3.0,
+    "momentum_threshold": 0.7,
+    "profit_threshold": 0.02,
+    "compound_frequency": 300,
+    "risk_scaling_factor": 0.8,
+    "performance_lookback": 24,
+    "volatility_adjustment": true,
+    "dynamic_sizing": true,
+    "acceleration_modes": [
+      "conservative",
+      "moderate",
+      "aggressive",
+      "turbo"
+    ],
+    "market_momentum_integration": true,
+    "success_probability_calculation": true,
+    "compound_growth_optimization": true,
+    "position_multiplier_limits": [
+      1.0,
+      2.0
+    ],
+    "reinvestment_optimization": true,
+    "mode": "turbo"
+  },
+  "intelligent_token_selection": {
+    "enabled": true,
+    "analysis_tokens": 50,
+    "selection_criteria": {
+      "technical_weight": 0.3,
+      "fundamental_weight": 0.2,
+      "momentum_weight": 0.25,
+      "sentiment_weight": 0.15,
+      "risk_weight": 0.1
+    },
+    "minimum_volume": 1000000,
+    "minimum_liquidity": 0.1,
+    "maximum_correlation": 0.8,
+    "selection_frequency": 300,
+    "top_tokens_count": 10,
+    "profit_probability_threshold": 0.6,
+    "confidence_threshold": 0.7,
+    "dynamic_allocation": true,
+    "real_time_scanning": true,
+    "opportunity_detection": true,
+    "portfolio_optimization": true
+  },
+  "sentiment_intelligence": {
+    "enabled": true,
+    "analysis_interval": 30,
+    "social_sources": [
+      "twitter",
+      "reddit",
+      "telegram",
+      "discord"
+    ],
+    "news_sources": [
+      "coindesk",
+      "cointelegraph",
+      "decrypt",
+      "bloomberg"
+    ],
+    "sentiment_smoothing": 0.15,
+    "confidence_threshold": 0.6,
+    "divergence_threshold": 0.3,
+    "fear_greed_calculation": true,
+    "contrarian_signals": true,
+    "sentiment_momentum": true,
+    "psychology_analysis": true,
+    "crowd_behavior_tracking": true,
+    "real_time_updates": true,
+    "sentiment_weight": 0.2,
+    "market_psychology_weight": 0.15,
+    "contrarian_threshold": 0.8
+  },
+  "quantum_optimization": {
+    "enabled": true,
+    "coherence_target": 0.95,
+    "entanglement_strength": 0.8,
+    "superposition_states": 16,
+    "annealing_schedule": "exponential",
+    "tunneling_probability": 0.1,
+    "measurement_cycles": 100,
+    "optimization_interval": 300,
+    "quantum_enhancement": true,
+    "interference_optimization": true,
+    "quantum_parallelism": true,
+    "error_correction": true,
+    "quantum_advantage_threshold": 0.1,
+    "coherence_maintenance": true,
+    "quantum_fitness_weight": 0.3
+  },
+  "ultimate_features": {
+    "supreme_autonomous_master": true,
+    "intelligent_trading_orchestrator": true,
+    "ultimate_autonomous_brain": true,
+    "performance_optimizer": true,
+    "advanced_market_intelligence": true,
+    "profit_acceleration_engine": true,
+    "dynamic_market_scanner": true,
+    "quantum_optimization": true,
+    "sentiment_intelligence": true,
+    "evolutionary_algorithms": true,
+    "neural_network_predictions": true,
+    "real_time_learning": true,
+    "adaptive_parameters": true,
+    "multi_objective_optimization": true,
+    "comprehensive_monitoring": true,
+    "emergency_protection": true,
+    "self_improvement": true,
+    "quantum_computing": true,
+    "sentiment_analysis": true,
+    "market_psychology": true,
+    "advanced_ai": true
+  },
+  "dynamic_market_scanner": {
+    "enabled": true
+  },
+  "market_scanner": {
+    "scan_interval": 30
+  }
+}

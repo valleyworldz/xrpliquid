@@ -1,0 +1,68 @@
+🎬 INTERACTIVE TOKEN SELECTION DEMO
+==================================================
+
+When you run: python newbotcode.py
+
+You'll see this user-friendly interface:
+
+🚀 MULTI-ASSET TRADING BOT
+==================================================
+
+📊 POPULAR TOKENS:
+  1. BTC    - Bitcoin - Most stable, highest liquidity
+  2. ETH    - Ethereum - DeFi leader, reliable trends
+  3. XRP    - Ripple - Default choice, XRPL features enabled
+  4. SOL    - Solana - High momentum, volatile
+  5. DOGE   - Dogecoin - Meme coin, sentiment-driven
+  6. ADA    - Cardano - Steady trends, moderate volatility
+  7. AVAX   - Avalanche - Layer 1, high volatility
+  8. LINK   - Chainlink - Oracle sector, tech-focused
+
+💡 Or type any other token symbol (e.g., MATIC, UNI, DOT)
+--------------------------------------------------
+🎯 Enter token choice (1-8 or symbol name): 
+
+==================================================
+📝 USAGE EXAMPLES:
+==================================================
+  Type "1"       → Selects BTC (Bitcoin)
+  Type "4"       → Selects SOL (Solana)  
+  Type "XRP"     → Selects XRP directly
+  Type "HYPE"    → Selects HYPE token
+  Type "PEPE"    → Selects PEPE token
+  Type "UNI"     → Selects Uniswap token
+
+🔄 WORKFLOW:
+1. You type your choice (number or symbol)
+2. Bot shows your selection
+3. You confirm with "y" or "yes"
+4. Bot starts trading that token!
+
+💡 ADVANCED OPTIONS:
+• python newbotcode.py --symbol BTC     (Skip menu, use BTC)
+• python newbotcode.py --no-interactive (Skip menu, use default)
+
+🎯 The bot will automatically:
+✅ Fetch live metadata for your chosen token
+✅ Set up proper tick sizes and order sizes  
+✅ Enable/disable features based on token
+✅ Create symbol-specific log files
+
+EXAMPLE SESSION:
+================
+🎯 Enter token choice (1-8 or symbol name): HYPE
+✅ Selected: HYPE
+🔥 Start trading HYPE? (y/n): y
+
+==================================================
+🎯 STARTING BOT FOR HYPE
+==================================================
+🚀 MULTI-ASSET TRADING BOT STARTUP
+====================================
+🎯 Symbol: HYPE
+📊 Market: perp
+💱 Quote: USDT
+🏢 HL Name: HYPE
+🔗 Binance: HYPEUSDT
+📈 Yahoo: HYPE-USD
+====================================

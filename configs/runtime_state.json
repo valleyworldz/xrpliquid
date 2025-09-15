@@ -1,0 +1,11 @@
+{
+  "drawdown_lock_time": null,
+  "dd_peak": null,
+  "peak_capital": 0.0,
+  "current_capital": 0.0,
+  "trading_paused_for_day": false,
+  "cooldown_until": 0,
+  "last_reset": 1757638020.2882721,
+  "force_unlock": true,
+  "unlock_timestamp": "2025-09-11T20:47:00.288272"
+}

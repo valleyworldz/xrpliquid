@@ -1,0 +1,55 @@
+@echo off
+echo ============================================================
+echo EMERGENCY OVERRIDE - ALL FILTERS BYPASSED
+echo ============================================================
+echo.
+
+echo Setting EMERGENCY OVERRIDE environment variables...
+set BOT_CONFIDENCE_THRESHOLD=0.0001
+set BOT_FORCE_CONFIDENCE_THRESHOLD=0.0001
+set BOT_OVERRIDE_INTERNAL_THRESHOLDS=true
+set BOT_DISABLE_DYNAMIC_THRESHOLD=true
+
+set V8_MICROSTRUCTURE_SPREAD_CAP=0.010
+set V8_MICROSTRUCTURE_IMBALANCE_GATE=0.50
+set EMERGENCY_MICROSTRUCTURE_BYPASS=true
+set V8_POSITION_LOSS_THRESHOLD=0.20
+
+set BOT_AGGRESSIVE_MODE=true
+set BOT_EMERGENCY_MODE=true
+set BOT_FORCE_TRADE_MODE=true
+
+set BOT_DISABLE_MICRO_ACCOUNT_SAFEGUARD=true
+set BOT_MIN_PNL_THRESHOLD=0.00001
+set BOT_FEE_THRESHOLD_MULTIPLIER=0.01
+
+set BOT_BYPASS_INTERACTIVE=true
+set BOT_DISABLE_USER_INPUT=true
+
+set BOT_DISABLE_RSI_FILTER=true
+set BOT_DISABLE_TECHNICAL_FILTERS=true
+set BOT_DISABLE_MOMENTUM_FILTER=true
+set BOT_DISABLE_TREND_FILTER=true
+set BOT_DISABLE_VOLATILITY_FILTER=true
+set BOT_DISABLE_MACD_FILTER=true
+set BOT_DISABLE_EMA_FILTER=true
+
+set BOT_DISABLE_RISK_CHECKS=true
+set BOT_DISABLE_DRAWDOWN_THROTTLE=true
+set BOT_OVERRIDE_SIGNAL_FILTERS=true
+set BOT_OVERRIDE_CONFIDENCE_CALC=true
+set BOT_OVERRIDE_THRESHOLD_LOGIC=true
+set BOT_DISABLE_AUTO_OPTIMIZATION=true
+
+set BOT_FORCE_EXECUTE_SIGNALS=true
+set BOT_IGNORE_ALL_VETOES=true
+set BOT_EMERGENCY_EXECUTION=true
+
+echo.
+echo EMERGENCY OVERRIDE environment variables set
+echo.
+
+echo Starting bot with EMERGENCY OVERRIDE parameters...
+python newbotcode.py --fee_threshold_multi 0.01 --confidence_threshold 0.0001 --aggressive_mode true --emergency_mode true
+
+pause

@@ -1,0 +1,41 @@
+torch --index-url https://download.pytorch.org/whl/cpu
+scikit-learn
+statsmodels
+pandas
+aiohttp
+requests
+pytest
+pytest-cov
+
+# Hyperliquid Trading Bot Requirements
+# Core dependencies
+hyperliquid-python-sdk==0.17.0
+requests>=2.31.0
+websockets>=11.0.3
+asyncio-mqtt>=0.16.1
+
+# Data processing and analysis
+numpy>=1.24.0
+sympy>=1.12
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Technical analysis
+ta-lib>=0.4.28
+
+# Logging and monitoring
+python-json-logger>=2.0.7
+
+# Optional: FastAPI for metrics server (disabled by default)
+# fastapi>=0.100.0
+# uvicorn>=0.23.0
+
+# Development and testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Security and encryption
+cryptography>=41.0.0
+
+# Utilities
+python-dotenv>=1.0.0 

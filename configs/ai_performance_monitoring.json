@@ -1,0 +1,54 @@
+{
+  "monitoring_system": "EMERGENCY_AI_PERFORMANCE_MONITOR",
+  "monitoring_metrics": {
+    "model_performance": {
+      "accuracy": "real_time",
+      "precision": "real_time",
+      "recall": "real_time",
+      "f1_score": "real_time"
+    },
+    "prediction_quality": {
+      "confidence_scores": "real_time",
+      "prediction_accuracy": "real_time",
+      "error_rate": "real_time",
+      "bias_detection": "real_time"
+    },
+    "system_performance": {
+      "inference_time": "real_time",
+      "model_loading_time": "real_time",
+      "memory_usage": "real_time",
+      "cpu_usage": "real_time"
+    }
+  },
+  "performance_thresholds": {
+    "accuracy_minimum": 0.9,
+    "precision_minimum": 0.85,
+    "recall_minimum": 0.8,
+    "f1_score_minimum": 0.82,
+    "confidence_minimum": 0.95,
+    "error_rate_maximum": 0.05
+  },
+  "alert_system": {
+    "performance_alerts": [
+      "Accuracy below 90%",
+      "Precision below 85%",
+      "Recall below 80%",
+      "F1 score below 82%",
+      "Confidence below 95%",
+      "Error rate above 5%"
+    ],
+    "system_alerts": [
+      "Inference time > 1 second",
+      "Model loading time > 5 seconds",
+      "Memory usage > 80%",
+      "CPU usage > 90%"
+    ]
+  },
+  "optimization_triggers": {
+    "automatic_retraining": true,
+    "parameter_adjustment": true,
+    "model_switching": true,
+    "performance_optimization": true
+  },
+  "created": "2025-09-10T22:43:22.227626"
+}

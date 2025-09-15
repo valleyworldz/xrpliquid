@@ -1,0 +1,21 @@
+{
+  "real_time_metrics": {
+    "pnl_tracking": true,
+    "win_rate": true,
+    "sharpe_ratio": true,
+    "max_drawdown": true,
+    "profit_factor": true
+  },
+  "visualizations": {
+    "pnl_chart": true,
+    "trade_distribution": true,
+    "risk_metrics": true,
+    "performance_heatmap": true
+  },
+  "alerts": {
+    "profit_target": true,
+    "loss_limit": true,
+    "system_health": true,
+    "market_conditions": true
+  }
+}

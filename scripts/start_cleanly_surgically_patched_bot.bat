@@ -1,0 +1,10 @@
+@echo off
+echo ============================================================
+echo CLEANLY SURGICALLY PATCHED BOT - FORCE TRADE EXECUTION
+echo ============================================================
+echo.
+
+echo Starting CLEANLY SURGICALLY PATCHED bot with FORCE EXECUTION...
+python newbotcode.py --fee_threshold_multi 0.01 --confidence_threshold 0.0001 --aggressive_mode true
+
+pause

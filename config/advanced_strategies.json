@@ -1,0 +1,32 @@
+{
+  "strategies": {
+    "momentum": {
+      "enabled": true,
+      "rsi_period": 14,
+      "rsi_overbought": 70,
+      "rsi_oversold": 30,
+      "momentum_period": 10
+    },
+    "trend_following": {
+      "enabled": true,
+      "ema_short": 9,
+      "ema_long": 21,
+      "macd_fast": 12,
+      "macd_slow": 26,
+      "macd_signal": 9
+    },
+    "mean_reversion": {
+      "enabled": true,
+      "bollinger_period": 20,
+      "bollinger_std": 2,
+      "rsi_period": 14
+    }
+  },
+  "risk_management": {
+    "max_position_size": 0.1,
+    "max_daily_loss": 0.05,
+    "stop_loss": 0.02,
+    "take_profit": 0.04,
+    "trailing_stop": true
+  }
+}

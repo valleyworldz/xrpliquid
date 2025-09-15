@@ -1,0 +1,8 @@
+{
+  "advanced_tp_sl_enabled": true,
+  "ml_predictions_enabled": true,
+  "dynamic_position_sizing": true,
+  "trailing_stops_enabled": true,
+  "funding_rate_filter": true,
+  "risk_management_strict": true
+}

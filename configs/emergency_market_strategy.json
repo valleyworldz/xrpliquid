@@ -1,0 +1,57 @@
+{
+  "strategy_name": "EMERGENCY_CONSERVATIVE_RECOVERY",
+  "market_approach": {
+    "trading_mode": "ultra_conservative",
+    "position_sizing": "micro",
+    "leverage": 1.0,
+    "risk_tolerance": "minimal",
+    "profit_target": "small_consistent"
+  },
+  "market_conditions": {
+    "volatility_requirement": "low",
+    "liquidity_requirement": "high",
+    "trend_requirement": "stable",
+    "sentiment_requirement": "neutral_positive"
+  },
+  "trading_rules": {
+    "max_trades_per_day": 2,
+    "min_time_between_trades": 7200,
+    "profit_target_per_trade": 0.05,
+    "stop_loss_per_trade": 0.03,
+    "daily_profit_target": 0.1,
+    "daily_loss_limit": 0.2
+  },
+  "market_timing": {
+    "best_hours": [
+      9,
+      10,
+      14,
+      15
+    ],
+    "avoid_hours": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      11,
+      12,
+      13,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "market_session": "stable_only",
+    "volatility_filter": "low_only"
+  },
+  "created": "2025-09-10T22:41:33.322294"
+}

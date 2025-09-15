@@ -1,0 +1,103 @@
+# Refactor Code Prompt
+
+## 🎯 **Objective**
+Refactor the specified code to improve maintainability, performance, and readability while preserving functionality.
+
+## 📋 **Requirements**
+
+### **Before Refactoring**
+1. **Analyze Current Code**
+   - Identify code smells and issues
+   - Understand current functionality
+   - Identify performance bottlenecks
+   - Document current behavior
+
+2. **Plan Refactoring**
+   - Define specific improvements needed
+   - Identify breaking changes
+   - Plan testing strategy
+   - Estimate effort and risk
+
+### **During Refactoring**
+1. **Maintain Functionality**
+   - Preserve all existing behavior
+   - Ensure backward compatibility
+   - Maintain API contracts
+   - Keep existing interfaces
+
+2. **Improve Code Quality**
+   - Reduce code duplication
+   - Improve naming conventions
+   - Enhance error handling
+   - Add proper documentation
+
+3. **Optimize Performance**
+   - Identify performance improvements
+   - Reduce unnecessary operations
+   - Optimize data structures
+   - Improve algorithm efficiency
+
+### **After Refactoring**
+1. **Validate Changes**
+   - Test all functionality
+   - Verify performance improvements
+   - Check for regressions
+   - Update documentation
+
+## 🔧 **Refactoring Guidelines**
+
+### **Code Structure**
+- Break large functions into smaller, focused functions
+- Extract common functionality into utility functions
+- Improve class organization and inheritance
+- Reduce coupling between components
+
+### **Naming and Documentation**
+- Use clear, descriptive names for variables and functions
+- Add comprehensive docstrings
+- Improve code comments
+- Update README and documentation
+
+### **Error Handling**
+- Implement proper exception handling
+- Add input validation
+- Improve error messages
+- Add logging for debugging
+
+### **Performance**
+- Optimize algorithms and data structures
+- Reduce memory usage
+- Improve execution speed
+- Add performance monitoring
+
+## 📝 **Output Format**
+
+### **Refactoring Plan**
+1. **Current Issues Identified**
+   - List specific problems found
+   - Explain impact of each issue
+   - Prioritize by severity
+
+2. **Proposed Changes**
+   - Detail specific improvements
+   - Explain rationale for changes
+   - Identify potential risks
+
+3. **Implementation Steps**
+   - Step-by-step refactoring process
+   - Testing strategy
+   - Validation approach
+
+4. **Expected Benefits**
+   - Performance improvements
+   - Maintainability gains
+   - Readability improvements
+   - Risk reduction
+
+## 🎯 **Success Criteria**
+- All existing functionality preserved
+- Code quality significantly improved
+- Performance enhanced where applicable
+- Documentation updated
+- Tests pass successfully
+- No breaking changes introduced 

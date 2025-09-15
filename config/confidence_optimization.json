@@ -1,0 +1,10 @@
+{
+  "min_confidence_threshold": 0.65,
+  "confidence_boost_factors": {
+    "engine_consensus": 1.15,
+    "market_alignment": 1.1,
+    "risk_score": 1.05
+  },
+  "fallback_confidence": 0.6,
+  "adaptive_thresholds": true
+}

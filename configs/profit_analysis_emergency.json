@@ -1,0 +1,101 @@
+{
+  "profit_analysis": {
+    "current_status": {
+      "account_value": 29.71,
+      "daily_profit": 0.0,
+      "unrealized_pnl": 0.22,
+      "position_size": 46.0,
+      "entry_price": 3.0127,
+      "current_price": 3.0146,
+      "win_rate": 0.008,
+      "total_trades": 126
+    },
+    "profit_targets": {
+      "daily_target": 0.25,
+      "weekly_target": 1.25,
+      "monthly_target": 5.0,
+      "recovery_target": 20.5,
+      "continuous_days": 0
+    },
+    "critical_issues": {
+      "regime_error": "Mid-session regime reconfigure failed: 'str' object has no attribute 'risk_prrofile'",
+      "performance_score": 5.88,
+      "signal_quality": 0.17,
+      "auto_optimization": "NO IMPROVEMENT",
+      "kill_switch_triggered": "Position loss kill switch activated"
+    }
+  },
+  "executive_analysis": {
+    "CEO_HAT": {
+      "title": "\ud83d\udc51 Crisis Management & Leadership",
+      "status": "CRITICAL",
+      "action": "Immediate profit optimization required",
+      "priority": "HIGHEST"
+    },
+    "CTO_HAT": {
+      "title": "\ud83d\udd27 Technical Operations & Innovation",
+      "status": "CRITICAL",
+      "action": "Fix regime reconfiguration error",
+      "priority": "HIGHEST"
+    },
+    "CFO_HAT": {
+      "title": "\ud83d\udcb0 Financial Strategy & Risk Management",
+      "status": "CRITICAL",
+      "action": "Optimize profit generation",
+      "priority": "HIGHEST"
+    },
+    "COO_HAT": {
+      "title": "\u2699\ufe0f Operational Excellence & Efficiency",
+      "status": "CRITICAL",
+      "action": "Improve win rate and efficiency",
+      "priority": "HIGHEST"
+    },
+    "CMO_HAT": {
+      "title": "\ud83d\udcc8 Market Strategy & Growth",
+      "status": "CRITICAL",
+      "action": "Optimize market positioning",
+      "priority": "HIGHEST"
+    },
+    "CSO_HAT": {
+      "title": "\ud83d\udee1\ufe0f Security & Risk Containment",
+      "status": "CRITICAL",
+      "action": "Prevent kill switch triggers",
+      "priority": "HIGHEST"
+    },
+    "CDO_HAT": {
+      "title": "\ud83d\udcca Data Analytics & AI Optimization",
+      "status": "CRITICAL",
+      "action": "Fix signal quality issues",
+      "priority": "HIGHEST"
+    },
+    "CPO_HAT": {
+      "title": "\ud83c\udfaf Product Development & User Experience",
+      "status": "CRITICAL",
+      "action": "Improve user experience",
+      "priority": "HIGHEST"
+    }
+  },
+  "emergency_plan": {
+    "immediate_actions": {
+      "fix_regime_error": "Fix 'str' object has no attribute 'risk_prrofile' error",
+      "optimize_signals": "Improve signal quality from 0.17 to >0.5",
+      "prevent_kill_switch": "Adjust risk parameters to prevent kill switch",
+      "improve_win_rate": "Increase win rate from 0.8% to >5%",
+      "profit_optimization": "Implement aggressive profit-taking strategy"
+    },
+    "profit_optimization": {
+      "take_profit_multiplier": 1.2,
+      "stop_loss_multiplier": 0.95,
+      "position_sizing": 0.02,
+      "confidence_threshold": 0.8,
+      "leverage_limit": 10
+    },
+    "risk_management": {
+      "max_drawdown": 2.0,
+      "daily_loss_limit": 0.5,
+      "position_loss_limit": 0.015,
+      "kill_switch_threshold": 0.02
+    }
+  },
+  "timestamp": "2025-09-11T08:06:27.524946"
+}

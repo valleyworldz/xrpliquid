@@ -1,0 +1,50 @@
+{
+  "monitoring_system": "EMERGENCY_SECURITY_MONITOR",
+  "monitoring_metrics": {
+    "account_security": {
+      "account_value": "real_time",
+      "drawdown_percentage": "real_time",
+      "risk_metrics": "real_time",
+      "position_status": "real_time"
+    },
+    "system_security": {
+      "system_health": "real_time",
+      "error_rate": "real_time",
+      "performance_metrics": "real_time",
+      "resource_usage": "real_time"
+    },
+    "trading_security": {
+      "trade_execution": "real_time",
+      "risk_exposure": "real_time",
+      "profit_loss": "real_time",
+      "market_conditions": "real_time"
+    }
+  },
+  "alert_system": {
+    "critical_alerts": [
+      "Drawdown exceeds 5%",
+      "Risk limits exceeded",
+      "System error rate > 5%",
+      "Account value below threshold"
+    ],
+    "warning_alerts": [
+      "Drawdown exceeds 3%",
+      "Risk approaching limits",
+      "System error rate > 2%",
+      "Performance degradation"
+    ],
+    "info_alerts": [
+      "Daily profit target reached",
+      "Risk parameters adjusted",
+      "System optimization completed",
+      "Market conditions changed"
+    ]
+  },
+  "response_protocols": {
+    "automatic_response": true,
+    "emergency_escalation": true,
+    "manual_override": true,
+    "system_recovery": true
+  },
+  "created": "2025-09-10T22:42:26.451317"
+}

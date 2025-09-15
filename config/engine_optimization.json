@@ -1,0 +1,12 @@
+{
+  "initialization_order": [
+    "grid_trading",
+    "reinforcement_learning",
+    "risk_management",
+    "market_intelligence",
+    "multi_timeframe",
+    "market_microstructure"
+  ],
+  "parallel_init": true,
+  "lazy_loading": true
+}
