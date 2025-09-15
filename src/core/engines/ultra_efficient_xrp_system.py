@@ -15,6 +15,7 @@ from typing import Dict, Any, List
 from src.core.api.hyperliquid_api import HyperliquidAPI
 from src.core.utils.logger import Logger
 from src.core.utils.config_manager import ConfigManager
+from src.core.analytics.trade_ledger import TradeLedgerManager
 
 class UltraEfficientXRPSystem:
     """Ultra-efficient XRP trading system with zero unnecessary API calls"""
@@ -39,8 +40,12 @@ class UltraEfficientXRPSystem:
         self.last_xrp_price = 0.0
         self.price_change_threshold = 0.001
         
+        # Initialize Trade Ledger Manager
+        self.trade_ledger = TradeLedgerManager(data_dir="data/trades", logger=logger)
+        
         self.logger.info("🎯 [ULTRA_EFFICIENT_XRP] Ultra-Efficient XRP Trading System initialized")
         self.logger.info("🎯 [ULTRA_EFFICIENT_XRP] ZERO unnecessary API calls - 100% XRP focused")
+        self.logger.info("📊 [ULTRA_EFFICIENT_XRP] Trade Ledger Manager initialized for comprehensive trade tracking")
     
     async def start_trading(self):
         """Start the ultra-efficient XRP trading system"""
@@ -88,6 +93,10 @@ class UltraEfficientXRPSystem:
                 
                 # 9. 🛡️ RISK OVERSIGHT OFFICER: Monitor and adjust
                 await self._risk_monitoring_and_adjustment()
+                
+                # 10. 📊 TRADE LEDGER: Save trades periodically
+                if self.cycle_count % 20 == 0:  # Save every 20 cycles (10 seconds)
+                    self.trade_ledger.save_to_parquet()
                 
                 # Calculate loop performance
                 loop_time = time.perf_counter() - loop_start
@@ -382,6 +391,58 @@ class UltraEfficientXRPSystem:
                         
                         self.logger.info(f"✅ [REAL_XRP_ORDER] BUY order placed: ID={order_id}, Price=${actual_price:.4f}, Size={actual_quantity:.3f} XRP")
                         
+                        # Record trade in ledger
+                        trade_data = {
+                            'trade_type': 'BUY',
+                            'strategy': 'Ultra-Efficient XRP System',
+                            'hat_role': 'Automated Execution Manager',
+                            'symbol': 'XRP',
+                            'side': 'BUY',
+                            'quantity': actual_quantity,
+                            'price': actual_price,
+                            'mark_price': xrp_price,
+                            'order_type': 'MARKET',
+                            'order_id': order_id,
+                            'execution_time': time.time(),
+                            'slippage': abs(actual_price - xrp_price) / xrp_price if xrp_price > 0 else 0,
+                            'fees_paid': actual_quantity * actual_price * 0.0001,  # Estimate 0.01% fee
+                            'position_size_before': 0.0,  # Will be updated with actual position
+                            'position_size_after': actual_quantity,
+                            'avg_entry_price': actual_price,
+                            'unrealized_pnl': 0.0,
+                            'realized_pnl': 0.0,
+                            'margin_used': actual_quantity * actual_price,
+                            'margin_ratio': 0.0,  # Will be calculated
+                            'risk_score': 0.5,
+                            'stop_loss_price': actual_price * 0.95,  # 5% stop loss
+                            'take_profit_price': actual_price * 1.05,  # 5% take profit
+                            'profit_loss': 0.0,
+                            'profit_loss_percent': 0.0,
+                            'win_loss': 'BREAKEVEN',
+                            'trade_duration': 0.0,
+                            'funding_rate': 0.0,
+                            'volatility': 0.0,
+                            'volume_24h': 0.0,
+                            'market_regime': 'NORMAL',
+                            'system_score': 10.0,
+                            'confidence_score': 0.8,
+                            'emergency_mode': self.emergency_mode,
+                            'cycle_count': self.cycle_count,
+                            'data_source': 'live_hyperliquid',
+                            'is_live_trade': True,
+                            'notes': 'Ultra-Efficient XRP Buy Order',
+                            'tags': ['xrp', 'buy', 'live', 'ultra-efficient'],
+                            'metadata': {
+                                'available_margin': available_margin,
+                                'margin_usage_percent': (actual_quantity * actual_price / available_margin * 100) if available_margin > 0 else 0,
+                                'order_type_selected': 'market',
+                                'filled_immediately': filled_immediately
+                            }
+                        }
+                        
+                        trade_id = self.trade_ledger.record_trade(trade_data)
+                        self.logger.info(f"📊 [TRADE_LEDGER] Trade recorded: {trade_id}")
+                        
                         return {
                             'success': True,
                             'profit': 0.0,  # Will be calculated when position is closed
@@ -389,7 +450,8 @@ class UltraEfficientXRPSystem:
                             'real_order': True,
                             'entry_price': actual_price,
                             'position_size': actual_quantity,
-                            'filled_immediately': filled_immediately
+                            'filled_immediately': filled_immediately,
+                            'trade_id': trade_id
                         }
                     else:
                         error_msg = order_result.get('error', 'Unknown error')
@@ -473,6 +535,59 @@ class UltraEfficientXRPSystem:
                         
                         self.logger.info(f"✅ [REAL_XRP_SCALP] SCALP order placed: ID={order_id}, Price=${actual_price:.4f}, Size={actual_quantity:.3f} XRP")
                         
+                        # Record scalp trade in ledger
+                        trade_data = {
+                            'trade_type': 'SCALP',
+                            'strategy': 'Ultra-Efficient XRP System',
+                            'hat_role': 'Low-Latency Engineer',
+                            'symbol': 'XRP',
+                            'side': 'BUY',
+                            'quantity': actual_quantity,
+                            'price': actual_price,
+                            'mark_price': xrp_price,
+                            'order_type': 'MARKET',
+                            'order_id': order_id,
+                            'execution_time': time.time(),
+                            'slippage': abs(actual_price - xrp_price) / xrp_price if xrp_price > 0 else 0,
+                            'fees_paid': actual_quantity * actual_price * 0.0001,  # Estimate 0.01% fee
+                            'position_size_before': 0.0,
+                            'position_size_after': actual_quantity,
+                            'avg_entry_price': actual_price,
+                            'unrealized_pnl': 0.0,
+                            'realized_pnl': 0.0,
+                            'margin_used': actual_quantity * actual_price,
+                            'margin_ratio': 0.0,
+                            'risk_score': 0.3,  # Lower risk for scalp trades
+                            'stop_loss_price': actual_price * 0.98,  # 2% stop loss for scalp
+                            'take_profit_price': actual_price * 1.02,  # 2% take profit for scalp
+                            'profit_loss': 0.0,
+                            'profit_loss_percent': 0.0,
+                            'win_loss': 'BREAKEVEN',
+                            'trade_duration': 0.0,
+                            'funding_rate': 0.0,
+                            'volatility': 0.0,
+                            'volume_24h': 0.0,
+                            'market_regime': 'NORMAL',
+                            'system_score': 10.0,
+                            'confidence_score': 0.9,  # High confidence for scalp trades
+                            'emergency_mode': self.emergency_mode,
+                            'cycle_count': self.cycle_count,
+                            'data_source': 'live_hyperliquid',
+                            'is_live_trade': True,
+                            'notes': 'Ultra-Efficient XRP Scalp Trade',
+                            'tags': ['xrp', 'scalp', 'live', 'ultra-efficient', 'low-latency'],
+                            'metadata': {
+                                'available_margin': available_margin,
+                                'margin_usage_percent': (actual_quantity * actual_price / available_margin * 100) if available_margin > 0 else 0,
+                                'order_type_selected': 'market',
+                                'filled_immediately': filled_immediately,
+                                'scalp_target_profit': 0.02  # 2% target
+                            }
+                        }
+                        
+                        trade_id = self.trade_ledger.record_trade(trade_data)
+                        self.logger.info(f"📊 [TRADE_LEDGER] Scalp trade recorded: {trade_id}")
+                        
                         return {
                             'success': True,
                             'profit': 0.0,  # Will be calculated when position is closed
@@ -480,7 +595,8 @@ class UltraEfficientXRPSystem:
                             'real_order': True,
                             'entry_price': actual_price,
                             'position_size': actual_quantity,
-                            'filled_immediately': filled_immediately
+                            'filled_immediately': filled_immediately,
+                            'trade_id': trade_id
                         }
                     else:
                         error_msg = scalp_result.get('error', 'Unknown error')
@@ -570,6 +686,60 @@ class UltraEfficientXRPSystem:
                             
                             self.logger.info(f"✅ [REAL_XRP_ARBITRAGE] ARBITRAGE order placed: ID={order_id}, Price=${actual_price:.4f}, Size={actual_quantity:.3f} XRP, Funding={current_funding:.4f}")
                             
+                            # Record funding arbitrage trade in ledger
+                            trade_data = {
+                                'trade_type': 'FUNDING_ARBITRAGE',
+                                'strategy': 'Ultra-Efficient XRP System',
+                                'hat_role': 'Chief Quantitative Strategist',
+                                'symbol': 'XRP',
+                                'side': 'BUY',
+                                'quantity': actual_quantity,
+                                'price': actual_price,
+                                'mark_price': xrp_price,
+                                'order_type': 'MARKET',
+                                'order_id': order_id,
+                                'execution_time': time.time(),
+                                'slippage': abs(actual_price - xrp_price) / xrp_price if xrp_price > 0 else 0,
+                                'fees_paid': actual_quantity * actual_price * 0.0001,  # Estimate 0.01% fee
+                                'position_size_before': 0.0,
+                                'position_size_after': actual_quantity,
+                                'avg_entry_price': actual_price,
+                                'unrealized_pnl': 0.0,
+                                'realized_pnl': 0.0,
+                                'margin_used': actual_quantity * actual_price,
+                                'margin_ratio': 0.0,
+                                'risk_score': 0.4,  # Medium risk for arbitrage
+                                'stop_loss_price': actual_price * 0.97,  # 3% stop loss for arbitrage
+                                'take_profit_price': actual_price * 1.03,  # 3% take profit for arbitrage
+                                'profit_loss': 0.0,
+                                'profit_loss_percent': 0.0,
+                                'win_loss': 'BREAKEVEN',
+                                'trade_duration': 0.0,
+                                'funding_rate': current_funding,
+                                'volatility': 0.0,
+                                'volume_24h': 0.0,
+                                'market_regime': 'NORMAL',
+                                'system_score': 10.0,
+                                'confidence_score': 0.85,  # High confidence for arbitrage
+                                'emergency_mode': self.emergency_mode,
+                                'cycle_count': self.cycle_count,
+                                'data_source': 'live_hyperliquid',
+                                'is_live_trade': True,
+                                'notes': 'Ultra-Efficient XRP Funding Arbitrage',
+                                'tags': ['xrp', 'arbitrage', 'funding', 'live', 'ultra-efficient'],
+                                'metadata': {
+                                    'available_margin': available_margin,
+                                    'margin_usage_percent': (actual_quantity * actual_price / available_margin * 100) if available_margin > 0 else 0,
+                                    'order_type_selected': 'market',
+                                    'filled_immediately': filled_immediately,
+                                    'funding_rate': current_funding,
+                                    'arbitrage_target_profit': 0.03  # 3% target
+                                }
+                            }
+                            
+                            trade_id = self.trade_ledger.record_trade(trade_data)
+                            self.logger.info(f"📊 [TRADE_LEDGER] Funding arbitrage trade recorded: {trade_id}")
+                            
                             return {
                                 'success': True,
                                 'profit': 0.0,  # Will be calculated when position is closed
@@ -578,7 +748,8 @@ class UltraEfficientXRPSystem:
                                 'entry_price': actual_price,
                                 'position_size': actual_quantity,
                                 'funding_rate': current_funding,
-                                'filled_immediately': filled_immediately
+                                'filled_immediately': filled_immediately,
+                                'trade_id': trade_id
                             }
                         else:
                             error_msg = order_result.get('error', 'Unknown error')
@@ -665,5 +836,43 @@ class UltraEfficientXRPSystem:
     
     async def shutdown(self):
         """Shutdown the ultra-efficient XRP trading system"""
-        self.running = False
-        self.logger.info("🛑 [ULTRA_EFFICIENT_XRP] Ultra-Efficient XRP Trading System shutdown complete")
+        try:
+            self.running = False
+            self.logger.info("🛑 [ULTRA_EFFICIENT_XRP] Ultra-Efficient XRP Trading System shutting down")
+            
+            # Final save of trade ledger
+            self.trade_ledger.save_to_parquet()
+            self.trade_ledger.save_to_csv()
+            
+            # Generate final trade analytics
+            analytics = self.trade_ledger.get_trade_analytics()
+            if 'summary' in analytics:
+                summary = analytics['summary']
+                self.logger.info("📊 [TRADE_LEDGER] Final Trade Summary:")
+                self.logger.info(f"   Total Trades: {summary.get('total_trades', 0)}")
+                self.logger.info(f"   Live Trades: {summary.get('live_trades', 0)}")
+                self.logger.info(f"   Simulated Trades: {summary.get('simulated_trades', 0)}")
+                self.logger.info(f"   Total PnL: ${summary.get('total_pnl', 0):.4f}")
+                self.logger.info(f"   Win Rate: {summary.get('win_rate', 0):.1f}%")
+                self.logger.info(f"   Max Drawdown: ${summary.get('max_drawdown', 0):.4f}")
+            
+            self.logger.info("✅ [ULTRA_EFFICIENT_XRP] Shutdown complete")
+            
+        except Exception as e:
+            self.logger.error(f"❌ [ULTRA_EFFICIENT_XRP] Error during shutdown: {e}")
+    
+    def get_trade_analytics(self) -> Dict[str, Any]:
+        """Get comprehensive trade analytics from the ledger"""
+        try:
+            return self.trade_ledger.get_trade_analytics()
+        except Exception as e:
+            self.logger.error(f"❌ [ULTRA_EFFICIENT_XRP] Error getting trade analytics: {e}")
+            return {"error": str(e)}
+    
+    def export_trades(self, format: str = "both") -> Dict[str, str]:
+        """Export trades in specified format"""
+        try:
+            return self.trade_ledger.export_trades(format)
+        except Exception as e:
+            self.logger.error(f"❌ [ULTRA_EFFICIENT_XRP] Error exporting trades: {e}")
+            return {"error": str(e)}
