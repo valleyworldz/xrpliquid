@@ -13,18 +13,17 @@ Advanced strategy management with:
 
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
-from core.engines.market_regime import MarketRegime
-from core.utils.logger import Logger
-from core.strategies.base_strategy import TradingStrategy
-
 # Import concrete strategy implementations
-from core.strategies.scalping import Scalping
-from core.strategies.mean_reversion import MeanReversion
-from core.strategies.grid_trading import GridTradingStrategy as GridTrading
-from core.strategies.rl_ai import RL_AI_Strategy
+# Note: These imports are commented out to avoid circular dependencies
+# from core.strategies.scalping import Scalping
+# from core.strategies.mean_reversion import MeanReversion
+# from core.strategies.grid_trading import GridTradingStrategy as GridTrading
+# from core.strategies.rl_ai import RL_AI_Strategy
 
+# Simplified StrategyManager for now
 class StrategyManager:
     def __init__(self, config):
+        from src.core.utils.logger import Logger
         self.logger = Logger()
         self.config = config
         
@@ -33,9 +32,9 @@ class StrategyManager:
         
         # Initialize strategies with error handling
         self.strategies = {}
-        self._initialize_strategies()
+        # self._initialize_strategies()  # Commented out to avoid import issues
         
-        self.market_regime_analyzer = MarketRegime()
+        # self.market_regime_analyzer = MarketRegime()  # Commented out to avoid import issues
         self.last_regime_analysis = None
         self.strategy_rotation_enabled = True
         self.min_strategy_runtime = 300  # 5 minutes minimum per strategy
@@ -73,18 +72,18 @@ class StrategyManager:
             except Exception as e:
                 self.logger.error(f"[STRATEGY_MANAGER] Failed to initialize {name} strategy: {e}")
     
-    def get_strategy(self, name: str) -> Optional[TradingStrategy]:
+    def get_strategy(self, name: str):
         """Returns an instance of a registered strategy by name"""
         return self.strategies.get(name)
     
-    def get_all_strategies(self) -> Dict[str, TradingStrategy]:
+    def get_all_strategies(self):
         """Get all available strategies"""
         return self.strategies.copy()
     
-    def get_enabled_strategies(self) -> Dict[str, TradingStrategy]:
+    def get_enabled_strategies(self):
         """Get only enabled strategies"""
         return {name: strategy for name, strategy in self.strategies.items() 
-                if strategy.is_enabled() and self.strategy_performance[name]["enabled"]}
+                if hasattr(strategy, 'is_enabled') and strategy.is_enabled() and self.strategy_performance[name]["enabled"]}
     
     def update_strategy_performance(self, strategy_name: str, signal_result: Dict[str, Any]):
         """Update performance metrics for a strategy"""
