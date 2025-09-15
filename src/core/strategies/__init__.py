@@ -148,7 +148,7 @@ class StrategyManager:
         except Exception as e:
             self.logger.error(f"[STRATEGY_MANAGER] Error calculating health score for {strategy_name}: {e}")
     
-    def select_adaptive_strategy(self, market_data: Dict[str, Any]) -> Optional[TradingStrategy]:
+    def select_adaptive_strategy(self, market_data: Dict[str, Any]):
         """Select strategy based on market regime and strategy performance"""
         try:
             # Analyze current market regime

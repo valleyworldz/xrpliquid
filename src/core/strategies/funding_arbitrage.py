@@ -24,6 +24,7 @@ from src.core.api.hyperliquid_api import HyperliquidAPI
 from src.core.utils.logger import Logger
 from src.core.analytics.trade_ledger import TradeLedgerManager
 from src.core.monitoring.prometheus_metrics import get_metrics_collector, record_trade_metrics
+from src.core.risk.risk_unit_sizing import RiskUnitSizing, RiskUnitConfig
 
 @dataclass
 class FundingArbitrageConfig:
@@ -116,6 +117,17 @@ class FundingArbitrageStrategy:
         self.trade_ledger = TradeLedgerManager(data_dir="data/funding_arbitrage", logger=self.logger)
         self.metrics_collector = get_metrics_collector(port=8002, logger=self.logger)
         
+        # Initialize risk unit sizing system
+        risk_config = RiskUnitConfig(
+            target_volatility_percent=2.0,  # Target 2% daily volatility
+            max_equity_at_risk_percent=1.0,  # Max 1% equity at risk per trade
+            base_equity_at_risk_percent=0.5,  # Base 0.5% equity at risk per trade
+            kelly_multiplier=0.25,  # Use 25% of Kelly fraction
+            min_position_size_usd=25.0,  # Minimum position size
+            max_position_size_usd=10000.0,  # Maximum position size
+        )
+        self.risk_unit_sizing = RiskUnitSizing(risk_config, self.logger)
+        
         # State tracking
         self.active_positions: Dict[str, Dict[str, Any]] = {}
         self.opportunity_history: List[FundingArbitrageOpportunity] = []
@@ -127,11 +139,13 @@ class FundingArbitrageStrategy:
         # Performance tracking
         self.start_time = time.time()
         self.funding_rate_history: Dict[str, List[Tuple[float, float]]] = {}  # symbol -> [(timestamp, rate)]
+        self.price_history: Dict[str, List[float]] = {}  # symbol -> [prices] for volatility calculation
         
         self.logger.info("🎯 [FUNDING_ARB] Funding Arbitrage Strategy initialized")
         self.logger.info(f"📊 [FUNDING_ARB] Min funding threshold: {self.config.min_funding_rate_threshold:.4f}")
         self.logger.info(f"📊 [FUNDING_ARB] Max funding threshold: {self.config.max_funding_rate_threshold:.4f}")
         self.logger.info(f"📊 [FUNDING_ARB] Optimal funding rate: {self.config.optimal_funding_rate:.4f}")
+        self.logger.info("🎯 [RISK_UNIT] Risk unit sizing system integrated")
     
     def calculate_expected_value(self, 
                                funding_rate: float,
@@ -197,47 +211,70 @@ class FundingArbitrageStrategy:
         return expected_value, expected_return_percent, risk_adjusted_return
     
     def calculate_optimal_position_size(self, 
+                                      symbol: str,
                                       available_margin: float,
                                       funding_rate: float,
-                                      current_price: float) -> float:
+                                      current_price: float,
+                                      confidence_score: float = 0.5) -> Tuple[float, Dict[str, Any]]:
         """
-        Calculate optimal position size based on Kelly Criterion and risk management
+        Calculate optimal position size using risk unit sizing system
         
-        Kelly Criterion: f* = (bp - q) / b
-        Where:
-        - f* = fraction of capital to bet
-        - b = odds received (funding rate)
-        - p = probability of winning
-        - q = probability of losing (1-p)
+        Args:
+            symbol: Trading symbol
+            available_margin: Available margin in USD
+            funding_rate: Current funding rate
+            current_price: Current price
+            confidence_score: Confidence score (0-1)
+        
+        Returns:
+            Tuple of (optimal_position_size_usd, risk_metrics_dict)
         """
         
-        # Calculate Kelly fraction
+        # Calculate volatility for the symbol
+        volatility_percent = self._calculate_symbol_volatility(symbol, current_price)
+        
+        # Calculate win probability based on funding rate
         funding_rate_magnitude = abs(funding_rate)
         win_probability = min(0.9, max(0.3, funding_rate_magnitude / self.config.max_funding_rate_threshold))
-        lose_probability = 1 - win_probability
         
-        # Kelly fraction
-        kelly_fraction = (funding_rate_magnitude * win_probability - lose_probability) / funding_rate_magnitude
-        kelly_fraction = max(0, min(kelly_fraction, 0.25))  # Cap at 25%
+        # Estimate average win/loss percentages
+        avg_win_percent = funding_rate_magnitude * 0.8  # Assume 80% of funding rate as win
+        avg_loss_percent = funding_rate_magnitude * 0.2  # Assume 20% of funding rate as loss
         
-        # Calculate position size
-        kelly_position_size = available_margin * kelly_fraction
-        
-        # Apply risk management constraints
-        max_position_size = min(
-            self.config.max_position_size_usd,
-            available_margin * self.config.position_size_multiplier
+        # Use risk unit sizing system
+        optimal_position_size, risk_metrics = self.risk_unit_sizing.calculate_optimal_position_size(
+            symbol=symbol,
+            account_value=available_margin,
+            volatility_percent=volatility_percent,
+            confidence_score=confidence_score,
+            win_probability=win_probability,
+            avg_win_percent=avg_win_percent,
+            avg_loss_percent=avg_loss_percent,
+            market_regime='calm'  # Default regime
         )
         
-        min_position_size = self.config.min_position_size_usd
+        return optimal_position_size, risk_metrics
+    
+    def _calculate_symbol_volatility(self, symbol: str, current_price: float) -> float:
+        """Calculate volatility for a symbol"""
         
-        # Final position size
-        optimal_position_size = max(
-            min_position_size,
-            min(kelly_position_size, max_position_size)
+        # Add current price to history
+        if symbol not in self.price_history:
+            self.price_history[symbol] = []
+        
+        self.price_history[symbol].append(current_price)
+        
+        # Keep only recent history (last 30 days)
+        max_history = 30 * 24  # 30 days * 24 hours
+        if len(self.price_history[symbol]) > max_history:
+            self.price_history[symbol] = self.price_history[symbol][-max_history:]
+        
+        # Calculate volatility using risk unit sizing system
+        volatility_percent = self.risk_unit_sizing.calculate_volatility(
+            symbol, self.price_history[symbol]
         )
         
-        return optimal_position_size
+        return volatility_percent
     
     def assess_opportunity(self, 
                           symbol: str,
@@ -256,9 +293,9 @@ class FundingArbitrageStrategy:
         if abs(current_funding_rate) > self.config.max_funding_rate_threshold:
             return None
         
-        # 3. Calculate optimal position size
-        position_size_usd = self.calculate_optimal_position_size(
-            available_margin, current_funding_rate, current_price
+        # 3. Calculate optimal position size using risk unit sizing
+        position_size_usd, risk_metrics = self.calculate_optimal_position_size(
+            symbol, available_margin, current_funding_rate, current_price, confidence_score=0.5
         )
         
         if position_size_usd < self.config.min_position_size_usd:
@@ -316,6 +353,9 @@ class FundingArbitrageStrategy:
             total_costs_bps=total_costs_bps,
             net_expected_return_bps=net_expected_return_bps
         )
+        
+        # Add risk metrics to opportunity metadata
+        opportunity.risk_metrics = risk_metrics
         
         return opportunity
     
