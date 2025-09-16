@@ -23,7 +23,7 @@ class BacktestConfig:
     commission_rate: float = 0.0005  # 0.05% per trade
     slippage_bps: float = 2.0  # 2 basis points
     spread_bps: float = 1.0  # 1 basis point spread
-    funding_frequency_hours: int = 8  # Hyperliquid funding every 8 hours
+    funding_frequency_hours: int = 1  # Hyperliquid funding every 1 hour
     volatility_regime_threshold: float = 0.02  # 2% daily vol threshold
     min_position_size_usd: float = 25.0
     max_position_size_usd: float = 1000.0
@@ -48,608 +48,437 @@ class TradeRecord:
     maker_flag: bool
     queue_jump: bool = False
     market_regime: str = "normal"
-    volatility_percent: float = 0.0
+    order_state: str = "filled"
+    cloid: str = ""
 
 class ComprehensiveBacktestEngine:
-    """Comprehensive backtesting engine with realistic market simulation"""
+    """Comprehensive backtest engine with realistic market conditions"""
     
     def __init__(self, config: BacktestConfig):
         self.config = config
         self.trades: List[TradeRecord] = []
-        self.equity_curve: List[float] = []
-        self.daily_returns: List[float] = []
-        self.funding_payments: List[float] = []
-        self.current_capital = config.initial_capital
-        self.current_position = 0.0
-        self.current_price = 0.0
-        self.peak_capital = config.initial_capital
-        self.max_drawdown = 0.0
-        self.regime_stats = {"bull": [], "bear": [], "chop": []}
-        self.vol_terciles = {"low": [], "medium": [], "high": []}
+        self.portfolio_value = config.initial_capital
+        self.cash = config.initial_capital
+        self.position = 0.0
+        self.fees_paid = 0.0
+        self.funding_paid = 0.0
+        self.slippage_cost = 0.0
         
-    def generate_realistic_market_data(self) -> pd.DataFrame:
-        """Generate realistic XRP market data with regime changes"""
-        start = pd.to_datetime(self.config.start_date)
-        end = pd.to_datetime(self.config.end_date)
-        dates = pd.date_range(start, end, freq='1H')
+        # Performance tracking
+        self.equity_curve = []
+        self.drawdown_curve = []
+        self.peak_equity = config.initial_capital
         
-        # Generate price data with realistic characteristics
-        np.random.seed(42)  # For reproducibility
+        logger.info(f"🎯 [BACKTEST] Engine initialized with ${config.initial_capital:,.2f} capital")
+    
+    def generate_market_data(self) -> pd.DataFrame:
+        """Generate realistic market data with regimes"""
+        date_range = pd.date_range(start=self.config.start_date, end=self.config.end_date, freq='1H')
         
-        # Base price trend with regime changes
-        n_periods = len(dates)
-        base_price = 0.52
+        # Generate price data with realistic volatility
+        np.random.seed(42)
+        base_price = 0.5
+        returns = np.random.normal(0, 0.02, len(date_range))  # 2% hourly volatility
         
-        # Create regime periods
-        regime_length = n_periods // 6  # 6 regime changes
-        prices = []
-        volatilities = []
-        regimes = []
+        # Add regime changes
+        regime_changes = np.random.choice([0, 1, 2], len(date_range), p=[0.7, 0.2, 0.1])
+        regime_multipliers = np.where(regime_changes == 1, 1.5, np.where(regime_changes == 2, 0.5, 1.0))
+        returns *= regime_multipliers
         
-        for i in range(0, n_periods, regime_length):
-            regime_end = min(i + regime_length, n_periods)
-            regime_type = np.random.choice(['bull', 'bear', 'chop'])
-            
-            if regime_type == 'bull':
-                trend = np.linspace(0, 0.3, regime_end - i)  # 30% uptrend
-                vol = 0.02  # 2% volatility
-            elif regime_type == 'bear':
-                trend = np.linspace(0, -0.2, regime_end - i)  # 20% downtrend
-                vol = 0.025  # 2.5% volatility
-            else:  # chop
-                trend = np.linspace(0, 0.05, regime_end - i)  # 5% uptrend
-                vol = 0.015  # 1.5% volatility
-            
-            # Generate price movements
-            regime_prices = []
-            regime_vols = []
-            regime_labels = []
-            
-            for j in range(regime_end - i):
-                if j == 0:
-                    price = base_price
-                else:
-                    # Add trend and random walk
-                    price_change = trend[j] / (regime_end - i) + np.random.normal(0, vol)
-                    price = regime_prices[-1] * (1 + price_change)
-                
-                regime_prices.append(price)
-                regime_vols.append(vol)
-                regime_labels.append(regime_type)
-            
-            prices.extend(regime_prices)
-            volatilities.extend(regime_vols)
-            regimes.extend(regime_labels)
-            base_price = regime_prices[-1]
+        prices = base_price * np.exp(np.cumsum(returns))
         
-        # Create DataFrame
+        # Generate volume data
+        volume = np.random.lognormal(10, 0.5, len(date_range))
+        
+        # Generate spread data
+        spread = np.random.uniform(0.5, 2.0, len(date_range))  # 0.5-2.0 bps spread
+        
+        # Generate funding rates
+        funding_rates = np.random.normal(0.0001, 0.0002, len(date_range))  # 0.01% ± 0.02%
+        
         df = pd.DataFrame({
-            'timestamp': dates[:len(prices)],
+            'timestamp': date_range,
             'price': prices,
-            'volatility': volatilities,
-            'regime': regimes
+            'volume': volume,
+            'spread_bps': spread,
+            'funding_rate': funding_rates,
+            'regime': regime_changes
         })
         
-        # Add funding rates (realistic for XRP)
-        df['funding_rate'] = np.random.normal(0.0001, 0.0002, len(df))
-        df['funding_rate'] = np.clip(df['funding_rate'], -0.01, 0.01)  # Cap at 1%
-        
-        # Add spread
-        df['spread'] = df['price'] * self.config.spread_bps / 10000
-        
+        logger.info(f"🎯 [BACKTEST] Generated {len(df)} hours of market data")
         return df
     
-    def calculate_volatility_terciles(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Calculate volatility terciles for regime analysis"""
-        # Add small random noise to avoid duplicate edges
-        df['volatility_noise'] = df['volatility'] + np.random.normal(0, 0.0001, len(df))
-        df['vol_tercile'] = pd.qcut(df['volatility_noise'], 3, labels=['low', 'medium', 'high'], duplicates='drop')
-        df.drop('volatility_noise', axis=1, inplace=True)
-        return df
-    
-    def simulate_funding_arbitrage_strategy(self, df: pd.DataFrame) -> None:
-        """Simulate optimized funding arbitrage strategy"""
-        self.current_price = df['price'].iloc[0]
+    def calculate_slippage(self, quantity: float, price: float, side: str, 
+                          market_data: pd.Series) -> Tuple[float, float]:
+        """Calculate realistic slippage based on market depth"""
+        # Base slippage from config
+        base_slippage = self.config.slippage_bps / 10000
         
-        for i, row in df.iterrows():
-            self.current_price = row['price']
-            current_funding = row['funding_rate']
-            
-            # Strategy logic: Enter when funding rate is high
-            funding_threshold = 0.0008  # 0.08% threshold
-            
-            if abs(current_funding) > funding_threshold:
-                # Determine trade direction
-                if current_funding > 0:
-                    # Positive funding: short XRP (receive funding)
-                    side = 'sell'
-                    expected_return = current_funding
-                else:
-                    # Negative funding: long XRP (pay funding)
-                    side = 'buy'
-                    expected_return = -current_funding
-                
-                # Calculate position size using risk unit sizing
-                position_size_usd = self._calculate_risk_unit_size(row['volatility'])
-                
-                if position_size_usd >= self.config.min_position_size_usd:
-                    # Execute trade
-                    self._execute_trade(
-                        timestamp=row['timestamp'],
-                        strategy="funding_arbitrage",
-                        side=side,
-                        quantity=position_size_usd / row['price'],
-                        expected_price=row['price'],
-                        funding=current_funding,
-                        market_regime=row['regime'],
-                        volatility_percent=row['volatility'] * 100
-                    )
-            
-            # Update unrealized PnL
-            self._update_unrealized_pnl()
-            
-            # Record equity
-            self.equity_curve.append(self.current_capital)
-            
-            # Calculate daily returns
-            if len(self.equity_curve) > 24:  # Daily
-                daily_return = (self.equity_curve[-1] - self.equity_curve[-25]) / self.equity_curve[-25]
-                self.daily_returns.append(daily_return)
-    
-    def simulate_optimized_funding_arbitrage_strategy(self, df: pd.DataFrame) -> None:
-        """Simulate OPTIMIZED funding arbitrage strategy with better filtering"""
-        self.current_price = df['price'].iloc[0]
+        # Volume impact
+        volume_impact = min(quantity / market_data['volume'], 0.1)  # Max 10% impact
         
-        for i, row in df.iterrows():
-            self.current_price = row['price']
-            current_funding = row['funding_rate']
-            
-            # OPTIMIZED Strategy logic with better filtering
-            funding_threshold = 0.0012  # Higher threshold: 0.12%
-            
-            # Additional filters for profitability
-            volatility_filter = row['volatility'] < 0.03  # Avoid high volatility periods
-            regime_filter = row['regime'] in ['bull', 'chop']  # Avoid bear markets
-            spread_filter = row['spread'] < row['price'] * 0.001  # Avoid wide spreads
-            
-            if (abs(current_funding) > funding_threshold and 
-                volatility_filter and regime_filter and spread_filter):
-                
-                # Determine trade direction
-                if current_funding > 0:
-                    # Positive funding: short XRP (receive funding)
-                    side = 'sell'
-                    expected_return = current_funding
-                else:
-                    # Negative funding: long XRP (pay funding)
-                    side = 'buy'
-                    expected_return = -current_funding
-                
-                # Calculate position size using risk unit sizing
-                position_size_usd = self._calculate_risk_unit_size(row['volatility'])
-                
-                # Additional position size filters
-                if (position_size_usd >= self.config.min_position_size_usd and
-                    position_size_usd <= self.config.max_position_size_usd):
-                    
-                    # Execute trade
-                    self._execute_trade(
-                        timestamp=row['timestamp'],
-                        strategy="optimized_funding_arbitrage",
-                        side=side,
-                        quantity=position_size_usd / row['price'],
-                        expected_price=row['price'],
-                        funding=current_funding,
-                        market_regime=row['regime'],
-                        volatility_percent=row['volatility'] * 100
-                    )
-            
-            # Update unrealized PnL
-            self._update_unrealized_pnl()
-            
-            # Record equity
-            self.equity_curve.append(self.current_capital)
-            
-            # Calculate daily returns
-            if len(self.equity_curve) > 24:  # Daily
-                daily_return = (self.equity_curve[-1] - self.equity_curve[-25]) / self.equity_curve[-25]
-                self.daily_returns.append(daily_return)
-    
-    def _calculate_risk_unit_size(self, volatility: float) -> float:
-        """Calculate position size using risk unit sizing"""
-        # Risk unit sizing based on volatility
-        risk_per_unit = self.current_capital * self.config.risk_unit_size
-        vol_adjusted_size = risk_per_unit / (volatility * 2)  # 2x volatility buffer
+        # Spread cost
+        spread_cost = market_data['spread_bps'] / 10000 / 2  # Half spread
         
-        return min(vol_adjusted_size, self.config.max_position_size_usd)
-    
-    def _execute_trade(self, timestamp: datetime, strategy: str, side: str, 
-                      quantity: float, expected_price: float, funding: float,
-                      market_regime: str, volatility_percent: float) -> None:
-        """Execute a trade with realistic execution simulation"""
+        # Total slippage
+        total_slippage = base_slippage + volume_impact + spread_cost
         
-        # Calculate slippage based on volatility and market regime
-        base_slippage = self.config.slippage_bps
-        vol_multiplier = 1 + (volatility_percent / 100) * 2  # Higher vol = more slippage
-        regime_multiplier = 1.5 if market_regime == 'bear' else 1.0  # More slippage in bear markets
-        
-        slippage_bps = base_slippage * vol_multiplier * regime_multiplier
-        
-        # Calculate fill price
+        # Apply to fill price
         if side == 'buy':
-            fill_price = expected_price * (1 + slippage_bps / 10000)
+            fill_price = price * (1 + total_slippage)
         else:
-            fill_price = expected_price * (1 - slippage_bps / 10000)
+            fill_price = price * (1 - total_slippage)
+        
+        return fill_price, total_slippage * 10000  # Return in bps
+    
+    def calculate_funding(self, position: float, price: float, funding_rate: float) -> float:
+        """Calculate funding payment"""
+        if position == 0:
+            return 0.0
+        
+        notional = abs(position) * price
+        funding_payment = notional * funding_rate
+        
+        # Long positions pay funding when rate is positive
+        if position > 0 and funding_rate > 0:
+            return -funding_payment  # Pay funding
+        elif position < 0 and funding_rate < 0:
+            return -funding_payment  # Pay funding
+        else:
+            return funding_payment  # Receive funding
+    
+    def execute_trade(self, strategy: str, side: str, quantity: float, 
+                     price: float, market_data: pd.Series, reason_code: str = "strategy_signal") -> bool:
+        """Execute a trade with realistic market conditions"""
+        
+        # Calculate slippage and fill price
+        fill_price, slippage_bps = self.calculate_slippage(quantity, price, side, market_data)
         
         # Calculate fees
         notional = quantity * fill_price
         fee = notional * self.config.commission_rate
         
-        # Determine if maker (simplified)
-        maker_flag = np.random.random() > 0.3  # 70% maker rate
-        
-        # Calculate PnL
+        # Check if we have enough capital
         if side == 'buy':
-            self.current_position += quantity
-            pnl_realized = 0.0  # Will be realized on exit
+            required_capital = notional + fee
+            if required_capital > self.cash:
+                logger.warning(f"🎯 [BACKTEST] Insufficient capital for buy: ${required_capital:.2f} > ${self.cash:.2f}")
+                return False
         else:
-            self.current_position -= quantity
-            pnl_realized = quantity * (fill_price - self.current_price)
+            if quantity > self.position:
+                logger.warning(f"🎯 [BACKTEST] Insufficient position for sell: {quantity} > {self.position}")
+                return False
+        
+        # Execute trade
+        if side == 'buy':
+            self.cash -= required_capital
+            self.position += quantity
+        else:
+            self.cash += notional - fee
+            self.position -= quantity
+        
+        # Update fees and slippage
+        self.fees_paid += fee
+        self.slippage_cost += abs(fill_price - price) * quantity
         
         # Create trade record
         trade = TradeRecord(
-            timestamp=timestamp,
+            timestamp=market_data['timestamp'],
             strategy=strategy,
             side=side,
             quantity=quantity,
-            price=expected_price,
-            expected_price=expected_price,
+            price=price,
+            expected_price=price,
             fill_price=fill_price,
             fee=fee,
-            funding=funding,
+            funding=0.0,  # Will be calculated separately
             slippage_bps=slippage_bps,
-            pnl_realized=pnl_realized,
+            pnl_realized=0.0,  # Will be calculated on exit
             pnl_unrealized=0.0,
-            reason_code="funding_arbitrage",
-            maker_flag=maker_flag,
-            market_regime=market_regime,
-            volatility_percent=volatility_percent
+            reason_code=reason_code,
+            maker_flag=np.random.random() > 0.3,  # 70% maker
+            market_regime="normal" if market_data['regime'] == 0 else "high_vol",
+            order_state="filled",
+            cloid=f"{strategy}_{int(market_data['timestamp'].timestamp())}"
         )
         
         self.trades.append(trade)
         
-        # Update capital
-        self.current_capital -= fee
-        self.current_capital += pnl_realized
+        # Update portfolio value
+        self.portfolio_value = self.cash + self.position * fill_price
         
-        # Update peak and drawdown
-        if self.current_capital > self.peak_capital:
-            self.peak_capital = self.current_capital
-        
-        current_dd = (self.peak_capital - self.current_capital) / self.peak_capital
-        if current_dd > self.max_drawdown:
-            self.max_drawdown = current_dd
+        logger.info(f"🎯 [BACKTEST] {side.upper()} {quantity} {strategy} @ {fill_price:.4f} (slippage: {slippage_bps:.1f}bps)")
+        return True
     
-    def _update_unrealized_pnl(self) -> None:
-        """Update unrealized PnL for current position"""
-        if self.current_position != 0:
-            unrealized_pnl = self.current_position * (self.current_price - self.current_price)
-            # Update last trade's unrealized PnL
-            if self.trades:
-                self.trades[-1].pnl_unrealized = unrealized_pnl
+    def process_funding(self, market_data: pd.Series):
+        """Process funding payments"""
+        if self.position == 0:
+            return
+        
+        funding_payment = self.calculate_funding(self.position, market_data['price'], market_data['funding_rate'])
+        self.funding_paid += funding_payment
+        self.cash += funding_payment
+        
+        # Update portfolio value
+        self.portfolio_value = self.cash + self.position * market_data['price']
+        
+        if abs(funding_payment) > 0.01:  # Only log significant funding
+            logger.info(f"🎯 [BACKTEST] Funding payment: ${funding_payment:.4f} (rate: {market_data['funding_rate']:.4f})")
     
-    def generate_performance_report(self) -> Dict[str, Any]:
-        """Generate comprehensive performance report"""
-        if not self.trades:
-            return {"error": "No trades executed"}
+    def run_backtest(self, strategies: List[str]) -> Dict[str, Any]:
+        """Run comprehensive backtest"""
+        logger.info(f"🎯 [BACKTEST] Starting backtest from {self.config.start_date} to {self.config.end_date}")
         
-        # Calculate key metrics
-        total_return = (self.current_capital - self.config.initial_capital) / self.config.initial_capital
-        annualized_return = (1 + total_return) ** (365 / len(self.equity_curve) * 24) - 1
+        # Generate market data
+        market_data = self.generate_market_data()
         
-        # Sharpe ratio
-        if len(self.daily_returns) > 1:
-            sharpe_ratio = np.mean(self.daily_returns) / np.std(self.daily_returns) * np.sqrt(365)
-        else:
-            sharpe_ratio = 0.0
+        # Run backtest
+        for i, (_, row) in enumerate(market_data.iterrows()):
+            # Process funding every hour
+            if i % self.config.funding_frequency_hours == 0:
+                self.process_funding(row)
+            
+            # Generate trading signals
+            for strategy in strategies:
+                if strategy == "BUY":
+                    # Simple buy and hold strategy
+                    if i == 0:  # Buy at start
+                        self.execute_trade("BUY", "buy", 1000, row['price'], row, "initial_buy")
+                elif strategy == "SCALP":
+                    # Scalping strategy
+                    if i % 24 == 0:  # Trade once per day
+                        side = "buy" if np.random.random() > 0.5 else "sell"
+                        quantity = np.random.uniform(50, 200)
+                        self.execute_trade("SCALP", side, quantity, row['price'], row, "scalp_signal")
+                elif strategy == "FUNDING_ARBITRAGE":
+                    # Funding arbitrage strategy
+                    if abs(row['funding_rate']) > 0.0005:  # 0.05% threshold
+                        side = "buy" if row['funding_rate'] > 0 else "sell"
+                        quantity = np.random.uniform(100, 500)
+                        self.execute_trade("FUNDING_ARBITRAGE", side, quantity, row['price'], row, "funding_arb")
+            
+            # Update equity curve
+            self.equity_curve.append(self.portfolio_value)
+            
+            # Update drawdown
+            if self.portfolio_value > self.peak_equity:
+                self.peak_equity = self.portfolio_value
+            
+            drawdown = (self.peak_equity - self.portfolio_value) / self.peak_equity
+            self.drawdown_curve.append(drawdown)
         
-        # MAR ratio
-        mar_ratio = annualized_return / self.max_drawdown if self.max_drawdown > 0 else 0.0
+        # Calculate final metrics
+        metrics = self.calculate_metrics()
         
-        # Win rate
-        winning_trades = [t for t in self.trades if t.pnl_realized > 0]
-        win_rate = len(winning_trades) / len(self.trades) if self.trades else 0.0
-        
-        # Profit factor
-        gross_profit = sum(t.pnl_realized for t in self.trades if t.pnl_realized > 0)
-        gross_loss = abs(sum(t.pnl_realized for t in self.trades if t.pnl_realized < 0))
-        profit_factor = gross_profit / gross_loss if gross_loss > 0 else float('inf')
-        
-        # Regime analysis
-        regime_performance = self._analyze_regime_performance()
-        
-        # Volatility tercile analysis
-        vol_tercile_performance = self._analyze_vol_tercile_performance()
-        
-        # Execution quality analysis
-        execution_quality = self._analyze_execution_quality()
-        
-        return {
-            "summary": {
-                "initial_capital": self.config.initial_capital,
-                "final_capital": self.current_capital,
-                "total_return": total_return,
-                "annualized_return": annualized_return,
-                "max_drawdown": self.max_drawdown,
-                "sharpe_ratio": sharpe_ratio,
-                "mar_ratio": mar_ratio,
-                "win_rate": win_rate,
-                "profit_factor": profit_factor,
-                "total_trades": len(self.trades),
-                "winning_trades": len(winning_trades)
-            },
-            "regime_analysis": regime_performance,
-            "volatility_analysis": vol_tercile_performance,
-            "execution_quality": execution_quality,
-            "risk_metrics": {
-                "max_drawdown": self.max_drawdown,
-                "time_under_water": self._calculate_time_under_water(),
-                "var_95": self._calculate_var_95(),
-                "expected_shortfall": self._calculate_expected_shortfall()
-            }
-        }
+        logger.info(f"🎯 [BACKTEST] Backtest completed: {len(self.trades)} trades, ${self.portfolio_value:.2f} final value")
+        return metrics
     
-    def _analyze_regime_performance(self) -> Dict[str, Any]:
-        """Analyze performance by market regime"""
-        regime_stats = {"bull": [], "bear": [], "chop": []}
-        
-        for trade in self.trades:
-            regime_stats[trade.market_regime].append(trade.pnl_realized)
-        
-        regime_performance = {}
-        for regime, pnls in regime_stats.items():
-            if pnls:
-                regime_performance[regime] = {
-                    "trades": len(pnls),
-                    "total_pnl": sum(pnls),
-                    "avg_pnl": np.mean(pnls),
-                    "win_rate": len([p for p in pnls if p > 0]) / len(pnls)
-                }
-            else:
-                regime_performance[regime] = {
-                    "trades": 0,
-                    "total_pnl": 0.0,
-                    "avg_pnl": 0.0,
-                    "win_rate": 0.0
-                }
-        
-        return regime_performance
-    
-    def _analyze_vol_tercile_performance(self) -> Dict[str, Any]:
-        """Analyze performance by volatility tercile"""
-        vol_stats = {"low": [], "medium": [], "high": []}
-        
-        for trade in self.trades:
-            if trade.volatility_percent < 1.5:
-                vol_stats["low"].append(trade.pnl_realized)
-            elif trade.volatility_percent < 2.5:
-                vol_stats["medium"].append(trade.pnl_realized)
-            else:
-                vol_stats["high"].append(trade.pnl_realized)
-        
-        vol_performance = {}
-        for vol_level, pnls in vol_stats.items():
-            if pnls:
-                vol_performance[vol_level] = {
-                    "trades": len(pnls),
-                    "total_pnl": sum(pnls),
-                    "avg_pnl": np.mean(pnls),
-                    "win_rate": len([p for p in pnls if p > 0]) / len(pnls)
-                }
-            else:
-                vol_performance[vol_level] = {
-                    "trades": 0,
-                    "total_pnl": 0.0,
-                    "avg_pnl": 0.0,
-                    "win_rate": 0.0
-                }
-        
-        return vol_performance
-    
-    def _analyze_execution_quality(self) -> Dict[str, Any]:
-        """Analyze execution quality metrics"""
+    def calculate_metrics(self) -> Dict[str, Any]:
+        """Calculate comprehensive performance metrics"""
         if not self.trades:
             return {}
         
-        slippages = [t.slippage_bps for t in self.trades]
-        maker_ratio = len([t for t in self.trades if t.maker_flag]) / len(self.trades)
+        # Basic metrics
+        total_return = (self.portfolio_value - self.config.initial_capital) / self.config.initial_capital
+        total_trades = len(self.trades)
+        winning_trades = len([t for t in self.trades if t.pnl_realized > 0])
+        win_rate = winning_trades / total_trades if total_trades > 0 else 0
+        
+        # Calculate returns for Sharpe ratio
+        returns = []
+        for i in range(1, len(self.equity_curve)):
+            ret = (self.equity_curve[i] - self.equity_curve[i-1]) / self.equity_curve[i-1]
+            returns.append(ret)
+        
+        returns = np.array(returns)
+        sharpe_ratio = returns.mean() / returns.std() * np.sqrt(252) if returns.std() > 0 else 0
+        
+        # Max drawdown
+        max_drawdown = max(self.drawdown_curve) if self.drawdown_curve else 0
+        
+        # Strategy performance
+        strategy_perf = {}
+        for strategy in set(t.strategy for t in self.trades):
+            strategy_trades = [t for t in self.trades if t.strategy == strategy]
+            strategy_perf[strategy] = {
+                'trades': len(strategy_trades),
+                'total_fees': sum(t.fee for t in strategy_trades),
+                'total_slippage': sum(t.slippage_bps for t in strategy_trades),
+                'maker_ratio': len([t for t in strategy_trades if t.maker_flag]) / len(strategy_trades)
+            }
         
         return {
-            "avg_slippage_bps": np.mean(slippages),
-            "max_slippage_bps": np.max(slippages),
-            "maker_ratio": maker_ratio,
-            "total_fees": sum(t.fee for t in self.trades),
-            "avg_fee_per_trade": np.mean([t.fee for t in self.trades])
+            'total_return': total_return,
+            'total_trades': total_trades,
+            'winning_trades': winning_trades,
+            'win_rate': win_rate,
+            'sharpe_ratio': sharpe_ratio,
+            'max_drawdown': max_drawdown,
+            'total_fees': self.fees_paid,
+            'total_funding': self.funding_paid,
+            'total_slippage': self.slippage_cost,
+            'final_portfolio_value': self.portfolio_value,
+            'strategy_performance': strategy_perf,
+            'equity_curve': self.equity_curve,
+            'drawdown_curve': self.drawdown_curve
         }
     
-    def _calculate_time_under_water(self) -> float:
-        """Calculate time under water (drawdown duration)"""
-        if not self.equity_curve:
-            return 0.0
-        
-        peak = self.equity_curve[0]
-        underwater_periods = 0
-        total_periods = len(self.equity_curve)
-        
-        for equity in self.equity_curve:
-            if equity < peak:
-                underwater_periods += 1
-            else:
-                peak = equity
-        
-        return underwater_periods / total_periods
-    
-    def _calculate_var_95(self) -> float:
-        """Calculate 95% Value at Risk"""
-        if len(self.daily_returns) < 20:
-            return 0.0
-        return np.percentile(self.daily_returns, 5)
-    
-    def _calculate_expected_shortfall(self) -> float:
-        """Calculate Expected Shortfall (Conditional VaR)"""
-        if len(self.daily_returns) < 20:
-            return 0.0
-        var_95 = self._calculate_var_95()
-        return np.mean([r for r in self.daily_returns if r <= var_95])
-    
-    def save_trade_ledger(self, filename: str) -> None:
-        """Save trade ledger to CSV/Parquet"""
+    def save_trade_ledger(self, filepath: str):
+        """Save trade ledger to CSV and Parquet"""
         if not self.trades:
+            logger.warning("🎯 [BACKTEST] No trades to save")
             return
         
         # Convert to DataFrame
-        trade_data = []
-        for trade in self.trades:
-            trade_data.append({
-                'timestamp': trade.timestamp,
-                'strategy': trade.strategy,
-                'side': trade.side,
-                'quantity': trade.quantity,
-                'price': trade.price,
-                'expected_price': trade.expected_price,
-                'fill_price': trade.fill_price,
-                'fee': trade.fee,
-                'funding': trade.funding,
-                'slippage_bps': trade.slippage_bps,
-                'pnl_realized': trade.pnl_realized,
-                'pnl_unrealized': trade.pnl_unrealized,
-                'reason_code': trade.reason_code,
-                'maker_flag': trade.maker_flag,
-                'queue_jump': trade.queue_jump,
-                'market_regime': trade.market_regime,
-                'volatility_percent': trade.volatility_percent
-            })
+        df = pd.DataFrame([
+            {
+                'ts': t.timestamp.timestamp(),
+                'strategy_name': t.strategy,
+                'side': t.side,
+                'qty': t.quantity,
+                'price': t.price,
+                'fee': t.fee,
+                'fee_bps': (t.fee / (t.quantity * t.price)) * 10000 if t.quantity * t.price > 0 else 0,
+                'funding': t.funding,
+                'slippage_bps': t.slippage_bps,
+                'pnl_realized': t.pnl_realized,
+                'pnl_unrealized': t.pnl_unrealized,
+                'reason_code': t.reason_code,
+                'maker_flag': t.maker_flag,
+                'order_state': t.order_state,
+                'regime_label': t.market_regime,
+                'cloid': t.cloid
+            }
+            for t in self.trades
+        ])
         
-        df = pd.DataFrame(trade_data)
-        
-        # Save as CSV
-        csv_path = f"reports/{filename}.csv"
-        os.makedirs("reports", exist_ok=True)
+        # Save CSV
+        csv_path = filepath.replace('.parquet', '.csv')
         df.to_csv(csv_path, index=False)
+        logger.info(f"🎯 [BACKTEST] Saved trade ledger: {csv_path}")
         
-        # Save as Parquet
-        parquet_path = f"reports/{filename}.parquet"
-        df.to_parquet(parquet_path, index=False)
-        
-        print(f"✅ Trade ledger saved to {csv_path} and {parquet_path}")
+        # Save Parquet
+        df.to_parquet(filepath, index=False)
+        logger.info(f"🎯 [BACKTEST] Saved trade ledger: {filepath}")
     
-    def generate_equity_curve_plot(self, filename: str) -> None:
-        """Generate equity curve visualization"""
-        if not self.equity_curve:
-            return
-        
-        plt.figure(figsize=(12, 8))
-        plt.plot(self.equity_curve)
-        plt.title('Equity Curve - XRP Funding Arbitrage Strategy')
-        plt.xlabel('Time (Hours)')
-        plt.ylabel('Portfolio Value ($)')
-        plt.grid(True, alpha=0.3)
-        
-        # Add drawdown visualization
-        peak = np.maximum.accumulate(self.equity_curve)
-        drawdown = (self.equity_curve - peak) / peak * 100
-        
-        plt.figure(figsize=(12, 6))
-        plt.fill_between(range(len(drawdown)), drawdown, 0, alpha=0.3, color='red')
-        plt.title('Drawdown (%)')
-        plt.xlabel('Time (Hours)')
-        plt.ylabel('Drawdown (%)')
-        plt.grid(True, alpha=0.3)
-        
-        # Save plots
-        os.makedirs("reports", exist_ok=True)
-        plt.savefig(f"reports/{filename}_equity_curve.png", dpi=300, bbox_inches='tight')
-        plt.savefig(f"reports/{filename}_drawdown.png", dpi=300, bbox_inches='tight')
-        plt.close()
-        
-        print(f"✅ Equity curve plots saved to reports/{filename}_*.png")
-    
-    def save_performance_report(self, filename: str) -> None:
-        """Save comprehensive performance report"""
-        report = self.generate_performance_report()
-        
-        # Save as JSON
-        json_path = f"reports/{filename}_performance.json"
-        os.makedirs("reports", exist_ok=True)
-        
-        with open(json_path, 'w') as f:
-            json.dump(report, f, indent=2, default=str)
-        
-        # Save as HTML tear sheet
-        html_path = f"reports/{filename}_tear_sheet.html"
-        self._generate_html_tear_sheet(report, html_path)
-        
-        print(f"✅ Performance report saved to {json_path}")
-        print(f"✅ HTML tear sheet saved to {html_path}")
-    
-    def _generate_html_tear_sheet(self, report: Dict[str, Any], filename: str) -> None:
-        """Generate HTML tear sheet"""
-        html_content = f"""
+    def generate_tearsheet(self, metrics: Dict[str, Any], filepath: str):
+        """Generate HTML tearsheet"""
+        html = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>XRP Funding Arbitrage - Performance Tear Sheet</title>
+            <title>📊 Comprehensive Backtest Results</title>
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 20px; }}
-                .header {{ background-color: #f0f0f0; padding: 20px; border-radius: 5px; }}
-                .metric {{ margin: 10px 0; }}
-                .positive {{ color: green; }}
-                .negative {{ color: red; }}
-                table {{ border-collapse: collapse; width: 100%; }}
-                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-                th {{ background-color: #f2f2f2; }}
+                body {{ font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; }}
+                .section {{ background: white; margin: 20px 0; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+                .metric {{ display: inline-block; margin: 10px; padding: 15px; background: #f8f9fa; border-radius: 5px; min-width: 150px; text-align: center; }}
+                .performance {{ background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }}
+                .risk {{ background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }}
             </style>
         </head>
         <body>
             <div class="header">
-                <h1>🎯 XRP Funding Arbitrage Strategy - Performance Tear Sheet</h1>
-                <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                <h1>📊 Comprehensive Backtest Results</h1>
+                <p>Hat Manifesto Ultimate Trading System</p>
+                <p>📅 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                <p>📊 Period: {self.config.start_date} to {self.config.end_date}</p>
             </div>
             
-            <h2>📊 Key Performance Metrics</h2>
-            <table>
-                <tr><th>Metric</th><th>Value</th></tr>
-                <tr><td>Initial Capital</td><td>${report['summary']['initial_capital']:,.2f}</td></tr>
-                <tr><td>Final Capital</td><td>${report['summary']['final_capital']:,.2f}</td></tr>
-                <tr><td>Total Return</td><td class="{'positive' if report['summary']['total_return'] > 0 else 'negative'}">{report['summary']['total_return']:.2%}</td></tr>
-                <tr><td>Annualized Return</td><td class="{'positive' if report['summary']['annualized_return'] > 0 else 'negative'}">{report['summary']['annualized_return']:.2%}</td></tr>
-                <tr><td>Max Drawdown</td><td class="negative">{report['summary']['max_drawdown']:.2%}</td></tr>
-                <tr><td>Sharpe Ratio</td><td>{report['summary']['sharpe_ratio']:.2f}</td></tr>
-                <tr><td>MAR Ratio</td><td>{report['summary']['mar_ratio']:.2f}</td></tr>
-                <tr><td>Win Rate</td><td>{report['summary']['win_rate']:.2%}</td></tr>
-                <tr><td>Profit Factor</td><td>{report['summary']['profit_factor']:.2f}</td></tr>
-                <tr><td>Total Trades</td><td>{report['summary']['total_trades']}</td></tr>
-            </table>
+            <div class="section">
+                <h2>📊 Performance Summary</h2>
+                <div class="metric performance">
+                    <h3>Total Return</h3>
+                    <h2>{metrics.get('total_return', 0):.2%}</h2>
+                </div>
+                <div class="metric performance">
+                    <h3>Sharpe Ratio</h3>
+                    <h2>{metrics.get('sharpe_ratio', 0):.2f}</h2>
+                </div>
+                <div class="metric risk">
+                    <h3>Max Drawdown</h3>
+                    <h2>{metrics.get('max_drawdown', 0):.2%}</h2>
+                </div>
+                <div class="metric performance">
+                    <h3>Win Rate</h3>
+                    <h2>{metrics.get('win_rate', 0):.2%}</h2>
+                </div>
+                <div class="metric performance">
+                    <h3>Total Trades</h3>
+                    <h2>{metrics.get('total_trades', 0)}</h2>
+                </div>
+            </div>
             
-            <h2>🎯 Regime Analysis</h2>
-            <table>
-                <tr><th>Regime</th><th>Trades</th><th>Total PnL</th><th>Avg PnL</th><th>Win Rate</th></tr>
-                <tr><td>Bull</td><td>{report['regime_analysis']['bull']['trades']}</td><td>${report['regime_analysis']['bull']['total_pnl']:.2f}</td><td>${report['regime_analysis']['bull']['avg_pnl']:.2f}</td><td>{report['regime_analysis']['bull']['win_rate']:.2%}</td></tr>
-                <tr><td>Bear</td><td>{report['regime_analysis']['bear']['trades']}</td><td>${report['regime_analysis']['bear']['total_pnl']:.2f}</td><td>${report['regime_analysis']['bear']['avg_pnl']:.2f}</td><td>{report['regime_analysis']['bear']['win_rate']:.2%}</td></tr>
-                <tr><td>Chop</td><td>{report['regime_analysis']['chop']['trades']}</td><td>${report['regime_analysis']['chop']['total_pnl']:.2f}</td><td>${report['regime_analysis']['chop']['avg_pnl']:.2f}</td><td>{report['regime_analysis']['chop']['win_rate']:.2%}</td></tr>
-            </table>
+            <div class="section">
+                <h2>💰 Cost Analysis</h2>
+                <p>Total Fees: ${metrics.get('total_fees', 0):.2f}</p>
+                <p>Total Funding: ${metrics.get('total_funding', 0):.2f}</p>
+                <p>Total Slippage: ${metrics.get('total_slippage', 0):.2f}</p>
+            </div>
             
-            <h2>⚡ Execution Quality</h2>
-            <table>
-                <tr><th>Metric</th><th>Value</th></tr>
-                <tr><td>Avg Slippage</td><td>{report['execution_quality']['avg_slippage_bps']:.2f} bps</td></tr>
-                <tr><td>Max Slippage</td><td>{report['execution_quality']['max_slippage_bps']:.2f} bps</td></tr>
-                <tr><td>Maker Ratio</td><td>{report['execution_quality']['maker_ratio']:.2%}</td></tr>
-                <tr><td>Total Fees</td><td>${report['execution_quality']['total_fees']:.2f}</td></tr>
-            </table>
+            <div class="section">
+                <h2>🎯 Strategy Performance</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">Strategy</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Trades</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Total Fees</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Maker Ratio</th>
+                    </tr>
+        """
+        
+        for strategy, perf in metrics.get('strategy_performance', {}).items():
+            html += f"""
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">{strategy}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">{perf['trades']}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${perf['total_fees']:.2f}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">{perf['maker_ratio']:.1%}</td>
+                    </tr>
+            """
+        
+        html += """
+                </table>
+            </div>
         </body>
         </html>
         """
         
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(html_content)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html)
+        
+        logger.info(f"🎯 [BACKTEST] Generated tearsheet: {filepath}")
+
+# Global logger
+import logging
+logger = logging.getLogger(__name__)
+
+def run_comprehensive_backtest(start_date: str = "2023-01-01", end_date: str = "2024-12-31",
+                              strategies: List[str] = ["BUY", "SCALP", "FUNDING_ARBITRAGE"],
+                              initial_capital: float = 10000.0) -> Dict[str, Any]:
+    """Run comprehensive backtest and return results"""
+    
+    config = BacktestConfig(
+        start_date=start_date,
+        end_date=end_date,
+        initial_capital=initial_capital
+    )
+    
+    engine = ComprehensiveBacktestEngine(config)
+    metrics = engine.run_backtest(strategies)
+    
+    # Save results
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Save trade ledger
+    engine.save_trade_ledger(f'reports/ledgers/comprehensive_backtest_{timestamp}.parquet')
+    
+    # Generate tearsheet
+    engine.generate_tearsheet(metrics, f'reports/tearsheets/comprehensive_backtest_{timestamp}.html')
+    
+    return metrics
+
+if __name__ == "__main__":
+    # Run example backtest
+    results = run_comprehensive_backtest()
+    print(f"Backtest completed: {results.get('total_return', 0):.2%} return")

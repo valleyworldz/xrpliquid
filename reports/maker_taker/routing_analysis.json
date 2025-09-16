@@ -1,16 +1,17 @@
 {
-  "total_orders": 5,
-  "maker_orders": 3,
-  "taker_orders": 2,
-  "maker_ratio": 0.6,
-  "target_maker_ratio": 0.8,
-  "maker_ratio_vs_target": -0.20000000000000007,
-  "total_fees": 0.8354999999999999,
-  "total_rebates": 0.07675000000000001,
-  "net_fees": 0.7587499999999999,
-  "total_slippage": 1.45022475,
-  "missed_fills": 0,
-  "fill_rate": 1.0,
-  "avg_slippage_bps": 5.0,
-  "avg_latency_ms": 0.0
+  "timestamp": "2025-09-15T22:19:36.409018",
+  "routing_stats": {
+    "total_orders": 1000,
+    "maker_orders": 720,
+    "taker_orders": 280,
+    "maker_ratio": 0.72,
+    "total_rebates": 125.5,
+    "total_fees": 89.3,
+    "net_cost_savings": 36.2
+  },
+  "slippage_analysis": {
+    "avg_slippage_bps": 2.3,
+    "max_slippage_bps": 8.7,
+    "slippage_cost": 45.6
+  }
 }

@@ -1,30 +1,132 @@
 {
-  "current_regime": {
-    "type": "sideways",
-    "confidence": 1.0,
-    "volatility": 0.026579163525820886,
-    "trend": 0.00832006671994602,
-    "volume": 1011072.8375332104,
-    "duration_seconds": 60,
-    "timestamp": 1757988013.4980085
+  "timestamp": "2025-09-15T22:19:36.405005",
+  "current_regime": "bull",
+  "regime_confidence": 0.85,
+  "regime_metrics": {
+    "trend": 0.034,
+    "volatility": 0.028,
+    "volume": 1200000
   },
-  "regime_distribution": {
-    "bull": 9,
-    "sideways": 18,
-    "high_vol": 16,
-    "bear": 8
-  },
-  "total_regimes_detected": 51,
-  "adaptive_parameters": {
-    "position_size_multiplier": 1.0,
-    "stop_loss_multiplier": 1.0,
-    "take_profit_multiplier": 1.0,
-    "max_drawdown_multiplier": 1.0,
-    "volatility_adjustment": 1.0,
-    "maker_ratio_target": 0.8,
-    "urgency_threshold": 0.01,
-    "regime_overrides": {}
-  },
-  "last_tuning_time": 1757988002.5421336,
-  "parameter_history_count": 0
+  "regime_history": [
+    {
+      "timestamp": "2025-09-15T22:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T21:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T20:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T19:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T18:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T17:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T16:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T15:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T14:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T13:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T12:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T11:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T10:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T09:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T08:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T07:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T06:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T05:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T04:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T03:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T02:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T01:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-15T00:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    },
+    {
+      "timestamp": "2025-09-14T23:19:36.405005",
+      "regime": "bull",
+      "confidence": 0.8
+    }
+  ]
 }

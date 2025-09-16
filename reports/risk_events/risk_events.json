@@ -1,0 +1,452 @@
+[
+  {
+    "timestamp": "2025-09-15T22:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03858013222407755,
+    "action": "warning_logged",
+    "daily_pnl": 40.67386999776008,
+    "rolling_pnl": 3.1434900015007656,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T21:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.027141278269588464,
+    "action": "warning_logged",
+    "daily_pnl": -89.66081827980271,
+    "rolling_pnl": -54.93504476288928,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T20:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03320540396283635,
+    "action": "warning_logged",
+    "daily_pnl": -61.90228699356198,
+    "rolling_pnl": 63.30765364835446,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T19:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.02537396145897864,
+    "action": "warning_logged",
+    "daily_pnl": 7.304617284333446,
+    "rolling_pnl": -118.65732398582358,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T18:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06561969328424826,
+    "action": "warning_logged",
+    "daily_pnl": 8.361707669531683,
+    "rolling_pnl": -197.7824295667121,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T17:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.05054812477529595,
+    "action": "warning_logged",
+    "daily_pnl": -79.10207764329304,
+    "rolling_pnl": 59.868109173603045,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T16:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.0722951529717444,
+    "action": "warning_logged",
+    "daily_pnl": -37.248128875936295,
+    "rolling_pnl": -66.68131446467584,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T15:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03819697636427163,
+    "action": "warning_logged",
+    "daily_pnl": 7.490944844004659,
+    "rolling_pnl": -92.40159109206226,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T14:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03606754847135803,
+    "action": "warning_logged",
+    "daily_pnl": -35.16534107432376,
+    "rolling_pnl": -172.5537444837624,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T13:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06479619227865223,
+    "action": "warning_logged",
+    "daily_pnl": -98.11053980923195,
+    "rolling_pnl": -6.654481543821817,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T12:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.030971871605292346,
+    "action": "warning_logged",
+    "daily_pnl": -65.13939306783803,
+    "rolling_pnl": -9.310400407988027,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T11:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.07957660794697442,
+    "action": "warning_logged",
+    "daily_pnl": 16.657623360882596,
+    "rolling_pnl": -132.2481103329824,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T10:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03056148530246803,
+    "action": "warning_logged",
+    "daily_pnl": 29.93493054015056,
+    "rolling_pnl": -66.7448156235487,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T09:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.02822316816968933,
+    "action": "warning_logged",
+    "daily_pnl": 29.331713498290725,
+    "rolling_pnl": 44.82770587427842,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T08:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.07903438183382981,
+    "action": "warning_logged",
+    "daily_pnl": 36.46155300690259,
+    "rolling_pnl": 55.53710159816251,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T07:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.02315446386866019,
+    "action": "warning_logged",
+    "daily_pnl": -84.3376945752823,
+    "rolling_pnl": -29.305041708763156,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T06:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.051888754776909254,
+    "action": "warning_logged",
+    "daily_pnl": -31.305517826569684,
+    "rolling_pnl": -80.96320237562473,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T05:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04587262909185973,
+    "action": "warning_logged",
+    "daily_pnl": -14.60530987978072,
+    "rolling_pnl": -199.37704471997563,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T04:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03564252644797113,
+    "action": "warning_logged",
+    "daily_pnl": -22.258041896693342,
+    "rolling_pnl": 16.664829602093874,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T03:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.030449401543723782,
+    "action": "warning_logged",
+    "daily_pnl": -17.967823931885064,
+    "rolling_pnl": 14.337905165734526,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T02:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04667765947483428,
+    "action": "warning_logged",
+    "daily_pnl": -95.93782994949234,
+    "rolling_pnl": -65.21955246030899,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T01:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03778669326464919,
+    "action": "warning_logged",
+    "daily_pnl": 39.44744115519924,
+    "rolling_pnl": -162.61598429650178,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-15T00:19:36.394040",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.05914855733043392,
+    "action": "warning_logged",
+    "daily_pnl": -92.09203504982483,
+    "rolling_pnl": -66.14886865619104,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T23:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.053238769233204836,
+    "action": "warning_logged",
+    "daily_pnl": -55.30676030247018,
+    "rolling_pnl": -63.477309343884656,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T22:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.029813227671811243,
+    "action": "warning_logged",
+    "daily_pnl": -54.381422579794574,
+    "rolling_pnl": -13.668102526939094,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T21:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.038108003351669306,
+    "action": "warning_logged",
+    "daily_pnl": 34.96146176133075,
+    "rolling_pnl": -11.47791270770307,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T20:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04631894110615907,
+    "action": "warning_logged",
+    "daily_pnl": -94.18645966687262,
+    "rolling_pnl": -50.13549943859863,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T19:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06588657452750535,
+    "action": "warning_logged",
+    "daily_pnl": -60.16636029813795,
+    "rolling_pnl": 42.03207089463021,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T18:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03510840596305289,
+    "action": "warning_logged",
+    "daily_pnl": 23.561958192620068,
+    "rolling_pnl": -174.4194975164968,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T17:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.07197102253214177,
+    "action": "warning_logged",
+    "daily_pnl": -25.122032360000432,
+    "rolling_pnl": -111.0387231139214,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T16:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03590679502490893,
+    "action": "warning_logged",
+    "daily_pnl": -35.1984161604456,
+    "rolling_pnl": 99.71484943109351,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T15:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.033219643606254956,
+    "action": "warning_logged",
+    "daily_pnl": -84.51750266815006,
+    "rolling_pnl": -24.48944938440144,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T14:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04931254798641543,
+    "action": "warning_logged",
+    "daily_pnl": -21.370559340503902,
+    "rolling_pnl": 0.08062526716511798,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T13:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.03602864419223896,
+    "action": "warning_logged",
+    "daily_pnl": 36.59974930758327,
+    "rolling_pnl": -69.29838016331288,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T12:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.027745171708547706,
+    "action": "warning_logged",
+    "daily_pnl": 11.34481351009164,
+    "rolling_pnl": -7.068694214644921,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T11:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.038944604149042224,
+    "action": "warning_logged",
+    "daily_pnl": -6.7721913948927295,
+    "rolling_pnl": -134.04141308930696,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T10:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04669036156043177,
+    "action": "warning_logged",
+    "daily_pnl": 34.9118783250988,
+    "rolling_pnl": -159.93973005177517,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T09:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.04320178699924772,
+    "action": "warning_logged",
+    "daily_pnl": 23.171363708052084,
+    "rolling_pnl": 90.84726982185344,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T08:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.047235568185307754,
+    "action": "warning_logged",
+    "daily_pnl": -23.950056978497884,
+    "rolling_pnl": -28.348411464869088,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T07:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.07594088849802265,
+    "action": "warning_logged",
+    "daily_pnl": 28.731018646554475,
+    "rolling_pnl": -148.8196626135067,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T06:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.0462054690708245,
+    "action": "warning_logged",
+    "daily_pnl": -30.39993577053606,
+    "rolling_pnl": 36.728833494627,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T05:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.05617357295632612,
+    "action": "warning_logged",
+    "daily_pnl": -1.8669306956480511,
+    "rolling_pnl": 99.45997229968526,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T04:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.024497602608200785,
+    "action": "warning_logged",
+    "daily_pnl": -66.54852646994004,
+    "rolling_pnl": -77.63121878853595,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T03:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.040866944182933226,
+    "action": "warning_logged",
+    "daily_pnl": -96.75316579795246,
+    "rolling_pnl": -172.46671805864725,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T02:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06085719748421457,
+    "action": "warning_logged",
+    "daily_pnl": 31.898669504384088,
+    "rolling_pnl": -45.731896620206726,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T01:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.05235146477081798,
+    "action": "warning_logged",
+    "daily_pnl": -61.73598507514309,
+    "rolling_pnl": 30.36290909011342,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-14T00:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06510767524203538,
+    "action": "warning_logged",
+    "daily_pnl": -11.745146617351509,
+    "rolling_pnl": -136.20071404659714,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-13T23:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.025821093094225367,
+    "action": "warning_logged",
+    "daily_pnl": -90.36421362143112,
+    "rolling_pnl": -22.191180007136666,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-13T22:19:36.395007",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.069502119148568,
+    "action": "warning_logged",
+    "daily_pnl": 28.749564767138736,
+    "rolling_pnl": -60.91337769696506,
+    "peak_equity": 10000.0
+  },
+  {
+    "timestamp": "2025-09-13T21:19:36.396008",
+    "event_type": "drawdown_warning",
+    "drawdown": 0.06705627795840301,
+    "action": "warning_logged",
+    "daily_pnl": 42.032029451153534,
+    "rolling_pnl": -117.4489662535796,
+    "peak_equity": 10000.0
+  }
+]
