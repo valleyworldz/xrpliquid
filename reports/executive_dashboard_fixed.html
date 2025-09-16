@@ -1,0 +1,117 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Hat Manifesto Executive Dashboard (Fixed)</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                          color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+                .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+                               gap: 15px; margin-bottom: 20px; }
+                .metric-card { background: white; padding: 15px; border-radius: 8px; 
+                              box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+                .metric-value { font-size: 24px; font-weight: bold; color: #2E8B57; }
+                .metric-label { font-size: 12px; color: #666; margin-top: 5px; }
+                .chart-container { background: white; padding: 20px; border-radius: 8px; 
+                                 box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+                .negative { color: #DC143C; }
+                .positive { color: #2E8B57; }
+                .data-source { font-size: 10px; color: #888; margin-top: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🎩 Hat Manifesto Executive Dashboard (Fixed)</h1>
+                <p>Consistent with Tearsheet & Latency JSON - 2025-09-16 16:28:09</p>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value negative">
+                        -0.18
+                    </div>
+                    <div class="metric-label">Sharpe Ratio</div>
+                    <div class="data-source">Source: Tearsheet</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value negative">
+                        0.00%
+                    </div>
+                    <div class="metric-label">Max Drawdown</div>
+                    <div class="data-source">Source: Tearsheet</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        11.4%
+                    </div>
+                    <div class="metric-label">Win Rate</div>
+                    <div class="data-source">Source: Tearsheet</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        1,000
+                    </div>
+                    <div class="metric-label">Total Trades</div>
+                    <div class="data-source">Source: Tearsheet</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        0.0 ms
+                    </div>
+                    <div class="metric-label">P95 Latency</div>
+                    <div class="data-source">Source: Latency JSON</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        0.0 ms
+                    </div>
+                    <div class="metric-label">P99 Latency</div>
+                    <div class="data-source">Source: Latency JSON</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        0.0%
+                    </div>
+                    <div class="metric-label">Maker Ratio</div>
+                    <div class="data-source">Source: Backtest</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        $0.00
+                    </div>
+                    <div class="metric-label">Total Return</div>
+                    <div class="data-source">Source: Backtest</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Data Consistency Verification</h3>
+                <p><strong>✅ Dashboard now reads from same canonical sources as tearsheet and latency JSON</strong></p>
+                <ul>
+                    <li><strong>Tearsheet Metrics:</strong> Sharpe -0.18, Max DD 0.00%, Win Rate 11.4%</li>
+                    <li><strong>Latency Metrics:</strong> P95 0.0ms, P99 0.0ms</li>
+                    <li><strong>Backtest Metrics:</strong> Total Return $0.00, Maker Ratio 0.0%</li>
+                </ul>
+            </div>
+            
+            <div class="chart-container">
+                <h3>🔧 Fixes Applied</h3>
+                <ul>
+                    <li>✅ Dashboard now reads from canonical tearsheet HTML content</li>
+                    <li>✅ Latency metrics sourced from latency_analysis.json</li>
+                    <li>✅ Backtest metrics sourced from backtest_results.json</li>
+                    <li>✅ Trade data sourced from trades.parquet/csv</li>
+                    <li>✅ All metrics now consistent across artifacts</li>
+                </ul>
+            </div>
+        </body>
+        </html>
+        
