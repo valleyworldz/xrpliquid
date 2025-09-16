@@ -1,0 +1,16 @@
+{
+  "total_orders": 5,
+  "maker_orders": 3,
+  "taker_orders": 2,
+  "maker_ratio": 0.6,
+  "target_maker_ratio": 0.8,
+  "maker_ratio_vs_target": -0.20000000000000007,
+  "total_fees": 0.8354999999999999,
+  "total_rebates": 0.07675000000000001,
+  "net_fees": 0.7587499999999999,
+  "total_slippage": 1.45022475,
+  "missed_fills": 0,
+  "fill_rate": 1.0,
+  "avg_slippage_bps": 5.0,
+  "avg_latency_ms": 0.0
+}

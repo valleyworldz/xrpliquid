@@ -1,0 +1,32 @@
+{
+  "backtest_info": {
+    "timestamp": "20250915_220129",
+    "start_date": "2022-01-01",
+    "end_date": "2025-09-15",
+    "initial_capital": 10000.0
+  },
+  "performance_metrics": {
+    "total_return": 1.850128561578333,
+    "total_trades": 1354,
+    "winning_trades": 422,
+    "total_fees": 760.3332604835044,
+    "total_pnl": 459435.52180058823
+  },
+  "strategy_performance": {
+    "pnl_realized": {
+      "BUY": 153586.86816105622,
+      "FUNDING_ARBITRAGE": 151153.40473850552,
+      "SCALP": 154695.24890102647
+    },
+    "fee": {
+      "BUY": 250.73161878894433,
+      "FUNDING_ARBITRAGE": 250.30460191465778,
+      "SCALP": 259.29703977990226
+    },
+    "qty": {
+      "BUY": 455,
+      "FUNDING_ARBITRAGE": 437,
+      "SCALP": 462
+    }
+  }
+}

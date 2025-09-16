@@ -1,0 +1,69 @@
+# HELP trading_system_uptime_seconds Total uptime in seconds
+# TYPE trading_system_uptime_seconds counter
+trading_system_uptime_seconds 103.7626461982727
+# HELP trading_system_total_measurements Total number of measurements
+# TYPE trading_system_total_measurements counter
+trading_system_total_measurements 1000
+# HELP trading_system_success_rate Success rate of operations
+# TYPE trading_system_success_rate gauge
+trading_system_success_rate 1.0
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="strategy_signal",quantile="0.5"} 103.40690612792969
+trading_system_latency_ms{operation="strategy_signal",quantile="0.95"} 194.4336891174316
+trading_system_latency_ms{operation="strategy_signal",quantile="0.99"} 200.76456069946286
+trading_system_latency_ms{operation="strategy_signal",quantile="0.999"} 208.6846733093263
+trading_system_latency_ms{operation="strategy_signal",quantile="1.0"} 209.5646858215332
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="strategy_signal"} 93
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="order_fill",quantile="0.5"} 88.25290203094482
+trading_system_latency_ms{operation="order_fill",quantile="0.95"} 194.4632530212402
+trading_system_latency_ms{operation="order_fill",quantile="0.99"} 199.618079662323
+trading_system_latency_ms{operation="order_fill",quantile="0.999"} 200.83281779289248
+trading_system_latency_ms{operation="order_fill",quantile="1.0"} 200.96778869628906
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="order_fill"} 88
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="portfolio_update",quantile="0.5"} 86.02333068847656
+trading_system_latency_ms{operation="portfolio_update",quantile="0.95"} 188.15675973892212
+trading_system_latency_ms{operation="portfolio_update",quantile="0.99"} 193.1020212173462
+trading_system_latency_ms{operation="portfolio_update",quantile="0.999"} 193.51796102523804
+trading_system_latency_ms{operation="portfolio_update",quantile="1.0"} 193.56417655944824
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="portfolio_update"} 100
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="risk_check",quantile="0.5"} 102.46610641479492
+trading_system_latency_ms{operation="risk_check",quantile="0.95"} 188.97783756256104
+trading_system_latency_ms{operation="risk_check",quantile="0.99"} 196.81961536407474
+trading_system_latency_ms{operation="risk_check",quantile="0.999"} 199.6074461936951
+trading_system_latency_ms{operation="risk_check",quantile="1.0"} 199.89013671875
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="risk_check"} 111
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="order_placement",quantile="0.5"} 107.4686050415039
+trading_system_latency_ms{operation="order_placement",quantile="0.95"} 195.73988914489746
+trading_system_latency_ms{operation="order_placement",quantile="0.99"} 197.52229690551758
+trading_system_latency_ms{operation="order_placement",quantile="0.999"} 199.12034416198733
+trading_system_latency_ms{operation="order_placement",quantile="1.0"} 199.29790496826172
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="order_placement"} 85
+# HELP trading_system_latency_ms Latency in milliseconds
+# TYPE trading_system_latency_ms histogram
+trading_system_latency_ms{operation="data_update",quantile="0.5"} 108.36732387542725
+trading_system_latency_ms{operation="data_update",quantile="0.95"} 193.94297599792478
+trading_system_latency_ms{operation="data_update",quantile="0.99"} 199.63961362838745
+trading_system_latency_ms{operation="data_update",quantile="0.999"} 199.75221705436707
+trading_system_latency_ms{operation="data_update",quantile="1.0"} 199.76472854614258
+# HELP trading_system_operation_count Total number of operations
+# TYPE trading_system_operation_count counter
+trading_system_operation_count{operation="data_update"} 98

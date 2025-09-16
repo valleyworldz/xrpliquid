@@ -1,0 +1,35 @@
+{
+  "kill_switch_active": false,
+  "in_cooldown": false,
+  "current_drawdown": 0.0,
+  "daily_drawdown": 0.05,
+  "rolling_drawdown": 0.35,
+  "max_drawdown": 0.0,
+  "realized_pnl": -500.0,
+  "account_balance": 10000.0,
+  "initial_balance": 10000.0,
+  "risk_events_count": 196,
+  "last_risk_event": {
+    "timestamp": 1757987898.760536,
+    "event_type": "drawdown_limit",
+    "current_drawdown": 0.0,
+    "daily_drawdown": 0.05,
+    "rolling_drawdown": 0.35,
+    "realized_pnl": -500.0,
+    "account_balance": 10000.0,
+    "position_count": 0,
+    "total_exposure": 0.0,
+    "message": "Rolling drawdown limit exceeded: 35.00% >= 5.00%",
+    "action_taken": "position_reduction_recommended"
+  },
+  "config": {
+    "daily_drawdown_limit": 0.02,
+    "rolling_drawdown_limit": 0.05,
+    "rolling_window_days": 7,
+    "kill_switch_threshold": 0.08,
+    "check_interval_seconds": 5,
+    "cooldown_period_hours": 24,
+    "log_directory": "reports/risk_events",
+    "log_retention_days": 90
+  }
+}

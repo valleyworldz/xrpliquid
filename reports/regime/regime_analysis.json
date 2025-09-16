@@ -1,0 +1,30 @@
+{
+  "current_regime": {
+    "type": "sideways",
+    "confidence": 1.0,
+    "volatility": 0.026579163525820886,
+    "trend": 0.00832006671994602,
+    "volume": 1011072.8375332104,
+    "duration_seconds": 60,
+    "timestamp": 1757988013.4980085
+  },
+  "regime_distribution": {
+    "bull": 9,
+    "sideways": 18,
+    "high_vol": 16,
+    "bear": 8
+  },
+  "total_regimes_detected": 51,
+  "adaptive_parameters": {
+    "position_size_multiplier": 1.0,
+    "stop_loss_multiplier": 1.0,
+    "take_profit_multiplier": 1.0,
+    "max_drawdown_multiplier": 1.0,
+    "volatility_adjustment": 1.0,
+    "maker_ratio_target": 0.8,
+    "urgency_threshold": 0.01,
+    "regime_overrides": {}
+  },
+  "last_tuning_time": 1757988002.5421336,
+  "parameter_history_count": 0
+}
