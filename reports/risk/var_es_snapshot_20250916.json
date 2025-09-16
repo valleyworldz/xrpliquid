@@ -1,0 +1,53 @@
+{
+  "date": "2025-09-16",
+  "risk_check": {
+    "timestamp": "2025-09-16T15:16:44.194836+00:00",
+    "status": "warning",
+    "violations": [
+      {
+        "type": "max_directional_exposure",
+        "current_value": 0.8135831201473076,
+        "limit": 0.3,
+        "severity": "high"
+      }
+    ],
+    "alerts": [
+      "Max directional exposure exceeded: 0.814 > 0.300"
+    ],
+    "var_es_metrics": {
+      "var_95": -0.03453647897311036,
+      "var_99": -0.04433124418322106,
+      "es_95": 0.03954274330439339,
+      "es_99": 0.050486198523791645,
+      "volatility": 0.018163368560156015,
+      "skewness": -0.17526772024433757,
+      "kurtosis": -0.15540470774208082
+    },
+    "funding_directional_metrics": {
+      "funding_pnl": 0.022304587049923903,
+      "directional_pnl": 0.09734437965067266,
+      "correlation": -0.03663174574715595,
+      "funding_exposure": 0.1864168798526924,
+      "directional_exposure": 0.8135831201473076,
+      "risk_ratio": 0.22913071232222676
+    }
+  },
+  "historical_summary": {
+    "days_analyzed": 1,
+    "avg_var_95": -0.03453647897311036,
+    "max_var_95": -0.03453647897311036,
+    "avg_var_99": -0.04433124418322106,
+    "max_var_99": -0.04433124418322106,
+    "avg_es_95": 0.03954274330439339,
+    "max_es_95": 0.03954274330439339,
+    "avg_volatility": 0.018163368560156015,
+    "max_volatility": 0.018163368560156015,
+    "avg_risk_ratio": 0.22913071232222676,
+    "max_risk_ratio": 0.22913071232222676
+  },
+  "recommendations": [
+    "High risk levels detected - consider reducing position sizes",
+    "Monitor risk metrics closely and be prepared to take action",
+    "Reduce directional position sizes"
+  ]
+}

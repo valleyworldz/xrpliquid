@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-16T15:16:19.800180+00:00",
+  "current_regime": {
+    "regime": "medium",
+    "volatility": 0.29822961293365835,
+    "confidence": 0.0,
+    "duration_days": 0,
+    "transition_probability": 0.050695945149354056
+  },
+  "regime_sizing_parameters": {
+    

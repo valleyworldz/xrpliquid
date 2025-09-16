@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-09-16T15:16:50.991137+00:00",
+  "slo_compliance": {
+    "total_slos": 5,
+    "healthy_slos": 2,
+    "warning_slos": 0,
+    "breached_slos": 3,
+    "compliance_rate": 0.4
+  },
+  "uptime": {
+    "uptime_hours": 15.280830871388888,
+    "uptime_percentage": 63.67012863078704
+  },
+  "slo_metrics": {
+    "latency_p95": {
+      "current_value": 315.6312151235809,
+      "target": 250.0,
+      "status": "breached",
+      "breach_count": 1,
+      "last_breach": "2025-09-16T15:16:50.982439+00:00"
+    },
+    "latency_p99": {
+      "current_value": 323.4126721086574,
+      "target": 500.0,
+      "status": "healthy",
+      "breach_count": 0,
+      "last_breach": null
+    },
+    "error_rate": {
+      "current_value": 0.002342847793569627,
+      "target": 0.01,
+      "status": "healthy",
+      "breach_count": 0,
+      "last_breach": null
+    },
+    "success_rate": {
+      "current_value": 0.9976571522064304,
+      "target": 0.99,
+      "status": "breached",
+      "breach_count": 1,
+      "last_breach": "2025-09-16T15:16:50.982439+00:00"
+    },
+    "throughput": {
+      "current_value": 10380.288993417544,
+      "target": 1000.0,
+      "status": "breached",
+      "breach_count": 1,
+      "last_breach": "2025-09-16T15:16:50.982439+00:00"
+    }
+  },
+  "burn_rate_alerts": [
+    {
+      "metric_name": "latency",
+      "current_rate": 1.913030322416368,
+      "threshold_rate": 0.1,
+      "alert_level": "critical",
+      "triggered_at": "2025-09-16T15:16:50.983386+00:00"
+    },
+    {
+      "metric_name": "throughput",
+      "current_rate": -4.3773406178938385,
+      "threshold_rate": 0.2,
+      "alert_level": "critical",
+      "triggered_at": "2025-09-16T15:16:50.983386+00:00"
+    }
+  ],
+  "recommendations": [
+    "CRITICAL: latency_p95 SLO breached - immediate action required",
+    "CRITICAL: success_rate SLO breached - immediate action required",
+    "CRITICAL: throughput SLO breached - immediate action required",
+    "CRITICAL: Multiple burn rate alerts - system may be degrading"
+  ]
+}
