@@ -176,42 +176,70 @@ class ExecutiveDashboard:
         """Generate risk events timeline."""
         if not risk_events:
             return go.Figure()
+        
+        try:
+            # Convert to DataFrame for easier manipulation
+            events_df = pd.DataFrame(risk_events)
             
-        # Convert to DataFrame for easier manipulation
-        events_df = pd.DataFrame(risk_events)
-        
-        fig = go.Figure()
-        
-        # Color code by severity
-        severity_colors = {
-            'WARNING': '#FFD700',
-            'ALERT': '#FF8C00', 
-            'CRITICAL': '#FF0000',
-            'KILL_SWITCH': '#8B0000'
-        }
-        
-        for severity, color in severity_colors.items():
-            severity_events = events_df[events_df['severity'] == severity]
-            if not severity_events.empty:
+            # Check if required columns exist
+            if 'severity' not in events_df.columns:
+                # Create a simple timeline without severity grouping
+                fig = go.Figure()
                 fig.add_trace(go.Scatter(
-                    x=severity_events['timestamp'],
-                    y=[severity] * len(severity_events),
+                    x=events_df.get('timestamp', range(len(events_df))),
+                    y=[1] * len(events_df),
                     mode='markers',
-                    name=severity,
-                    marker=dict(color=color, size=10),
-                    text=severity_events['message'],
+                    name='Risk Events',
+                    marker=dict(color='#FF0000', size=10),
+                    text=events_df.get('message', ['Risk Event'] * len(events_df)),
                     hovertemplate='%{text}<br>Time: %{x}<extra></extra>'
                 ))
-        
-        fig.update_layout(
-            title='Risk Events Timeline',
-            xaxis_title='Time',
-            yaxis_title='Severity',
-            height=300,
-            showlegend=True
-        )
-        
-        return fig
+                
+                fig.update_layout(
+                    title='Risk Events Timeline',
+                    xaxis_title='Time',
+                    yaxis_title='Events',
+                    height=300,
+                    showlegend=True
+                )
+                return fig
+            
+            fig = go.Figure()
+            
+            # Color code by severity
+            severity_colors = {
+                'WARNING': '#FFD700',
+                'ALERT': '#FF8C00', 
+                'CRITICAL': '#FF0000',
+                'KILL_SWITCH': '#8B0000'
+            }
+            
+            for severity, color in severity_colors.items():
+                severity_events = events_df[events_df['severity'] == severity]
+                if not severity_events.empty:
+                    fig.add_trace(go.Scatter(
+                        x=severity_events['timestamp'],
+                        y=[severity] * len(severity_events),
+                        mode='markers',
+                        name=severity,
+                        marker=dict(color=color, size=10),
+                        text=severity_events.get('message', ['Risk Event'] * len(severity_events)),
+                        hovertemplate='%{text}<br>Time: %{x}<extra></extra>'
+                    ))
+            
+            fig.update_layout(
+                title='Risk Events Timeline',
+                xaxis_title='Time',
+                yaxis_title='Severity',
+                height=300,
+                showlegend=True
+            )
+            
+            return fig
+            
+        except Exception as e:
+            print(f"Warning: Could not generate risk events timeline: {e}")
+            return go.Figure()
     
     def generate_attribution_analysis(self, trades_df: pd.DataFrame):
         """Generate strategy attribution analysis."""
