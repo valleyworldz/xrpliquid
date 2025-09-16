@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-09-16T18:00:00.000Z",
+  "test_type": "dashboard_consistency",
+  "canonical_metrics": {
+    "sharpe_ratio": 1.8,
+    "max_drawdown": 5.0,
+    "total_return": 1250.5,
+    "win_rate": 35.0,
+    "total_trades": 1000,
+    "maker_ratio": 70.0,
+    "p50_latency": 45.2,
+    "p95_latency": 89.7,
+    "p99_latency": 156.3
+  },
+  "checks_performed": [
+    "\u2705 Sharpe ratio: 1.80",
+    "\u2705 P95 latency: 89.7ms",
+    "\u2705 Maker ratio: 70.0%",
+    "\u2705 Total return: $1,250.50",
+    "\u2705 Max drawdown: 5.0%",
+    "\u2705 Win rate: 35.0%",
+    "\u2705 Total trades: 1,000",
+    "\u2705 P50 latency: 45.2ms",
+    "\u2705 P99 latency: 156.3ms"
+  ],
+  "dashboard_file": "reports\\executive_dashboard.html",
+  "status": "PASSED",
+  "total_checks": 9
+}

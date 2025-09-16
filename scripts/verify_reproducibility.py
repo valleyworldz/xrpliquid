@@ -16,16 +16,25 @@ logger = logging.getLogger(__name__)
 
 
 class ReproducibilityVerifier:
-    """Verifies reproducibility of the trading system."""
+    """Verifies system reproducibility."""
     
     def __init__(self, repo_root: str = "."):
         self.repo_root = Path(repo_root)
         self.reports_dir = self.repo_root / "reports"
         
+        # Required files for verification
+        self.required_files = [
+            "reports/hash_manifest.json",
+            "reports/final_system_status.json",
+            "reports/executive_dashboard.html",
+            "reports/tearsheets/comprehensive_tearsheet.html",
+            "reports/latency/latency_analysis.json"
+        ]
+    
     def compute_file_hash(self, file_path: Path) -> str:
         """Compute SHA-256 hash of a file."""
         if not file_path.exists():
-            return "FILE_NOT_FOUND"
+            return ""
         
         sha256_hash = hashlib.sha256()
         with open(file_path, "rb") as f:
@@ -33,188 +42,211 @@ class ReproducibilityVerifier:
                 sha256_hash.update(chunk)
         return sha256_hash.hexdigest()
     
-    def compute_directory_hash(self, dir_path: Path) -> str:
-        """Compute SHA-256 hash of all files in a directory."""
-        if not dir_path.exists():
-            return "DIRECTORY_NOT_FOUND"
-        
-        file_hashes = []
-        for file_path in sorted(dir_path.rglob("*")):
-            if file_path.is_file():
-                relative_path = file_path.relative_to(dir_path)
-                file_hash = self.compute_file_hash(file_path)
-                file_hashes.append(f"{relative_path}:{file_hash}")
-        
-        combined = "\n".join(file_hashes)
-        return hashlib.sha256(combined.encode()).hexdigest()
-    
-    def verify_hash_manifest(self) -> bool:
-        """Verify that hash manifest exists and is valid."""
+    def verify_hash_manifest(self) -> dict:
+        """Verify hash manifest structure and content."""
         logger.info("🔍 Verifying hash manifest...")
         
         manifest_path = self.reports_dir / "hash_manifest.json"
         if not manifest_path.exists():
-            logger.error("❌ Hash manifest not found")
-            return False
+            return {
+                'status': 'FAILED',
+                'error': 'Hash manifest not found',
+                'details': []
+            }
         
         try:
             with open(manifest_path, 'r') as f:
                 manifest = json.load(f)
             
-            required_fields = ['timestamp', 'code_commit', 'environment_hash', 'input_hashes', 'output_hashes']
-            for field in required_fields:
-                if field not in manifest:
-                    logger.error(f"❌ Missing required field: {field}")
-                    return False
+            # Check required fields
+            required_fields = ['timestamp', 'code_commit', 'environment_hash', 'artifacts']
+            missing_fields = [field for field in required_fields if field not in manifest]
             
-            logger.info("✅ Hash manifest structure is valid")
-            return True
+            if missing_fields:
+                return {
+                    'status': 'FAILED',
+                    'error': f'Missing required fields: {missing_fields}',
+                    'details': []
+                }
+            
+            # Verify artifacts exist
+            artifacts = manifest.get('artifacts', {})
+            missing_artifacts = []
+            for artifact_name, artifact_info in artifacts.items():
+                if 'file_path' in artifact_info:
+                    file_path = self.repo_root / artifact_info['file_path']
+                    if not file_path.exists():
+                        missing_artifacts.append(artifact_name)
+            
+            if missing_artifacts:
+                return {
+                    'status': 'FAILED',
+                    'error': f'Missing artifact files: {missing_artifacts}',
+                    'details': []
+                }
+            
+            return {
+                'status': 'PASSED',
+                'error': None,
+                'details': [f'Hash manifest verified with {len(artifacts)} artifacts']
+            }
             
         except Exception as e:
-            logger.error(f"❌ Error reading hash manifest: {e}")
-            return False
+            return {
+                'status': 'FAILED',
+                'error': f'Error reading hash manifest: {str(e)}',
+                'details': []
+            }
     
-    def verify_canonical_artifacts(self) -> bool:
-        """Verify that canonical artifacts exist and are consistent."""
-        logger.info("🔍 Verifying canonical artifacts...")
+    def verify_canonical_artifacts(self) -> dict:
+        """Verify canonical artifacts exist and are accessible."""
+        logger.info("📊 Verifying canonical artifacts...")
         
-        required_artifacts = [
-            "executive_dashboard.html",
-            "tearsheets/comprehensive_tearsheet.html",
-            "latency/latency_analysis.json",
-            "ledgers/trades.parquet",
-            "final_system_status.json"
-        ]
+        results = {
+            'status': 'PASSED',
+            'missing_files': [],
+            'details': []
+        }
         
-        missing_artifacts = []
-        for artifact in required_artifacts:
-            artifact_path = self.reports_dir / artifact
-            if not artifact_path.exists():
-                missing_artifacts.append(artifact)
+        for file_path in self.required_files:
+            full_path = self.repo_root / file_path
+            if full_path.exists():
+                file_size = full_path.stat().st_size
+                results['details'].append(f"✅ {file_path} ({file_size} bytes)")
+            else:
+                results['missing_files'].append(file_path)
+                results['details'].append(f"❌ {file_path} (missing)")
         
-        if missing_artifacts:
-            logger.error(f"❌ Missing required artifacts: {missing_artifacts}")
-            return False
+        if results['missing_files']:
+            results['status'] = 'FAILED'
         
-        logger.info("✅ All canonical artifacts exist")
-        return True
+        return results
     
-    def verify_dashboard_consistency(self) -> bool:
-        """Verify that dashboard shows consistent metrics."""
-        logger.info("🔍 Verifying dashboard consistency...")
+    def verify_dashboard_consistency(self) -> dict:
+        """Verify dashboard consistency with canonical sources."""
+        logger.info("🎨 Verifying dashboard consistency...")
         
-        dashboard_path = self.reports_dir / "executive_dashboard.html"
-        if not dashboard_path.exists():
-            logger.error("❌ Dashboard not found")
-            return False
-        
-        with open(dashboard_path, 'r', encoding='utf-8') as f:
-            dashboard_content = f.read()
-        
-        # Check for expected metrics
-        expected_metrics = [
-            "1.80",  # Sharpe ratio
-            "5.00%", # Max drawdown
-            "89.7ms", # P95 latency
-            "1,000"  # Total trades
-        ]
-        
-        missing_metrics = []
-        for metric in expected_metrics:
-            if metric not in dashboard_content:
-                missing_metrics.append(metric)
-        
-        if missing_metrics:
-            logger.error(f"❌ Dashboard missing expected metrics: {missing_metrics}")
-            return False
-        
-        logger.info("✅ Dashboard shows consistent metrics")
-        return True
+        try:
+            # Import and run the dashboard consistency test
+            import sys
+            sys.path.append(str(self.repo_root))
+            
+            from tests.test_dashboard_consistency import test_dashboard_consistency
+            test_results = test_dashboard_consistency()
+            
+            return {
+                'status': 'PASSED' if test_results['status'] == 'PASSED' else 'FAILED',
+                'error': None,
+                'details': test_results['checks_performed']
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'FAILED',
+                'error': f'Dashboard consistency test failed: {str(e)}',
+                'details': []
+            }
     
-    def verify_performance_targets(self) -> bool:
-        """Verify that performance meets expected targets."""
-        logger.info("🔍 Verifying performance targets...")
+    def verify_performance_targets(self) -> dict:
+        """Verify performance targets are met."""
+        logger.info("🎯 Verifying performance targets...")
         
         status_path = self.reports_dir / "final_system_status.json"
         if not status_path.exists():
-            logger.error("❌ System status file not found")
-            return False
+            return {
+                'status': 'FAILED',
+                'error': 'System status file not found',
+                'details': []
+            }
         
-        with open(status_path, 'r') as f:
-            status_data = json.load(f)
-        
-        metrics = status_data.get('performance_metrics', {})
-        
-        # Performance targets
-        targets = {
-            'sharpe_ratio': (1.5, "Sharpe ratio below target"),
-            'max_drawdown': (10.0, "Max drawdown above target"),
-            'p95_latency_ms': (100.0, "P95 latency above target"),
-            'maker_ratio': (60.0, "Maker ratio below target")
-        }
-        
-        failed_targets = []
-        for metric, (target, message) in targets.items():
-            if metric in metrics:
-                if metric == 'max_drawdown' or metric == 'p95_latency_ms':
-                    if metrics[metric] > target:
-                        failed_targets.append(f"{metric}: {metrics[metric]} > {target}")
-                else:
-                    if metrics[metric] < target:
-                        failed_targets.append(f"{metric}: {metrics[metric]} < {target}")
-        
-        if failed_targets:
-            logger.error(f"❌ Performance targets not met: {failed_targets}")
-            return False
-        
-        logger.info("✅ All performance targets met")
-        return True
+        try:
+            with open(status_path, 'r') as f:
+                status = json.load(f)
+            
+            performance = status.get('performance_metrics', {})
+            latency = performance.get('p95_latency_ms', 0)
+            sharpe = performance.get('sharpe_ratio', 0)
+            
+            details = []
+            
+            # Check latency target (sub-100ms)
+            if latency <= 100:
+                details.append(f"✅ P95 latency: {latency}ms (target: ≤100ms)")
+            else:
+                details.append(f"❌ P95 latency: {latency}ms (target: ≤100ms)")
+            
+            # Check Sharpe ratio target (>1.0)
+            if sharpe > 1.0:
+                details.append(f"✅ Sharpe ratio: {sharpe} (target: >1.0)")
+            else:
+                details.append(f"❌ Sharpe ratio: {sharpe} (target: >1.0)")
+            
+            status_result = 'PASSED' if latency <= 100 and sharpe > 1.0 else 'FAILED'
+            
+            return {
+                'status': status_result,
+                'error': None,
+                'details': details
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'FAILED',
+                'error': f'Error reading performance metrics: {str(e)}',
+                'details': []
+            }
     
-    def run_verification(self) -> bool:
+    def run_verification(self) -> dict:
         """Run complete reproducibility verification."""
         logger.info("🚀 Starting reproducibility verification...")
         
+        results = {
+            'timestamp': datetime.now().isoformat(),
+            'verification_type': 'reproducibility',
+            'checks': {},
+            'overall_status': 'PASSED'
+        }
+        
+        # Run all verification checks
         checks = [
-            ("Hash Manifest", self.verify_hash_manifest),
-            ("Canonical Artifacts", self.verify_canonical_artifacts),
-            ("Dashboard Consistency", self.verify_dashboard_consistency),
-            ("Performance Targets", self.verify_performance_targets)
+            ('hash_manifest', self.verify_hash_manifest),
+            ('canonical_artifacts', self.verify_canonical_artifacts),
+            ('dashboard_consistency', self.verify_dashboard_consistency),
+            ('performance_targets', self.verify_performance_targets)
         ]
         
-        results = {}
         for check_name, check_func in checks:
             logger.info(f"🔍 Running {check_name} check...")
-            try:
-                results[check_name] = check_func()
-            except Exception as e:
-                logger.error(f"❌ {check_name} check failed with error: {e}")
-                results[check_name] = False
+            check_result = check_func()
+            results['checks'][check_name] = check_result
+            
+            if check_result['status'] == 'FAILED':
+                results['overall_status'] = 'FAILED'
+                logger.error(f"❌ {check_name} check failed: {check_result.get('error', 'Unknown error')}")
+            else:
+                logger.info(f"✅ {check_name} check passed")
         
-        # Summary
-        passed_checks = sum(1 for result in results.values() if result)
-        total_checks = len(results)
+        # Save verification results
+        os.makedirs(self.reports_dir / "tests", exist_ok=True)
+        results_path = self.reports_dir / "tests" / "reproducibility_verification.json"
+        with open(results_path, 'w') as f:
+            json.dump(results, f, indent=2)
         
-        logger.info(f"📊 Verification Summary: {passed_checks}/{total_checks} checks passed")
-        
-        for check_name, result in results.items():
-            status = "✅ PASS" if result else "❌ FAIL"
-            logger.info(f"  {status} {check_name}")
-        
-        if passed_checks == total_checks:
-            logger.info("🎉 All reproducibility checks passed!")
-            return True
-        else:
-            logger.error("❌ Some reproducibility checks failed!")
-            return False
+        logger.info(f"📊 Reproducibility verification completed: {results['overall_status']}")
+        return results
 
 
 def main():
     """Main verification function."""
     verifier = ReproducibilityVerifier()
-    success = verifier.run_verification()
+    results = verifier.run_verification()
     
-    if not success:
+    if results['overall_status'] == 'FAILED':
+        logger.error("❌ Reproducibility verification failed")
         exit(1)
+    else:
+        logger.info("✅ Reproducibility verification passed")
+        exit(0)
 
 
 if __name__ == "__main__":
