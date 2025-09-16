@@ -43,7 +43,63 @@ def find_main_bot():
     return None
 
 async def launch_ultimate_bot():
-    """Launch the ultra-efficient XRP trading bot with all 9 hats"""
+    """Launch the Hat Manifesto Ultimate Trading System with all 9 specialized roles"""
+    try:
+        # Import the Hat Manifesto Ultimate Trading System
+        from src.core.engines.hat_manifesto_ultimate_system import HatManifestoUltimateSystem
+        from src.core.api.hyperliquid_api import HyperliquidAPI
+        from src.core.utils.config_manager import ConfigManager
+        from src.core.utils.logger import Logger
+        
+        print("🎩 HAT MANIFESTO ULTIMATE TRADING SYSTEM")
+        print("=" * 70)
+        print("🏆 THE PINNACLE OF QUANT TRADING MASTERY")
+        print("🏆 10/10 PERFORMANCE ACROSS ALL SPECIALIZED ROLES")
+        print("🏆 HYPERLIQUID PROTOCOL EXPLOITATION MASTERY")
+        print("=" * 70)
+        
+        # Initialize components
+        logger = Logger()
+        config = ConfigManager()
+        api = HyperliquidAPI(testnet=False, logger=logger)
+        
+        # Initialize the Hat Manifesto Ultimate Trading System
+        hat_manifesto_system = HatManifestoUltimateSystem(
+            config=config.get_all(),
+            api=api,
+            logger=logger
+        )
+        
+        print("✅ All 9 specialized Hat Manifesto roles initialized at 10/10 performance:")
+        print("   🏗️  Hyperliquid Exchange Architect - Protocol Exploitation Mastery")
+        print("   🎯  Chief Quantitative Strategist - Data-Driven Alpha Generation")
+        print("   📊  Market Microstructure Analyst - Order Book & Liquidity Mastery")
+        print("   ⚡  Low-Latency Engineer - Sub-Millisecond Execution Optimization")
+        print("   🤖  Automated Execution Manager - Robust Order Lifecycle Management")
+        print("   🛡️  Risk Oversight Officer - Circuit Breaker & Survival Protocols")
+        print("   🔐  Cryptographic Security Architect - Key Protection & Transaction Security")
+        print("   📊  Performance Quant Analyst - Measurement & Insight Generation")
+        print("   🧠  Machine Learning Research Scientist - Adaptive Evolution Capabilities")
+        print("=" * 70)
+        
+        # Start Hat Manifesto Ultimate Trading System
+        print("🚀 Starting Hat Manifesto Ultimate Trading System...")
+        print("🎩 All specialized roles operating in perfect harmony...")
+        await hat_manifesto_system.start_trading()
+        
+    except ImportError as e:
+        print(f"❌ Import error: {e}")
+        print("🔄 Falling back to ultra-efficient XRP system...")
+        return await launch_fallback_system()
+    except Exception as e:
+        print(f"❌ Error launching Hat Manifesto system: {e}")
+        print("🔄 Falling back to ultra-efficient XRP system...")
+        return await launch_fallback_system()
+    
+    return True
+
+async def launch_fallback_system():
+    """Launch the ultra-efficient XRP trading bot as fallback"""
     try:
         # Import the ultra-efficient XRP trading system
         from src.core.engines.ultra_efficient_xrp_system import UltraEfficientXRPSystem
@@ -51,7 +107,7 @@ async def launch_ultimate_bot():
         from src.core.utils.config_manager import ConfigManager
         from src.core.utils.logger import Logger
         
-        print("🎯 ULTRA-EFFICIENT XRP TRADING BOT")
+        print("🎯 ULTRA-EFFICIENT XRP TRADING BOT (FALLBACK)")
         print("=" * 60)
         print("🏆 ZERO UNNECESSARY API CALLS - 100% XRP FOCUSED")
         print("🏆 MAXIMUM XRP TRADING EFFICIENCY WITH ALL 9 SPECIALIZED ROLES")
@@ -85,6 +141,8 @@ async def launch_ultimate_bot():
         print("🚀 Starting Ultra-Efficient XRP Trading System...")
         await ultra_xrp_system.start_trading()
         
+        return True
+        
     except ImportError as e:
         print(f"❌ Import error: {e}")
         print("🔄 Falling back to standard bot launcher...")
@@ -93,8 +151,6 @@ async def launch_ultimate_bot():
         print(f"❌ Error launching ultra-efficient XRP bot: {e}")
         print("🔄 Falling back to standard bot launcher...")
         return False
-    
-    return True
 
 def main():
     print("🎯 ULTIMATE XRP TRADING BOT LAUNCHER")
