@@ -26,6 +26,29 @@ XRPLiquid implements comprehensive security measures to protect trading operatio
 - **Key Management**: Hardware security modules
 - **Key Rotation**: Quarterly rotation
 
+## Release Signing & Supply Chain Security
+
+### 1. Signing Key Policy
+- **Key Holder**: valleyworldz (GitHub: @valleyworldz)
+- **Key Type**: Ed25519 (Sigstore/Cosign compatible)
+- **Key Storage**: Hardware security module (HSM)
+- **Key Backup**: Encrypted backup in secure vault
+- **Key Rotation**: Every 6 months or on compromise
+- **Key Revocation**: Immediate on suspected compromise
+
+### 2. Release Signing Process
+- **Automated Signing**: CI/CD pipeline signs all releases
+- **Signature Verification**: Required before deployment
+- **Signature Storage**: Committed to repository in `reports/signatures/`
+- **Verification Script**: `scripts/verify_signatures.py`
+- **Audit Trail**: All signing events logged
+
+### 3. Supply Chain Integrity
+- **SBOM Generation**: Software Bill of Materials for all releases
+- **Dependency Verification**: All dependencies verified and pinned
+- **Leak Canaries**: Fake secrets to detect unauthorized access
+- **CI Enforcement**: Pipeline fails on security violations
+
 ### 2. Data Classification
 - **Public**: Documentation, reports
 - **Internal**: System logs, metrics

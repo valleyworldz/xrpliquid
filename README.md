@@ -1,5 +1,10 @@
 ﻿# 🎩 Hat Manifesto Ultimate Trading System
 
+[![Reproducibility](https://github.com/valleyworldz/xrpliquid/workflows/Reproducibility%20Enforcement/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/enforce_reproducibility.yml)
+[![Artifact Freshness](https://github.com/valleyworldz/xrpliquid/workflows/Artifact%20Freshness%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/artifact_freshness_guard.yml)
+[![No Lookahead](https://github.com/valleyworldz/xrpliquid/workflows/No%20Lookahead%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/no_lookahead_guard.yml)
+[![Supply Chain Security](https://github.com/valleyworldz/xrpliquid/workflows/Supply%20Chain%20Security/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml)
+
 ## 🏆 The Pinnacle of Quantitative Trading Mastery - 10/10 Performance Across All Specialized Roles
 
 This is the most advanced XRP trading system ever created, featuring the **Hat Manifesto Ultimate Trading System** with all 9 specialized roles operating at maximum efficiency. The system represents the pinnacle of algorithmic trading mastery with comprehensive Hyperliquid protocol exploitation, machine learning-driven adaptation, and advanced risk management.

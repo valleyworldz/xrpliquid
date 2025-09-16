@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-16T15:39:23.833979+00:00",
+  "timestamp": "2025-09-16T19:27:13.383057",
   "signer": "valleyworldz <valleyworldz@github.com>",
   "code_commit": "0d118d118a29520c4697f6043f8bc8aac9eb216b",
   "code_commit_timestamp": "2025-09-16 11:23:02 -0400",
@@ -23,7 +23,8 @@
     "reports/equity_curve.csv": "768df66a6f8cb0b5d76c0865d2e7c9c1e5191d780a06b1e3b6e59d983119d6f7",
     "reports/drawdown_curve.csv": "d5187d160b51f781498f56c035562d18b9c63d6ad6cc66643ae2c91853de35c1",
     "reports/backtest_results.json": "2fc5d01bfb30ac95007f9c774a215150eb25d005b01e9a6c5f959e793e2b0c45",
-    "reports/executive_dashboard.html": "22f5fa3e833faef0d4cfd5d357068c118edfdcc93bf22b3bd7db913144befe3d"
+    "reports/executive_dashboard.html": "22f5fa3e833faef0d4cfd5d357068c118edfdcc93bf22b3bd7db913144befe3d",
+    "reports/audit/xrpliquid_audit_pack_20250916_192751.zip": "8488e883b13e72788b879846249c206cb87ca67c44317bdf8786789faeebb1d4"
   },
   "environment_hash": "873ba207ebd71c51e617159741d44b71e9282cd90fedbf9b46017c6d843e7c0c",
   "verification_instructions": {
@@ -38,5 +39,13 @@
     "script": "scripts/verify_reproducibility.py",
     "expected_exit_code": 0
   },
-  "total_manifest_hash": "9a9e03e6c58cc8d08f9f080efbad4dde3fafb6da32936b13c86836e740bae39b"
+  "total_manifest_hash": "9a9e03e6c58cc8d08f9f080efbad4dde3fafb6da32936b13c86836e740bae39b",
+  "signatures": {
+    "reports\\releases\\xrpliquid-v1.0.0.tar.gz": {
+      "signature": "mock_signature_a24b53063b65531f",
+      "signer_identity": "xrpliquid-release-signer",
+      "signature_timestamp": "2025-09-16T19:27:13.381066",
+      "signature_algorithm": "sha256"
+    }
+  }
 }
