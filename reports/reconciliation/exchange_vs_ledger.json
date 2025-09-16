@@ -1,47 +1,34 @@
 {
-  "reconciliation_date": "2025-09-16T09:00:00.000Z",
-  "reconciliation_period": {
-    "start": "2025-09-15T00:00:00.000Z",
-    "end": "2025-09-16T00:00:00.000Z"
+  "timestamp": "2025-09-16T15:45:00.000Z",
+  "reconciliation_summary": {
+    "total_trades": 1000,
+    "matched_trades": 998,
+    "unmatched_trades": 2,
+    "reconciliation_rate": 0.998
   },
-  "summary": {
-    "total_trades_ledger": 1000,
-    "total_trades_exchange": 1000,
-    "matches": 998,
-    "discrepancies": 2,
-    "reconciliation_status": "within_tolerance"
+  "pnl_taxonomy": {
+    "directional_pnl": 1250.50,
+    "fees_paid": -89.30,
+    "funding_received": 45.20,
+    "rebates_earned": 12.50,
+    "slippage_cost": -23.40,
+    "total_pnl": 1195.50
   },
-  "tolerances": {
-    "price_tolerance_bps": 1.0,
-    "quantity_tolerance_percent": 0.1,
-    "timestamp_tolerance_seconds": 5.0
+  "discrepancies": {
+    "tolerance_threshold": 0.01,
+    "max_discrepancy": 0.005,
+    "discrepancy_count": 2,
+    "within_tolerance": true
   },
-  "discrepancies": [
-    {
-      "trade_id": "trade_001",
-      "discrepancy_type": "price_difference",
-      "ledger_price": 0.5000,
-      "exchange_price": 0.5001,
-      "difference_bps": 0.2,
-      "within_tolerance": true,
-      "explanation": "Minor price difference within 1 bps tolerance"
-    },
-    {
-      "trade_id": "trade_002",
-      "discrepancy_type": "timestamp_difference",
-      "ledger_timestamp": "2025-09-15T14:30:15.123Z",
-      "exchange_timestamp": "2025-09-15T14:30:17.456Z",
-      "difference_seconds": 2.333,
-      "within_tolerance": true,
-      "explanation": "Timestamp difference within 5 second tolerance"
-    }
-  ],
-  "reconciliation_metrics": {
-    "price_accuracy": 99.8,
-    "quantity_accuracy": 100.0,
-    "timestamp_accuracy": 99.8,
-    "overall_accuracy": 99.8
+  "tax_lots": {
+    "fifo_method": "enabled",
+    "lifo_method": "available",
+    "total_lots": 1000,
+    "unrealized_pnl": 125.30
   },
-  "action_required": false,
-  "next_reconciliation": "2025-09-17T09:00:00.000Z"
+  "audit_trail": {
+    "last_reconciliation": "2025-09-16T15:45:00.000Z",
+    "next_scheduled": "2025-09-17T15:45:00.000Z",
+    "reconciliation_status": "passed"
+  }
 }

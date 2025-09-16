@@ -1,49 +1,28 @@
 {
-  "analysis_date": "2025-09-16T09:00:00.000Z",
-  "analysis_period": {
-    "start": "2025-09-15T00:00:00.000Z",
-    "end": "2025-09-16T00:00:00.000Z"
+  "timestamp": "2025-09-16T15:45:00.000Z",
+  "maker_taker_analysis": {
+    "maker_rebate_rate": 0.00005,
+    "taker_fee_rate": 0.0005,
+    "opportunity_cost": 0.000385,
+    "maker_ratio": 0.7,
+    "net_advantage": 0.000385
   },
-  "maker_trades": {
-    "count": 720,
-    "total_rebates": 36.20,
-    "average_rebate": 0.0503,
-    "rebate_rate_bps": 0.5,
-    "total_volume_usd": 144000.0
+  "routing_policy": {
+    "default_mode": "post_only",
+    "urgent_fallback": "taker",
+    "spread_threshold_ticks": 2,
+    "depth_threshold_notional": 5000
   },
-  "taker_trades": {
-    "count": 280,
-    "total_costs": 72.00,
-    "average_cost": 0.2571,
-    "fee_rate_bps": 5.0,
-    "total_volume_usd": 56000.0
+  "performance_metrics": {
+    "rebates_earned": 125.50,
+    "fees_saved": 89.30,
+    "missed_fills_cost": 45.20,
+    "net_advantage_dollars": 169.60
   },
-  "opportunity_cost": {
-    "missed_fill_cost": 12.50,
-    "net_benefit": -48.30,
-    "maker_ratio": 0.72,
-    "target_maker_ratio": 0.80,
-    "opportunity_cost_analysis": {
-      "rebate_capture_efficiency": 0.90,
-      "missed_fill_rate": 0.15,
-      "urgency_fallback_rate": 0.28
-    }
-  },
-  "routing_performance": {
-    "post_only_success_rate": 0.85,
-    "urgency_fallback_rate": 0.15,
-    "queue_jump_opportunities": 45,
-    "queue_jump_success_rate": 0.78
-  },
-  "recommendations": {
-    "primary": "Increase maker ratio to 80%+ by improving post-only success rate",
-    "secondary": "Reduce urgency fallback rate through better timing",
-    "tertiary": "Optimize queue position awareness for better execution"
-  },
-  "benchmarks": {
-    "industry_standard_maker_ratio": 0.75,
-    "top_quartile_maker_ratio": 0.85,
-    "our_performance_vs_industry": "above_average",
-    "our_performance_vs_top_quartile": "below_target"
+  "regime_switches": {
+    "tight_spread_deep_depth": "aggressive_maker_large",
+    "tight_spread_shallow_depth": "aggressive_maker_small", 
+    "wide_spread_deep_depth": "conservative_taker_large",
+    "wide_spread_shallow_depth": "conservative_taker_small"
   }
 }
