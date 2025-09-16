@@ -1,5 +1,127 @@
 {
-  "created_at": "2025-09-16T15:06:34.437860+00:00",
-  "total_splits": 0,
-  "splits": []
+  "timestamp": "2025-09-16T15:39:37.057537+00:00",
+  "total_splits": 11,
+  "splits": [
+    {
+      "split_id": "wf_001",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-01-31T00:00:00",
+      "test_start": "2025-02-01T00:00:00",
+      "test_end": "2025-02-08T00:00:00",
+      "validation_start": "2025-01-26T12:00:00",
+      "validation_end": "2025-01-31T00:00:00",
+      "train_duration_days": 30,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_002",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-03-03T00:00:00",
+      "test_start": "2025-03-04T00:00:00",
+      "test_end": "2025-03-11T00:00:00",
+      "validation_start": "2025-02-21T20:24:00",
+      "validation_end": "2025-03-03T00:00:00",
+      "train_duration_days": 61,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_003",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-04-03T00:00:00",
+      "test_start": "2025-04-04T00:00:00",
+      "test_end": "2025-04-11T00:00:00",
+      "validation_start": "2025-03-20T04:48:00",
+      "validation_end": "2025-04-03T00:00:00",
+      "train_duration_days": 92,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_004",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-05-04T00:00:00",
+      "test_start": "2025-05-05T00:00:00",
+      "test_end": "2025-05-12T00:00:00",
+      "validation_start": "2025-04-15T13:12:00",
+      "validation_end": "2025-05-04T00:00:00",
+      "train_duration_days": 123,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_005",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-06-04T00:00:00",
+      "test_start": "2025-06-05T00:00:00",
+      "test_end": "2025-06-12T00:00:00",
+      "validation_start": "2025-05-11T21:36:00",
+      "validation_end": "2025-06-04T00:00:00",
+      "train_duration_days": 154,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_006",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-07-05T00:00:00",
+      "test_start": "2025-07-06T00:00:00",
+      "test_end": "2025-07-13T00:00:00",
+      "validation_start": "2025-06-07T06:00:00",
+      "validation_end": "2025-07-05T00:00:00",
+      "train_duration_days": 185,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_007",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-08-05T00:00:00",
+      "test_start": "2025-08-06T00:00:00",
+      "test_end": "2025-08-13T00:00:00",
+      "validation_start": "2025-07-03T14:24:00",
+      "validation_end": "2025-08-05T00:00:00",
+      "train_duration_days": 216,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_008",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-09-05T00:00:00",
+      "test_start": "2025-09-06T00:00:00",
+      "test_end": "2025-09-13T00:00:00",
+      "validation_start": "2025-07-29T22:48:00",
+      "validation_end": "2025-09-05T00:00:00",
+      "train_duration_days": 247,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_009",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-10-06T00:00:00",
+      "test_start": "2025-10-07T00:00:00",
+      "test_end": "2025-10-14T00:00:00",
+      "validation_start": "2025-08-25T07:12:00",
+      "validation_end": "2025-10-06T00:00:00",
+      "train_duration_days": 278,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_010",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-11-06T00:00:00",
+      "test_start": "2025-11-07T00:00:00",
+      "test_end": "2025-11-14T00:00:00",
+      "validation_start": "2025-09-20T15:36:00",
+      "validation_end": "2025-11-06T00:00:00",
+      "train_duration_days": 309,
+      "test_duration_days": 7
+    },
+    {
+      "split_id": "wf_011",
+      "train_start": "2025-01-01T00:00:00",
+      "train_end": "2025-12-07T00:00:00",
+      "test_start": "2025-12-08T00:00:00",
+      "test_end": "2025-12-15T00:00:00",
+      "validation_start": "2025-10-17T00:00:00",
+      "validation_end": "2025-12-07T00:00:00",
+      "train_duration_days": 340,
+      "test_duration_days": 7
+    }
+  ]
 }

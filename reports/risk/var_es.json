@@ -1,78 +1,16 @@
 {
-  "risk_metrics_date": "2025-09-16T09:00:00.000Z",
-  "calculation_period": {
-    "start": "2024-09-16T00:00:00.000Z",
-    "end": "2025-09-16T00:00:00.000Z",
-    "lookback_days": 365
+  "timestamp": "2025-09-16T11:41:57.357407",
+  "portfolio_value": 100000,
+  "var_es_metrics": {
+    "var_95": -0.030524646852778507,
+    "var_99": -0.045329956403987084,
+    "es_95": -0.04223015457754346,
+    "es_99": -0.06379830069393162
   },
-  "value_at_risk": {
-    "var_95_1d": -1250.50,
-    "var_99_1d": -2100.75,
-    "var_95_1w": -3500.25,
-    "var_99_1w": -5800.00,
-    "var_95_1m": -7500.50,
-    "var_99_1m": -12500.75
-  },
-  "expected_shortfall": {
-    "es_95_1d": -1850.25,
-    "es_99_1d": -3200.50,
-    "es_95_1w": -5200.75,
-    "es_99_1w": -8500.25,
-    "es_95_1m": -11200.50,
-    "es_99_1m": -18500.75
-  },
-  "risk_metrics": {
-    "current_portfolio_value": 10000.00,
-    "max_drawdown": -850.25,
-    "max_drawdown_date": "2025-08-15T14:30:00.000Z",
-    "current_drawdown": -125.50,
-    "volatility_annualized": 0.18,
-    "sharpe_ratio": 1.8,
-    "sortino_ratio": 2.4,
-    "calmar_ratio": 1.2
-  },
-  "risk_limits": {
-    "daily_var_limit": -2000.00,
-    "weekly_var_limit": -5000.00,
-    "monthly_var_limit": -10000.00,
-    "max_drawdown_limit": -2000.00,
-    "position_size_limit": 1000.00,
-    "leverage_limit": 5.0
-  },
-  "risk_status": {
-    "daily_var_breach": false,
-    "weekly_var_breach": false,
-    "monthly_var_breach": false,
-    "drawdown_breach": false,
-    "leverage_breach": false,
-    "overall_risk_status": "within_limits"
-  },
-  "stress_test_results": {
-    "market_crash_scenario": {
-      "portfolio_impact": -2500.00,
-      "probability": 0.01,
-      "breach_risk_limits": true
-    },
-    "liquidity_crisis_scenario": {
-      "portfolio_impact": -1800.00,
-      "probability": 0.05,
-      "breach_risk_limits": false
-    },
-    "volatility_spike_scenario": {
-      "portfolio_impact": -1200.00,
-      "probability": 0.10,
-      "breach_risk_limits": false
-    }
-  },
-  "risk_attribution": {
-    "directional_risk": 0.65,
-    "funding_risk": 0.20,
-    "execution_risk": 0.10,
-    "operational_risk": 0.05
-  },
-  "recommendations": {
-    "immediate": "Monitor daily VaR closely - approaching 95% limit",
-    "short_term": "Consider reducing position sizes if volatility increases",
-    "long_term": "Implement dynamic hedging for extreme scenarios"
+  "var_es_dollars": {
+    "var_95_dollars": 3052.4646852778505,
+    "var_99_dollars": 4532.995640398708,
+    "es_95_dollars": 4223.015457754346,
+    "es_99_dollars": 6379.830069393162
   }
 }

@@ -1,16 +1,78 @@
 {
-  "timestamp": "2025-09-16T15:11:05.710478+00:00",
-  "model_type": "linear",
-  "model_parameters": {
-    "size_coef": 0.001,
-    "participation_coef": 0.1,
-    "intercept": 0.0
+  "timestamp": "2025-09-16T11:41:51.226447",
+  "impact_model": {
+    "alpha": 0.09861228892411777,
+    "beta": 0.05131659801656098,
+    "gamma": 0.5,
+    "r2_score": 0.9979463145911408,
+    "residual_std": 0.0009895182768864265
   },
-  "model_r_squared": 0.75,
-  "model_rmse": 2.443650296288605,
-  "residual_statistics": {
-    "mean_residual": 1.1345782376778302,
-    "std_residual": 2.1751951016963273,
-    "mean_abs_residual": 1.7510798992089411
+  "maker_taker_analysis": {
+    "maker_rebate_rate": 5e-05,
+    "taker_fee_rate": 0.0005,
+    "opportunity_cost": 0.00011500000000000002,
+    "maker_ratio": 0.7,
+    "net_advantage": 0.000385
+  },
+  "regime_policy": {
+    "spread_regimes": {
+      "tight": {
+        "threshold": 0.0002,
+        "action": "aggressive_maker",
+        "max_participation": 0.3
+      },
+      "normal": {
+        "threshold": 0.0005,
+        "action": "balanced",
+        "max_participation": 0.2
+      },
+      "wide": {
+        "threshold": 0.001,
+        "action": "conservative_taker",
+        "max_participation": 0.1
+      }
+    },
+    "depth_regimes": {
+      "shallow": {
+        "threshold": 2000,
+        "action": "reduce_size",
+        "size_multiplier": 0.5
+      },
+      "normal": {
+        "threshold": 5000,
+        "action": "normal_size",
+        "size_multiplier": 1.0
+      },
+      "deep": {
+        "threshold": 10000,
+        "action": "increase_size",
+        "size_multiplier": 1.5
+      }
+    },
+    "combined_policy": {
+      "tight_deep": "aggressive_maker_large",
+      "tight_shallow": "aggressive_maker_small",
+      "wide_deep": "conservative_taker_large",
+      "wide_shallow": "conservative_taker_small"
+    }
+  },
+  "residual_analysis": {
+    "mean": 1.8208283611088233e-05,
+    "std": 0.0010420909454578562,
+    "skewness": -0.010344761022406519,
+    "kurtosis": 0.26515066696933554,
+    "normality_test": {
+      "statistic": 0.9976089422512716,
+      "p_value": 0.15450572658993472
+    },
+    "stationarity_test": {
+      "variance_ratio": 0.9330010734761757,
+      "mean_difference": -2.7434443976221732e-05
+    }
+  },
+  "data_quality": {
+    "sample_size": 1000,
+    "impact_model_fit": "good",
+    "residual_stationarity": "stationary"
   }
 }

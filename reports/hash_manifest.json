@@ -1,37 +1,42 @@
 {
-  "timestamp": "2025-09-16T15:05:47.919626+00:00",
-  "signer": "HatManifestoSystem",
-  "code_commit": "a4b79f63f77371b04a6f5c9471a8ebe0cbf70981",
-  "config_hashes": {
-    "config/": "2381fdecadab457bd297e4926747223ed3814b6812c65907ff11121f9a72de04",
+  "timestamp": "2025-09-16T15:39:23.833979+00:00",
+  "signer": "valleyworldz <valleyworldz@github.com>",
+  "code_commit": "0d118d118a29520c4697f6043f8bc8aac9eb216b",
+  "code_commit_timestamp": "2025-09-16 11:23:02 -0400",
+  "input_hashes": {
+    "config/": "d99264a426d0b34a5bb1cf6673f0d8b0a7ef2d0e221ab92ec82059b7d780333e",
     "requirements.txt": "8ef678fa7c8db02243f7656a5858386b320b55698f4a3860c88c7496a49a2b36",
-    ".pre-commit-config.yaml": "f8f0859b8a1b4cf5f0bd51ced2ca26b775ea7f0e92dc3a3c4b6e5821e9c28bd6"
+    ".pre-commit-config.yaml": "f8f0859b8a1b4cf5f0bd51ced2ca26b775ea7f0e92dc3a3c4b6e5821e9c28bd6",
+    "data/market_data/": "8f3e6f034b96f200680732d8554f8480df6d267ee84c0aa7107327f4705f4242",
+    "data/ticks/": "c9a975f672d6eaec48f9696b9a806c0c322498adbd5dc525cd7c8a60b4c21c10",
+    "data/funding/": "734b4774ae12d296184588da17839a9736bb6e6b1a24fc05ea3fd3bc40a76e27"
   },
-  "data_hashes": {
-    "data/": "ca7dae03f0a718afb6d774a7fadf2dd895aa41a30aaded36ecf085b84fcdd150",
-    "data/warehouse/": "590c3df76e79dca6a2c19d7cb2abb085ddf11e9225552859d62b18ef4010a25f"
-  },
-  "artifact_hashes": {
-    "reports/ledgers/trades.csv": "3773c3ff1098192c8f866969efd96783f909aa0a252c2c903592aa09de56023d",
-    "reports/ledgers/trades.parquet": "96f393e4c2b02c2cdd2bff45fbc034ff383a66ae3f85017643b70ba42aaea907",
-    "reports/tearsheets/comprehensive_tearsheet.html": "24d34436fb7c26c77153ad0e9bd450d840d09bac8b07d6a882c41db089a1b324",
-    "reports/executive_dashboard.html": "22f5fa3e833faef0d4cfd5d357068c118edfdcc93bf22b3bd7db913144befe3d",
+  "output_hashes": {
+    "reports/ledgers/": "4cea0d7ba05e144fe07298edb28313629183b0a5f5841eedb5049f64ba93bf0c",
+    "reports/tearsheets/": "26eb5f03813a6a8488cbfa3c8112de040f2d3bb4022f450755ed3474162241c6",
+    "reports/risk_events/": "4df40d859131f5891b097e3a2cc9e70bcf4559f9a61094f39d316dcd9ba05d96",
+    "reports/latency/": "d35fa1d51a28757aa2efadf39d95bc44de2474e4325a14425f68518e8e1b3038",
+    "reports/regime/": "a1512aeb68e4a38e72ac0706924a5a973def401eee58f2016c5a6a18282b452d",
+    "reports/maker_taker/": "a92fd522516cab6a85bde162b2136988d8544861ad94728be5a145c09ae01704",
+    "reports/microstructure/": "3ef0a55f012b7a018916b640b13ef4ca64ca59dd6c80063ebb004803b5f89d52",
+    "reports/reconciliation/": "e731a7def32e519ed12169bd4ca8592d13d20d7050d3729e72f593b3884ecc0d",
     "reports/equity_curve.csv": "768df66a6f8cb0b5d76c0865d2e7c9c1e5191d780a06b1e3b6e59d983119d6f7",
     "reports/drawdown_curve.csv": "d5187d160b51f781498f56c035562d18b9c63d6ad6cc66643ae2c91853de35c1",
     "reports/backtest_results.json": "2fc5d01bfb30ac95007f9c774a215150eb25d005b01e9a6c5f959e793e2b0c45",
-    "reports/risk_events/risk_events.json": "682686cd66042bd03a6f8d783b1356980cb69e5bd1e5ca2aa25b6d8637b9a88b",
-    "reports/latency/latency_analysis.json": "165a62e77276685d70b3b741b3b306e87240ab194d3e7b66fb4923788ca1cac7",
-    "reports/regime/regime_analysis.json": "1f90f74008594e5331bfd672fa862ceadaa225fb30734da89497c41a49cc613f",
-    "reports/maker_taker/routing_analysis.json": "86a66212d10e26b791d4af9e0e929af0a01801dce7cb431e079e95e65546c6b5"
+    "reports/executive_dashboard.html": "22f5fa3e833faef0d4cfd5d357068c118edfdcc93bf22b3bd7db913144befe3d"
   },
-  "environment_hash": "4d148b8d0cf11b14f13727b670e30031927dd3b8bbba3823e2869614048f08c4",
-  "total_manifest_hash": "d2d7a72c3427de7e11582444a75eb37b0c24fd472fb4997efed0c33a3f7abecb",
+  "environment_hash": "873ba207ebd71c51e617159741d44b71e9282cd90fedbf9b46017c6d843e7c0c",
   "verification_instructions": {
     "step_1": "Verify code commit matches: git rev-parse HEAD",
-    "step_2": "Recalculate config hashes and compare",
-    "step_3": "Recalculate data hashes and compare",
-    "step_4": "Recalculate artifact hashes and compare",
-    "step_5": "Recalculate environment hash and compare",
-    "step_6": "Recalculate total manifest hash and compare"
-  }
+    "step_2": "Recalculate input hashes and compare",
+    "step_3": "Recalculate output hashes and compare",
+    "step_4": "Recalculate environment hash and compare",
+    "step_5": "Run CI verification: python scripts/verify_reproducibility.py"
+  },
+  "ci_verification": {
+    "enabled": true,
+    "script": "scripts/verify_reproducibility.py",
+    "expected_exit_code": 0
+  },
+  "total_manifest_hash": "9a9e03e6c58cc8d08f9f080efbad4dde3fafb6da32936b13c86836e740bae39b"
 }

@@ -1,0 +1,93 @@
+{
+  "timestamp": "2025-09-16T11:41:10.194185",
+  "research_metrics": {
+    "sharpe_ratio": 0.07080364311799411,
+    "deflated_sharpe": 0.07081836437397386,
+    "probabilistic_sharpe_ratio": 0.9877286808878945,
+    "trial_count": 20,
+    "multiple_testing_adjustment": 0.05,
+    "parameter_stability_score": 0.8440123971921043,
+    "regime_consistency_score": 0.08892727650059207
+  },
+  "parameter_stability": {
+    "risk_unit_multiplier": {
+      "mean": 1.0433826502412313,
+      "std": 0.08141358918451114,
+      "coefficient_of_variation": 0.0780285058081886,
+      "stability_score": 0.9276192555319385,
+      "min": 0.9310812181910432,
+      "max": 1.2075260872625266,
+      "range": 0.27644486907148347
+    },
+    "funding_threshold": {
+      "mean": 0.0001069308665814968,
+      "std": 5.0441181891522474e-05,
+      "coefficient_of_variation": 0.4717176948442571,
+      "stability_score": 0.6794781387104433,
+      "min": 1.657079630612053e-05,
+      "max": 0.0002071135179305932,
+      "range": 0.00019054272162447267
+    },
+    "stop_loss_atr": {
+      "mean": 2.055319878883952,
+      "std": 0.16679218160718032,
+      "coefficient_of_variation": 0.08115144670217914,
+      "stability_score": 0.9249397973339311,
+      "min": 1.68472156860315,
+      "max": 2.336785538291574,
+      "range": 0.6520639696884238
+    }
+  },
+  "regime_consistency": {
+    "regime_analysis": {
+      "bull_market": {
+        "sharpe_ratio": 0.14677135459979596,
+        "max_drawdown": -0.18774882302785678,
+        "win_rate": 0.5566666666666666,
+        "total_return": 0.866708645512557,
+        "volatility": 0.019683873779408497,
+        "skewness": 0.17430754006027988,
+        "kurtosis": 0.5669389202098287,
+        "sample_size": 300
+      },
+      "bear_market": {
+        "sharpe_ratio": -0.02234773686249188,
+        "max_drawdown": -0.42887878274276675,
+        "win_rate": 0.49,
+        "total_return": -0.1289398961518594,
+        "volatility": 0.019232357016020756,
+        "skewness": 0.13365990464725355,
+        "kurtosis": -0.094059807955718,
+        "sample_size": 300
+      },
+      "sideways_market": {
+        "sharpe_ratio": 0.11994865242366134,
+        "max_drawdown": -0.24216693155120947,
+        "win_rate": 0.5525,
+        "total_return": 0.9488723670858126,
+        "volatility": 0.01977663666729606,
+        "skewness": 0.05763023711546176,
+        "kurtosis": -0.1814697935938825,
+        "sample_size": 400
+      }
+    },
+    "consistency_score": 0.08892727650059207,
+    "sharpe_std": 0.07421364568515518
+  },
+  "statistical_tests": {
+    "normality_test": {
+      "statistic": 0.9986092190571162,
+      "p_value": 0.6272578290246378
+    },
+    "stationarity_test": {
+      "variance_ratio": 1.006669696804731,
+      "mean_difference": -0.0004997624493471165
+    }
+  },
+  "data_quality": {
+    "sample_size": 1000,
+    "missing_values": 0,
+    "outlier_count": 8,
+    "data_completeness": 1.0
+  }
+}
