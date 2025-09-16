@@ -1,29 +1,55 @@
 {
-  "timestamp": "2025-09-16T15:45:00.000Z",
+  "timestamp": "2025-09-16T18:30:00.000Z",
   "impact_model": {
-    "alpha": 0.1,
-    "beta": 0.05,
-    "gamma": 0.5,
-    "r2_score": 0.9979,
-    "residual_std": 0.001
-  },
-  "residual_analysis": {
-    "mean": 0.0001,
-    "std": 0.001,
-    "skewness": 0.2,
-    "kurtosis": 2.8,
-    "normality_test": {
-      "statistic": 0.95,
-      "p_value": 0.12
+    "model_type": "power_law_impact",
+    "parameters": {
+      "alpha": 0.5,
+      "beta": 0.75,
+      "gamma": 0.25
     },
-    "stationarity_test": {
-      "variance_ratio": 1.05,
-      "mean_difference": 0.0002
+    "calibration_period": "2025-08-01 to 2025-09-16",
+    "sample_size": 10000
+  },
+  "impact_analysis": {
+    "participation_rate_bps": [1, 5, 10, 20, 50, 100],
+    "expected_impact_bps": [0.1, 0.3, 0.6, 1.2, 2.5, 4.8],
+    "actual_impact_bps": [0.12, 0.28, 0.58, 1.15, 2.3, 4.6],
+    "residuals_bps": [0.02, -0.02, -0.02, -0.05, -0.2, -0.2],
+    "rmse_bps": 0.15,
+    "r_squared": 0.92
+  },
+  "depth_analysis": {
+    "depth_levels": [1, 2, 5, 10, 20],
+    "liquidity_available": [1000, 2500, 5000, 10000, 20000],
+    "impact_vs_depth": {
+      "1_level": 0.8,
+      "2_levels": 0.6,
+      "5_levels": 0.4,
+      "10_levels": 0.25,
+      "20_levels": 0.15
     }
   },
-  "data_quality": {
-    "sample_size": 1000,
-    "impact_model_fit": "good",
-    "residual_stationarity": "stationary"
+  "regime_analysis": {
+    "high_volatility": {
+      "impact_multiplier": 1.5,
+      "sample_size": 2500,
+      "rmse_bps": 0.22
+    },
+    "low_volatility": {
+      "impact_multiplier": 0.8,
+      "sample_size": 2500,
+      "rmse_bps": 0.12
+    },
+    "normal_volatility": {
+      "impact_multiplier": 1.0,
+      "sample_size": 5000,
+      "rmse_bps": 0.15
+    }
+  },
+  "validation_metrics": {
+    "out_of_sample_period": "2025-09-01 to 2025-09-16",
+    "oos_rmse_bps": 0.18,
+    "oos_r_squared": 0.89,
+    "model_stability": "stable"
   }
 }
