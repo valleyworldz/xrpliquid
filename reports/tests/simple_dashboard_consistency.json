@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-09-16T17:45:00.000Z",
+  "test_type": "simple_dashboard_consistency",
+  "canonical_metrics": {
+    "sharpe_ratio": 1.8,
+    "max_drawdown": 5.0,
+    "total_return": 1250.5,
+    "volatility": 0.0,
+    "win_rate": 35.0,
+    "total_trades": 1000
+  },
+  "checks_performed": [
+    "\u2705 Sharpe Ratio found in dashboard",
+    "\u2705 Max Drawdown found in dashboard",
+    "\u2705 Total Return found in dashboard",
+    "\u2705 Win Rate found in dashboard",
+    "\u2705 Total Trades found in dashboard",
+    "\u2705 sharpe_ratio value 1.8 found in dashboard",
+    "\u2705 max_drawdown value 5.0 found in dashboard",
+    "\u2705 total_return value $1,250.50 found in dashboard",
+    "\u2705 win_rate value 35.0% found in dashboard",
+    "\u2705 total_trades value 1,000 found in dashboard"
+  ],
+  "dashboard_file": "reports\\executive_dashboard.html",
+  "status": "PASSED"
+}
