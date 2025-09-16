@@ -4,7 +4,7 @@
 Advanced Hyperliquid protocol exploitation and optimization system.
 
 This module implements the pinnacle of Hyperliquid exchange architecture mastery:
-- Funding rate arbitrage optimization (8-hour cycles)
+- Funding rate arbitrage optimization (1-hour cycles - Hyperliquid standard)
 - TWAP order implementation for slippage reduction
 - HYPE token staking for fee optimization
 - Oracle price discrepancy detection
@@ -27,10 +27,10 @@ import logging
 class HyperliquidOptimizationConfig:
     """Configuration for Hyperliquid optimizations"""
     
-    # Funding arbitrage settings
+    # Funding arbitrage settings (Hyperliquid 1-hour cycles)
     funding_arbitrage: Dict[str, Any] = field(default_factory=lambda: {
-        'cycle_hours': 8,
-        'cycle_seconds': 8 * 3600,
+        'cycle_hours': 1,
+        'cycle_seconds': 1 * 3600,
         'min_funding_threshold': 0.0001,  # 0.01% minimum funding rate
         'max_funding_threshold': 0.04,    # 4% maximum funding rate
         'profit_threshold': 0.0005,       # 0.05% minimum profit
@@ -57,6 +57,28 @@ class HyperliquidOptimizationConfig:
         'auto_compound': True,
     })
     
+    # Hyperliquid fee structure (perpetuals vs spot)
+    fee_structure: Dict[str, Any] = field(default_factory=lambda: {
+        'perpetual_fees': {
+            'maker': 0.0001,                 # 0.01% maker fee
+            'taker': 0.0005,                 # 0.05% taker fee
+            'maker_rebate': 0.00005,         # 0.005% maker rebate
+            'funding_rate_interval': 3600,   # 1 hour funding intervals
+        },
+        'spot_fees': {
+            'maker': 0.0002,                 # 0.02% maker fee
+            'taker': 0.0006,                 # 0.06% taker fee
+            'maker_rebate': 0.0001,          # 0.01% maker rebate
+        },
+        'volume_tiers': {
+            'tier_1': {'volume_usd': 0, 'maker_discount': 0.0, 'taker_discount': 0.0},
+            'tier_2': {'volume_usd': 1000000, 'maker_discount': 0.1, 'taker_discount': 0.05},
+            'tier_3': {'volume_usd': 5000000, 'maker_discount': 0.2, 'taker_discount': 0.1},
+            'tier_4': {'volume_usd': 20000000, 'maker_discount': 0.3, 'taker_discount': 0.15},
+        },
+        'maker_rebates_continuous': True,    # Maker rebates paid continuously
+    })
+    
     # Oracle optimization settings
     oracle_optimization: Dict[str, Any] = field(default_factory=lambda: {
         'update_interval_seconds': 3,     # 3-second oracle updates
@@ -80,6 +102,29 @@ class HyperliquidOptimizationConfig:
         'batch_transactions': True,
         'gas_price_monitoring': True,
         'max_gas_price_gwei': 50.0,
+    })
+    
+    # Order validation settings (Hyperliquid-specific)
+    order_validation: Dict[str, Any] = field(default_factory=lambda: {
+        'tick_size_validation': True,
+        'min_notional_validation': True,
+        'reduce_only_validation': True,
+        'margin_check_validation': True,
+        'leverage_validation': True,
+        'position_size_limits': {
+            'max_position_size_usd': 1000000.0,
+            'min_position_size_usd': 10.0,
+        },
+        'tick_sizes': {
+            'XRP': 0.0001,                    # XRP tick size
+            'BTC': 0.01,                      # BTC tick size
+            'ETH': 0.01,                      # ETH tick size
+        },
+        'min_notional': {
+            'XRP': 1.0,                       # $1 minimum notional
+            'BTC': 10.0,                      # $10 minimum notional
+            'ETH': 10.0,                      # $10 minimum notional
+        },
     })
 
 @dataclass
@@ -129,7 +174,7 @@ class HyperliquidArchitectOptimizations:
     🏗️ HYPERLIQUID EXCHANGE ARCHITECT OPTIMIZATIONS
     
     Master of Hyperliquid protocol exploitation with advanced optimizations:
-    1. Funding rate arbitrage (8-hour cycles)
+    1. Funding rate arbitrage (1-hour cycles - Hyperliquid standard)
     2. TWAP order implementation
     3. HYPE staking optimization
     4. Oracle price discrepancy detection
@@ -181,7 +226,7 @@ class HyperliquidArchitectOptimizations:
         """
         🎯 Monitor funding rate arbitrage opportunities
         
-        Hyperliquid Edge: 8-hour funding cycles with transparent rate calculation
+        Hyperliquid Edge: 1-hour funding cycles with transparent rate calculation
         """
         try:
             # Get current funding rate

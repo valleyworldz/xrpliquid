@@ -44,14 +44,15 @@ class OptimizedFundingArbitrageConfig:
     stop_loss_funding_rate: float = 0.015       # 1.5% stop loss
     take_profit_funding_rate: float = 0.0005    # 0.05% take profit
     
-    # Execution parameters
-    funding_rate_check_interval: int = 180      # 3 minutes (reduced from 5)
+    # Execution parameters (Hyperliquid 1-hour funding cycles)
+    funding_rate_check_interval: int = 300      # 5 minutes (aligned with 1-hour cycles)
     execution_delay_seconds: int = 15           # Reduced from 30
     max_execution_time_seconds: int = 45        # Reduced from 60
+    funding_cycle_hours: int = 1                # Hyperliquid standard: 1-hour cycles
     
-    # Holding period optimization
-    expected_holding_period_hours: float = 6.0  # Reduced from 8 hours
-    funding_payment_frequency_hours: float = 8.0
+    # Holding period optimization (Hyperliquid 1-hour cycles)
+    expected_holding_period_hours: float = 1.0  # Aligned with 1-hour funding cycles
+    funding_payment_frequency_hours: float = 1.0  # Hyperliquid standard: 1-hour funding
     
     # Cost optimization
     transaction_cost_bps: float = 0.8           # Reduced from 1.0 bps
