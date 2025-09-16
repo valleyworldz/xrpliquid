@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-16T15:11:05.718478+00:00",
+  "total_trades": 100,
+  "maker_trades": 46,
+  "taker_trades": 54,
+  "maker_opportunity_cost": {
+    "avg_rebate_bps": 1.285749384870963,
+    "avg_slippage_bps": 0.7600608435353086
+  },
+  "taker_opportunity_cost": {
+    "avg_fee_bps": 3.9150409526116143,
+    "avg_slippage_bps": 0.7905531752090506
+  }
+}

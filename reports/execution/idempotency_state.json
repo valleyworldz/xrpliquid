@@ -1,0 +1,469 @@
+{
+  "order_registry": {
+    "XRP_buy_20250916_151109_615479_73dd57f7f29cf15d": {
+      "client_order_id": "XRP_buy_20250916_151109_615479_73dd57f7f29cf15d",
+      "exchange_order_id": null,
+      "state": "filled",
+      "timestamp": "2025-09-16T15:11:09.615479+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "cca230c9b3d655f33e3d89df472a034cfb6a61a290a2712096cbadad9bcd0dda"
+    },
+    "XRP_buy_20250916_151109_622486_4d98274b64bb0bac": {
+      "client_order_id": "XRP_buy_20250916_151109_622486_4d98274b64bb0bac",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.622486+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "d53dbc69961a8d0208e69e5a3b07617b47372265d437665c81abbff6313fdaef"
+    },
+    "XRP_buy_20250916_151109_630478_a9fefb36af8ddca8": {
+      "client_order_id": "XRP_buy_20250916_151109_630478_a9fefb36af8ddca8",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.630478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "56aaa19e555108a257769e87fbca688ef8646f1adec44d1aabcde52a70c68a0f"
+    },
+    "XRP_buy_20250916_151109_635480_787717158a67bfad": {
+      "client_order_id": "XRP_buy_20250916_151109_635480_787717158a67bfad",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.635480+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "d2b0991c4b7f4e9edb3cb0ed67c0724a1c62d8bc055044003d5c474e8d1234b4"
+    },
+    "XRP_buy_20250916_151109_640478_62c44b8f5e4da382": {
+      "client_order_id": "XRP_buy_20250916_151109_640478_62c44b8f5e4da382",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.640478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "fa4e63b8a773ee7d803905065094cc6c7e31fa5595defa46517a84647da0cb07"
+    },
+    "XRP_buy_20250916_151109_644477_b889652b5c8abb18": {
+      "client_order_id": "XRP_buy_20250916_151109_644477_b889652b5c8abb18",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.645478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "74f63985c5cb9aff843336026937d44d6f8c1515e00f64a96848f3f4a4eb76f8"
+    },
+    "XRP_buy_20250916_151109_648480_bf3f2c6cf2df593e": {
+      "client_order_id": "XRP_buy_20250916_151109_648480_bf3f2c6cf2df593e",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.649478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "c0d994432a8c81585185f1a17bc83e652f6176d0e39278af70d7e17aec396b21"
+    },
+    "XRP_buy_20250916_151109_652480_0df14ba47101f68b": {
+      "client_order_id": "XRP_buy_20250916_151109_652480_0df14ba47101f68b",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.652480+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "eecdc47f06622e28da517fa7b8a13d51fd20456af79332a71df6ca95f45ca574"
+    },
+    "XRP_buy_20250916_151109_657484_d24830aefdf76939": {
+      "client_order_id": "XRP_buy_20250916_151109_657484_d24830aefdf76939",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.657484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "4c754b140e73fa3b04c7547abfefaf51e26dc1c9b1a9d8e1ccddd61bb537bcfb"
+    },
+    "XRP_buy_20250916_151109_662483_410af828644f9d7b": {
+      "client_order_id": "XRP_buy_20250916_151109_662483_410af828644f9d7b",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.662483+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "aa02012f2a8655ba29f18b322bd9b009e3b4db57541e201c562309a7cfa80614"
+    },
+    "XRP_buy_20250916_151109_666484_c4af56e81fd858aa": {
+      "client_order_id": "XRP_buy_20250916_151109_666484_c4af56e81fd858aa",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.666484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "a7f50db714d4dde4671ae9c9cd00c7512eb8e1cbc94c3a4a741c2cc8a409f9ff"
+    },
+    "XRP_buy_20250916_151109_670476_0c88bb9dff62428e": {
+      "client_order_id": "XRP_buy_20250916_151109_670476_0c88bb9dff62428e",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.671476+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "6649c18c28218169690d7be1858be710fe2dc86ebb02788c38af6dfa4adabb4e"
+    },
+    "XRP_buy_20250916_151109_678478_8d0f71deb30c4af9": {
+      "client_order_id": "XRP_buy_20250916_151109_678478_8d0f71deb30c4af9",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.678478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "006764b1d1ae9da2247faadd7e7807109cd730b9c0a0d6c552bbc2ae9b968448"
+    },
+    "XRP_buy_20250916_151109_688478_bcb763b749eb2c50": {
+      "client_order_id": "XRP_buy_20250916_151109_688478_bcb763b749eb2c50",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.688478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "ac647949266cd0c1c4a666ba866c6caea5a0250cc7cb4215cd45c32236a51deb"
+    },
+    "XRP_buy_20250916_151109_700483_81b6930fcd109dbd": {
+      "client_order_id": "XRP_buy_20250916_151109_700483_81b6930fcd109dbd",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.700483+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "4d02064e59027115240c63d3bb3813aff978dbee8001c95006c6b57a4eb17e4e"
+    },
+    "XRP_buy_20250916_151109_709483_b6d798aec3b87450": {
+      "client_order_id": "XRP_buy_20250916_151109_709483_b6d798aec3b87450",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.710503+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "bf000447ee913a866b842d2050e992fd9c2aadc0f7fd070ccb165304210c0d26"
+    },
+    "XRP_buy_20250916_151109_723478_4d274076119ea7a4": {
+      "client_order_id": "XRP_buy_20250916_151109_723478_4d274076119ea7a4",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.723478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "620f7bfe856f282965a7abab18d86cf831bd96a0d53d0f8467e12548bde6d07f"
+    },
+    "XRP_buy_20250916_151109_734488_714376da74c04dc2": {
+      "client_order_id": "XRP_buy_20250916_151109_734488_714376da74c04dc2",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.735515+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "559bf5809ff9bb81fdeaaa045c8f0bce77f55b8eb16de09d19684388b2f2fbef"
+    },
+    "XRP_buy_20250916_151109_747481_75ed40178e6cf140": {
+      "client_order_id": "XRP_buy_20250916_151109_747481_75ed40178e6cf140",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.747481+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "f7bff6cca8ad199a3d3be3a687604abcde1dff7c3f529cc3c4ddc7c492bfddd1"
+    },
+    "XRP_buy_20250916_151109_762477_332398c60efe462d": {
+      "client_order_id": "XRP_buy_20250916_151109_762477_332398c60efe462d",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.762477+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "bb7d28374777bbb6bb1601035e45a84415f51a3c440ecf1c183f06a322c7d63c"
+    },
+    "XRP_buy_20250916_151109_777480_989978bfb18a3ec1": {
+      "client_order_id": "XRP_buy_20250916_151109_777480_989978bfb18a3ec1",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.777480+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "4a65b3cf957499ff3abd83e738203251c237f8ff0e06b89a4b086a3d15873179"
+    },
+    "XRP_buy_20250916_151109_791476_883623ceb229a64a": {
+      "client_order_id": "XRP_buy_20250916_151109_791476_883623ceb229a64a",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.791476+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "9353f98a3ae785b2d9e9476a831e07cad9fae6761aa3c3eefa1be12792e4a450"
+    },
+    "XRP_buy_20250916_151109_803481_24b7d6795a6e6204": {
+      "client_order_id": "XRP_buy_20250916_151109_803481_24b7d6795a6e6204",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.803481+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "b2818465f16cf1307b32cb12944b5df37be1ca2fe6aa4a97d4c7e4c134df1881"
+    },
+    "XRP_buy_20250916_151109_814516_d4b73935b732baac": {
+      "client_order_id": "XRP_buy_20250916_151109_814516_d4b73935b732baac",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.814516+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "85efa9eb9aa86a6f3683028ec8b2289d5aab94630beb24417d8d545fe7c359e5"
+    },
+    "XRP_buy_20250916_151109_823484_e30cc1252d850c82": {
+      "client_order_id": "XRP_buy_20250916_151109_823484_e30cc1252d850c82",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.823484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "c7bcdea23d83c405209e87909bca20ec2896ab954dd05fd7e07fc6f2b2869f97"
+    },
+    "XRP_buy_20250916_151109_834475_acae4b55e26fa10d": {
+      "client_order_id": "XRP_buy_20250916_151109_834475_acae4b55e26fa10d",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.834475+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "f0381d02d5cef2d53d23a2b5ccf594b0aefec64c36e2985c9739f3cf5aeaba6f"
+    },
+    "XRP_buy_20250916_151109_847483_dc3948a1ea29151f": {
+      "client_order_id": "XRP_buy_20250916_151109_847483_dc3948a1ea29151f",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.848485+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "e5aacc2a688fe07309c160715c7e6001cfb9062bf4c10678640c06b0767d11cf"
+    },
+    "XRP_buy_20250916_151109_867477_cc8b35fdcf7d4d82": {
+      "client_order_id": "XRP_buy_20250916_151109_867477_cc8b35fdcf7d4d82",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.867477+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "a99f292c60c3f4958ce7bd32a5a5c0a4435df1813d768046fa0d84805585e181"
+    },
+    "XRP_buy_20250916_151109_882481_a83c368f03ab6db7": {
+      "client_order_id": "XRP_buy_20250916_151109_882481_a83c368f03ab6db7",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.882481+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "658096a71ae334f7b7a30fb788d5d6a5e15ab29e4fdc0257b02fbdf9c5474133"
+    },
+    "XRP_buy_20250916_151109_894484_cd80ccc6ba740efb": {
+      "client_order_id": "XRP_buy_20250916_151109_894484_cd80ccc6ba740efb",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.895503+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "6658310a19cb98fc592f5386c21cdde348fb87c93a373c7e65a9b5ecd5b38adc"
+    },
+    "XRP_buy_20250916_151109_904476_50cdfb7f596d60ac": {
+      "client_order_id": "XRP_buy_20250916_151109_904476_50cdfb7f596d60ac",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.904476+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "cff1c0f236f361348462ee34bf7179e0b0ecd5a72a8fbdeab87fca69163aff0a"
+    },
+    "XRP_buy_20250916_151109_917484_35842092297ffe91": {
+      "client_order_id": "XRP_buy_20250916_151109_917484_35842092297ffe91",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.917484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "a4d703e06c337fa2b90fbfcfa9a3784cece6bee6f10da48aec4d88539e8a735f"
+    },
+    "XRP_buy_20250916_151109_931480_11e069c2ed7bb6db": {
+      "client_order_id": "XRP_buy_20250916_151109_931480_11e069c2ed7bb6db",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.931480+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "939eca8feb3afaf96c4ef4b5b5b7c19381cbe40c1458a47a93bcc1f7fb3c9b04"
+    },
+    "XRP_buy_20250916_151109_941479_5161b7c2ba37a09e": {
+      "client_order_id": "XRP_buy_20250916_151109_941479_5161b7c2ba37a09e",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.941479+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "80c025e3a3c820150864da1e75d2b61f9700c516e565f5cd0ac4faebbbc40923"
+    },
+    "XRP_buy_20250916_151109_953474_2f6587bab00d44dc": {
+      "client_order_id": "XRP_buy_20250916_151109_953474_2f6587bab00d44dc",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.953474+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "b8eeab930a661af614a88055395358f2f58059b7073189170586388819c3ea73"
+    },
+    "XRP_buy_20250916_151109_969476_6dc87067a6832b89": {
+      "client_order_id": "XRP_buy_20250916_151109_969476_6dc87067a6832b89",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.970477+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "d182309128428026ea5976c97a299e8453188aff737ed2bc19ae23dc296b462f"
+    },
+    "XRP_buy_20250916_151109_983481_ccb9d4f1803e2001": {
+      "client_order_id": "XRP_buy_20250916_151109_983481_ccb9d4f1803e2001",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.983481+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "439026a485fdd71a25307e8065839eba4c7c6850c2a5bacc7759c2d42b0b1825"
+    },
+    "XRP_buy_20250916_151109_996493_f5e6f7069a11cb29": {
+      "client_order_id": "XRP_buy_20250916_151109_996493_f5e6f7069a11cb29",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:09.996493+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "a6427602407caab154a9663992763469392200829aa5d80e560dfc3b13c109de"
+    },
+    "XRP_buy_20250916_151110_005474_34afaa36ab941778": {
+      "client_order_id": "XRP_buy_20250916_151110_005474_34afaa36ab941778",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.005474+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "e0a2424802c13e36f708615332f27f90285856ef0c46287dae9337a6856e5cff"
+    },
+    "XRP_buy_20250916_151110_018477_25b8ff513bcd9b37": {
+      "client_order_id": "XRP_buy_20250916_151110_018477_25b8ff513bcd9b37",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.018477+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "02da43e496d50549bba07b776744dcf5f3a3d70b18b147bee4d54018537da9db"
+    },
+    "XRP_buy_20250916_151110_032475_2ccb58dcf7690296": {
+      "client_order_id": "XRP_buy_20250916_151110_032475_2ccb58dcf7690296",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.032475+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "d76c36d16d00658da509f28880ef42b657ec8e48299d48f37ca23a69b5c4c6bc"
+    },
+    "XRP_buy_20250916_151110_044511_d0dc209fc7d4f4a6": {
+      "client_order_id": "XRP_buy_20250916_151110_044511_d0dc209fc7d4f4a6",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.044511+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "7e5c3bbab1a5d45d6da4bdc6be5cf427818326ebc02dffeefdad9d30b6578a89"
+    },
+    "XRP_buy_20250916_151110_062493_947dd82d4c7455e2": {
+      "client_order_id": "XRP_buy_20250916_151110_062493_947dd82d4c7455e2",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.062493+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "2660fc7b3b199423824ba1ab27bcddec22fae9eb218870f1d7a91ed2a57b9ba0"
+    },
+    "XRP_buy_20250916_151110_082485_c9dace2541c641ae": {
+      "client_order_id": "XRP_buy_20250916_151110_082485_c9dace2541c641ae",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.082485+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "43ea4c3225ce7ef2850396f66265cd4aec4eb03fd0cf9094fad72b568b45d94c"
+    },
+    "XRP_buy_20250916_151110_099483_b8a015134fa4d318": {
+      "client_order_id": "XRP_buy_20250916_151110_099483_b8a015134fa4d318",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.100483+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "e454b16c6d49560377dc30e166034eefef8c018c6ca3131b77d814ebeab2b7e0"
+    },
+    "XRP_buy_20250916_151110_116484_fdf2f6c25e821d84": {
+      "client_order_id": "XRP_buy_20250916_151110_116484_fdf2f6c25e821d84",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.116484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "0f71ec84ecd6d40ee9c0d1db31a4d95cfded35fc99657836e6f06ecff8e827cc"
+    },
+    "XRP_buy_20250916_151110_136478_cbc21c6e4149856a": {
+      "client_order_id": "XRP_buy_20250916_151110_136478_cbc21c6e4149856a",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.136478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "7321677d5ea2c3239cd0e0fdc96adbdf028dbe7529e571afa9274e78dee91f6a"
+    },
+    "XRP_buy_20250916_151110_156484_9982ffeea23a9f72": {
+      "client_order_id": "XRP_buy_20250916_151110_156484_9982ffeea23a9f72",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.157478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "ad6da08f3c11acf23067cc24aafd5b319ac159557cddc65313bbb6553d17dcc2"
+    },
+    "XRP_buy_20250916_151110_174481_4754fcf902343490": {
+      "client_order_id": "XRP_buy_20250916_151110_174481_4754fcf902343490",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.174481+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "9d1ca9650037fcaa797e68a11fb98de9027136a6ecb066b86c027906ebfd10f8"
+    },
+    "XRP_buy_20250916_151110_189478_69d1ae380723ec58": {
+      "client_order_id": "XRP_buy_20250916_151110_189478_69d1ae380723ec58",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.189478+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "1c4944dde353e316ea644cace392bfcb1467ab08353e759e4eeca53a09429e94"
+    },
+    "XRP_buy_20250916_151110_215484_e70686775ca8411c": {
+      "client_order_id": "XRP_buy_20250916_151110_215484_e70686775ca8411c",
+      "exchange_order_id": null,
+      "state": "cancelled",
+      "timestamp": "2025-09-16T15:11:10.215484+00:00",
+      "retry_count": 0,
+      "last_sequence_number": null,
+      "hash_signature": "0174e429ed975cabb2a57c0e3d34fe49e32255e33473fb33a63bb6e94fac088d"
+    }
+  },
+  "sequence_tracker": {},
+  "last_sequence_numbers": {
+    "ws_001": 1000
+  },
+  "sequence_gaps": [],
+  "last_saved": "2025-09-16T15:11:10.230488+00:00"
+}

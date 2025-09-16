@@ -1,53 +1,5 @@
 {
-  "splits_created_at": "2025-09-16T09:00:00.000Z",
-  "total_splits": 12,
-  "parameters": {
-    "train_window_days": 252,
-    "test_window_days": 30,
-    "step_size_days": 30,
-    "start_date": "2024-01-01T00:00:00",
-    "end_date": "2024-12-31T23:59:59"
-  },
-  "splits": [
-    {
-      "split_id": "wf_20240101_20241201",
-      "created_at": "2025-09-16T09:00:00.000Z",
-      "train_period": {
-        "start": "2024-01-01T00:00:00",
-        "end": "2024-09-09T00:00:00",
-        "duration_days": 252
-      },
-      "test_period": {
-        "start": "2024-09-09T00:00:00",
-        "end": "2024-10-09T00:00:00",
-        "duration_days": 30
-      },
-      "rationale": "Walk-forward split 1: 252 day train, 30 day test",
-      "wall_clock_timestamps": {
-        "split_created": "2025-09-16T09:00:00.000Z",
-        "train_start_wall_clock": "2024-01-01T00:00:00",
-        "test_start_wall_clock": "2024-09-09T00:00:00"
-      }
-    },
-    {
-      "split_id": "wf_20240131_20241231",
-      "created_at": "2025-09-16T09:00:00.000Z",
-      "train_period": {
-        "start": "2024-01-31T00:00:00",
-        "end": "2024-10-09T00:00:00",
-        "duration_days": 252
-      },
-      "test_period": {
-        "start": "2024-10-09T00:00:00",
-        "end": "2024-11-08T00:00:00",
-        "duration_days": 30
-      },
-      "rationale": "Walk-forward split 2: 252 day train, 30 day test",
-      "wall_clock_timestamps": {
-        "split_created": "2025-09-16T09:00:00.000Z",
-        "train_start_wall_clock": "2024-01-31T00:00:00",
-        "test_start_wall_clock": "2024-10-09T00:00:00"
-      }
-    }
-  ]
+  "created_at": "2025-09-16T15:06:34.437860+00:00",
+  "total_splits": 0,
+  "splits": []
 }

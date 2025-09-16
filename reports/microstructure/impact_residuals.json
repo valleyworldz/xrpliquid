@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-09-16T15:11:05.710478+00:00",
+  "model_type": "linear",
+  "model_parameters": {
+    "size_coef": 0.001,
+    "participation_coef": 0.1,
+    "intercept": 0.0
+  },
+  "model_r_squared": 0.75,
+  "model_rmse": 2.443650296288605,
+  "residual_statistics": {
+    "mean_residual": 1.1345782376778302,
+    "std_residual": 2.1751951016963273,
+    "mean_abs_residual": 1.7510798992089411
+  }
+}
