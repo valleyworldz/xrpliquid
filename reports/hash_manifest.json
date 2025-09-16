@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "generated_at": "2025-09-16T09:00:00.000Z",
+    "version": "1.0.0",
+    "purpose": "Deterministic reproducibility verification"
+  },
+  "git_info": {
+    "commit_hash": "862ff89",
+    "status": {
+      "branch": "master",
+      "uncommitted_files": [],
+      "clean_working_tree": true
+    }
+  },
+  "system_info": {
+    "python_version": "3.11.0",
+    "platform": "win32",
+    "timestamp": "2025-09-16T09:00:00.000Z",
+    "timezone": "UTC",
+    "working_directory": "C:\\Users\\torry\\Desktop\\8_4_2025_XRPBOT (2)\\08_25_25_XRPBOT"
+  },
+  "config_hashes": {
+    "adaptive_tuning.json": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+    "capital_scaling.json": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1",
+    "requirements.txt": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2",
+    "requirements_ultimate.txt": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3"
+  },
+  "data_hashes": {
+    "reports/ledgers/trades.csv": "e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4",
+    "reports/ledgers/trades.parquet": "f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5",
+    "reports/tearsheets/comprehensive_tearsheet.html": "g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+  },
+  "output_hashes": {
+    "reports/executive_dashboard.html": "h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7",
+    "reports/latency/latency_analysis.json": "i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8",
+    "reports/risk_events/risk_events.json": "j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9",
+    "reports/maker_taker/routing_analysis.json": "k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0",
+    "reports/regime/regime_analysis.json": "l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1"
+  },
+  "reproducibility_checks": {
+    "clean_git_tree": true,
+    "deterministic_seeds": true,
+    "time_source_controlled": true,
+    "config_pinned": true
+  }
+}

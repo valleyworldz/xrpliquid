@@ -1,0 +1,122 @@
+{
+  "regime_sizing_config": {
+    "version": "1.0.0",
+    "last_updated": "2025-09-16T09:00:00.000Z",
+    "base_capital": 10000.0,
+    "regimes": {
+      "bull": {
+        "risk_multiplier": 1.2,
+        "position_sizing": {
+          "buy_cap_xrp": 12.0,
+          "scalp_cap_xrp": 0.6,
+          "funding_arb_cap_xrp": 0.96,
+          "max_total_exposure": 0.24
+        },
+        "risk_parameters": {
+          "daily_dd_limit": 0.024,
+          "rolling_dd_limit": 0.06,
+          "kill_switch_threshold": 0.096
+        },
+        "execution_parameters": {
+          "maker_ratio_target": 0.85,
+          "max_slippage_bps": 4.0,
+          "urgency_threshold": 0.8
+        }
+      },
+      "bear": {
+        "risk_multiplier": 0.7,
+        "position_sizing": {
+          "buy_cap_xrp": 7.0,
+          "scalp_cap_xrp": 0.65,
+          "funding_arb_cap_xrp": 0.56,
+          "max_total_exposure": 0.14
+        },
+        "risk_parameters": {
+          "daily_dd_limit": 0.014,
+          "rolling_dd_limit": 0.035,
+          "kill_switch_threshold": 0.056
+        },
+        "execution_parameters": {
+          "maker_ratio_target": 0.75,
+          "max_slippage_bps": 6.0,
+          "urgency_threshold": 0.6
+        }
+      },
+      "sideways": {
+        "risk_multiplier": 0.9,
+        "position_sizing": {
+          "buy_cap_xrp": 9.0,
+          "scalp_cap_xrp": 0.55,
+          "funding_arb_cap_xrp": 0.72,
+          "max_total_exposure": 0.18
+        },
+        "risk_parameters": {
+          "daily_dd_limit": 0.018,
+          "rolling_dd_limit": 0.045,
+          "kill_switch_threshold": 0.072
+        },
+        "execution_parameters": {
+          "maker_ratio_target": 0.80,
+          "max_slippage_bps": 5.0,
+          "urgency_threshold": 0.7
+        }
+      },
+      "high_volatility": {
+        "risk_multiplier": 0.6,
+        "position_sizing": {
+          "buy_cap_xrp": 6.0,
+          "scalp_cap_xrp": 0.7,
+          "funding_arb_cap_xrp": 0.48,
+          "max_total_exposure": 0.12
+        },
+        "risk_parameters": {
+          "daily_dd_limit": 0.012,
+          "rolling_dd_limit": 0.03,
+          "kill_switch_threshold": 0.048
+        },
+        "execution_parameters": {
+          "maker_ratio_target": 0.70,
+          "max_slippage_bps": 8.0,
+          "urgency_threshold": 0.5
+        }
+      },
+      "low_volatility": {
+        "risk_multiplier": 1.3,
+        "position_sizing": {
+          "buy_cap_xrp": 13.0,
+          "scalp_cap_xrp": 0.35,
+          "funding_arb_cap_xrp": 1.04,
+          "max_total_exposure": 0.26
+        },
+        "risk_parameters": {
+          "daily_dd_limit": 0.026,
+          "rolling_dd_limit": 0.065,
+          "kill_switch_threshold": 0.104
+        },
+        "execution_parameters": {
+          "maker_ratio_target": 0.90,
+          "max_slippage_bps": 3.0,
+          "urgency_threshold": 0.9
+        }
+      }
+    },
+    "volatility_targeting": {
+      "target_volatility": 0.15,
+      "volatility_lookback_days": 30,
+      "rebalancing_frequency": "daily",
+      "max_position_adjustment": 0.2
+    },
+    "risk_unit_calculation": {
+      "base_risk_unit": 100.0,
+      "volatility_scaling": true,
+      "correlation_adjustment": true,
+      "liquidity_adjustment": true
+    },
+    "acceptance_tests": {
+      "max_total_exposure": 0.3,
+      "min_position_size": 1.0,
+      "max_position_size": 50.0,
+      "risk_parameter_validation": true
+    }
+  }
+}
