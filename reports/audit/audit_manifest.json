@@ -1,0 +1,139 @@
+{
+  "audit_pack_info": {
+    "version": "1.0.0",
+    "generated_at": "2025-09-16T19:27:51.562524",
+    "generator": "XRPLiquid AuditPack Generator",
+    "purpose": "Third-party verification and audit"
+  },
+  "artifacts": {
+    "reports/hash_manifest.json": {
+      "path": "reports\\hash_manifest.json",
+      "size": 2977,
+      "checksum": "99aea4429ac19b43af7cd62d213d063e982bdca0899ef5148ff06f44f9d16426",
+      "modified": "2025-09-16T19:27:13.384065"
+    },
+    "reports/final_system_status.json": {
+      "path": "reports\\final_system_status.json",
+      "size": 1361,
+      "checksum": "77f92ddff403e118ddb9faff91eac128cb6c0fd40db0c53da16b8d33c58c4c60",
+      "modified": "2025-09-16T15:58:33.473372"
+    },
+    "reports/executive_dashboard.html": {
+      "path": "reports\\executive_dashboard.html",
+      "size": 5544,
+      "checksum": "02bea71258e347472803b3655930d9cb29b912ca198d74f9daa517dacf86cbf8",
+      "modified": "2025-09-16T18:14:48.528877"
+    },
+    "reports/tearsheets/comprehensive_tearsheet.html": {
+      "path": "reports\\tearsheets\\comprehensive_tearsheet.html",
+      "size": 10169,
+      "checksum": "5d035c7d74487e20b8c86df47944c5cb7797e8379857a12f7cac664184e7fe4e",
+      "modified": "2025-09-16T17:15:49.115313"
+    },
+    "reports/latency/latency_analysis.json": {
+      "path": "reports\\latency\\latency_analysis.json",
+      "size": 374,
+      "checksum": "24a5a60837418e986a556d3bf80fd4e703041c2a52a8213e406bb5ebb883feda",
+      "modified": "2025-09-16T17:10:34.143451"
+    },
+    "reports/ledgers/trades.parquet": {
+      "path": "reports\\ledgers\\trades.parquet",
+      "size": 65452,
+      "checksum": "4a70a1c7ded4798c52fa6e3e471c13b99a2f907d3a7ac3bbb3f20177f9205fec",
+      "modified": "2025-09-16T17:10:34.088529"
+    },
+    "reports/risk/var_es.json": {
+      "path": "reports\\risk\\var_es.json",
+      "size": 591,
+      "checksum": "c98fc361f8db5c31ffd95dac7d385647c86367cc1e8699db3581f0de4e4ebd22",
+      "modified": "2025-09-16T12:33:09.143907"
+    },
+    "reports/reconciliation/exchange_vs_ledger.json": {
+      "path": "reports\\reconciliation\\exchange_vs_ledger.json",
+      "size": 871,
+      "checksum": "bc83da99219c4be8bb6d0871cd5e4f88ce15439aa4c1a492e6dc0f2033932afa",
+      "modified": "2025-09-16T12:33:09.144906"
+    },
+    "sbom.json": {
+      "path": "sbom.json",
+      "size": 6040,
+      "checksum": "69d3256f8b73fde375598d9d217de2dfde31738b5413f4e5bcad9733c5e08144",
+      "modified": "2025-09-16T10:30:49.888135"
+    },
+    "config/sizing_by_regime.json": {
+      "path": "config\\sizing_by_regime.json",
+      "size": 1199,
+      "checksum": "fd5c22d45db27e9a890349e03ccf52ea8f895d4ad3786768432c10c8e5341dca",
+      "modified": "2025-09-16T18:25:52.220994"
+    },
+    "docs/ARCHITECTURE.md": {
+      "path": "docs\\ARCHITECTURE.md",
+      "size": 3494,
+      "checksum": "0b2a1b55526b0acf80d22c1cd44e7124d600f60bdbbd52c557b5ec50ea59f42c",
+      "modified": "2025-09-16T18:35:29.761583"
+    },
+    "docs/RUNBOOK.md": {
+      "path": "docs\\RUNBOOK.md",
+      "size": 3746,
+      "checksum": "af4ca356bca549a88aa3c5036767bb8b936a35ada23a387ac9ab41708e1c6c88",
+      "modified": "2025-09-16T18:36:08.090305"
+    },
+    "docs/SLOs.md": {
+      "path": "docs\\SLOs.md",
+      "size": 3238,
+      "checksum": "eaf00fdc2233941883155340f4449376cace292eaf2b07a1441f669c8e41f01e",
+      "modified": "2025-09-16T18:36:42.308847"
+    },
+    "docs/SECURITY.md": {
+      "path": "docs\\SECURITY.md",
+      "size": 5839,
+      "checksum": "bd1f0abae5a8d3f1a2a9812369a574a4c742ac54c0199f70046d462e249e8c38",
+      "modified": "2025-09-16T18:37:27.933971"
+    },
+    "docs/ONBOARDING.md": {
+      "path": "docs\\ONBOARDING.md",
+      "size": 7094,
+      "checksum": "1f979ef3a833fe4c6809f08104f8b0998ffc1385763cf449a3bda22291b9683e",
+      "modified": "2025-09-16T18:38:22.473868"
+    },
+    "CHANGELOG.md": {
+      "path": "CHANGELOG.md",
+      "size": 6464,
+      "checksum": "32820a9c00977974dce68907862903fe1e6a4f0d71fdf0bd40db02f5a92eeb8f",
+      "modified": "2025-09-16T18:39:08.563404"
+    }
+  },
+  "checksums": {
+    "reports/hash_manifest.json": "99aea4429ac19b43af7cd62d213d063e982bdca0899ef5148ff06f44f9d16426",
+    "reports/final_system_status.json": "77f92ddff403e118ddb9faff91eac128cb6c0fd40db0c53da16b8d33c58c4c60",
+    "reports/executive_dashboard.html": "02bea71258e347472803b3655930d9cb29b912ca198d74f9daa517dacf86cbf8",
+    "reports/tearsheets/comprehensive_tearsheet.html": "5d035c7d74487e20b8c86df47944c5cb7797e8379857a12f7cac664184e7fe4e",
+    "reports/latency/latency_analysis.json": "24a5a60837418e986a556d3bf80fd4e703041c2a52a8213e406bb5ebb883feda",
+    "reports/ledgers/trades.parquet": "4a70a1c7ded4798c52fa6e3e471c13b99a2f907d3a7ac3bbb3f20177f9205fec",
+    "reports/risk/var_es.json": "c98fc361f8db5c31ffd95dac7d385647c86367cc1e8699db3581f0de4e4ebd22",
+    "reports/reconciliation/exchange_vs_ledger.json": "bc83da99219c4be8bb6d0871cd5e4f88ce15439aa4c1a492e6dc0f2033932afa",
+    "sbom.json": "69d3256f8b73fde375598d9d217de2dfde31738b5413f4e5bcad9733c5e08144",
+    "config/sizing_by_regime.json": "fd5c22d45db27e9a890349e03ccf52ea8f895d4ad3786768432c10c8e5341dca",
+    "docs/ARCHITECTURE.md": "0b2a1b55526b0acf80d22c1cd44e7124d600f60bdbbd52c557b5ec50ea59f42c",
+    "docs/RUNBOOK.md": "af4ca356bca549a88aa3c5036767bb8b936a35ada23a387ac9ab41708e1c6c88",
+    "docs/SLOs.md": "eaf00fdc2233941883155340f4449376cace292eaf2b07a1441f669c8e41f01e",
+    "docs/SECURITY.md": "bd1f0abae5a8d3f1a2a9812369a574a4c742ac54c0199f70046d462e249e8c38",
+    "docs/ONBOARDING.md": "1f979ef3a833fe4c6809f08104f8b0998ffc1385763cf449a3bda22291b9683e",
+    "CHANGELOG.md": "32820a9c00977974dce68907862903fe1e6a4f0d71fdf0bd40db02f5a92eeb8f"
+  },
+  "metadata": {
+    "repo_url": "https://github.com/valleyworldz/xrpliquid",
+    "version": "1.0.0",
+    "generated_by": "AuditPack Generator",
+    "generation_time": "2025-09-16T19:27:51.561532",
+    "total_artifacts": 16,
+    "total_size": 124453
+  },
+  "verification_instructions": {
+    "step_1": "Verify all checksums match",
+    "step_2": "Check artifact completeness",
+    "step_3": "Validate data integrity",
+    "step_4": "Review documentation",
+    "step_5": "Perform security audit"
+  }
+}
