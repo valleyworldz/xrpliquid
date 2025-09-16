@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-09-16T19:26:46.931785",
+  "test_type": "leak_canary_detection_test",
+  "scan_results": {
+    "timestamp": "2025-09-16T19:26:44.334781",
+    "scan_type": "leak_canary_detection",
+    "canaries_found": [
+      {
+        "file": "scripts\\generate_sbom.py",
+        "line_number": 124,
+        "canary": "AKIAIOSFODNN7EXAMPLE",
+        "line_content": "\"AKIAIOSFODNN7EXAMPLE\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\generate_sbom.py",
+        "line_number": 125,
+        "canary": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "line_content": "\"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\generate_sbom.py",
+        "line_number": 126,
+        "canary": "sk_test_51234567890abcdef",
+        "line_content": "\"sk_test_51234567890abcdef\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\generate_sbom.py",
+        "line_number": 127,
+        "canary": "AIzaSyBOti4mM-6x9WDnZIjIey21xX4pI8pYEXAMPLE",
+        "line_content": "\"AIzaSyBOti4mM-6x9WDnZIjIey21xX4pI8pYEXAMPLE\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\generate_sbom.py",
+        "line_number": 128,
+        "canary": "ghp_1234567890abcdefghijklmnopqrstuvwxyz1234",
+        "line_content": "\"ghp_1234567890abcdefghijklmnopqrstuvwxyz1234\"",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 28,
+        "canary": "AKIAIOSFODNN7EXAMPLE",
+        "line_content": "\"AKIAIOSFODNN7EXAMPLE\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 29,
+        "canary": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "line_content": "\"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 30,
+        "canary": "sk_test_51234567890abcdef",
+        "line_content": "\"sk_test_51234567890abcdef\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 31,
+        "canary": "AIzaSyBOti4mM-6x9WDnZIjIey21xX4pI8pYEXAMPLE",
+        "line_content": "\"AIzaSyBOti4mM-6x9WDnZIjIey21xX4pI8pYEXAMPLE\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 32,
+        "canary": "ghp_1234567890abcdefghijklmnopqrstuvwxyz1234",
+        "line_content": "\"ghp_1234567890abcdefghijklmnopqrstuvwxyz1234\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 33,
+        "canary": "fake_api_key_12345",
+        "line_content": "\"fake_api_key_12345\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 34,
+        "canary": "test_secret_67890",
+        "line_content": "\"test_secret_67890\",",
+        "severity": "CRITICAL"
+      },
+      {
+        "file": "scripts\\leak_canary_detector.py",
+        "line_number": 35,
+        "canary": "dummy_token_abcdef",
+        "line_content": "\"dummy_token_abcdef\"",
+        "severity": "CRITICAL"
+      }
+    ],
+    "files_scanned": 608,
+    "total_canaries": 13,
+    "scan_status": "FAILED"
+  },
+  "test_canaries_created": 8,
+  "test_canaries_detected": 0,
+  "detection_rate": 0.0,
+  "test_status": "FAILED"
+}

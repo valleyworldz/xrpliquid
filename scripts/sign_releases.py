@@ -9,6 +9,7 @@ import hashlib
 import subprocess
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, List
 import logging
 
 # Set up logging

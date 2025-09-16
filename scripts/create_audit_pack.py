@@ -9,6 +9,7 @@ import zipfile
 import hashlib
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, List
 import logging
 
 # Set up logging
@@ -226,7 +227,7 @@ if __name__ == "__main__":
 '''
         
         script_file = self.audit_dir / "verify_audit_pack.py"
-        with open(script_file, 'w') as f:
+        with open(script_file, 'w', encoding='utf-8') as f:
             f.write(verification_script)
         
         # Make script executable
