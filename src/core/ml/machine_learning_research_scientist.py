@@ -389,8 +389,8 @@ class MachineLearningResearchScientist:
             # Select features
             selected_features = self._select_features(feature_df)
             
-            # Prepare target variable (next period return)
-            target = df['return'].shift(-1).dropna()
+            # Prepare target variable (current period return - no future data)
+            target = df['return'].dropna()
             
             # Align features and target
             min_length = min(len(selected_features), len(target))

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-15T22:19:36.405005",
+  "timestamp": "2025-09-16T17:10:34.144454",
   "current_regime": "bull",
   "regime_confidence": 0.85,
   "regime_metrics": {
@@ -9,122 +9,122 @@
   },
   "regime_history": [
     {
-      "timestamp": "2025-09-15T22:19:36.405005",
+      "timestamp": "2025-09-16T17:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T21:19:36.405005",
+      "timestamp": "2025-09-16T16:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T20:19:36.405005",
+      "timestamp": "2025-09-16T15:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T19:19:36.405005",
+      "timestamp": "2025-09-16T14:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T18:19:36.405005",
+      "timestamp": "2025-09-16T13:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T17:19:36.405005",
+      "timestamp": "2025-09-16T12:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T16:19:36.405005",
+      "timestamp": "2025-09-16T11:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T15:19:36.405005",
+      "timestamp": "2025-09-16T10:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T14:19:36.405005",
+      "timestamp": "2025-09-16T09:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T13:19:36.405005",
+      "timestamp": "2025-09-16T08:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T12:19:36.405005",
+      "timestamp": "2025-09-16T07:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T11:19:36.405005",
+      "timestamp": "2025-09-16T06:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T10:19:36.405005",
+      "timestamp": "2025-09-16T05:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T09:19:36.405005",
+      "timestamp": "2025-09-16T04:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T08:19:36.405005",
+      "timestamp": "2025-09-16T03:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T07:19:36.405005",
+      "timestamp": "2025-09-16T02:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T06:19:36.405005",
+      "timestamp": "2025-09-16T01:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T05:19:36.405005",
+      "timestamp": "2025-09-16T00:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T04:19:36.405005",
+      "timestamp": "2025-09-15T23:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T03:19:36.405005",
+      "timestamp": "2025-09-15T22:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T02:19:36.405005",
+      "timestamp": "2025-09-15T21:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T01:19:36.405005",
+      "timestamp": "2025-09-15T20:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-15T00:19:36.405005",
+      "timestamp": "2025-09-15T19:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     },
     {
-      "timestamp": "2025-09-14T23:19:36.405005",
+      "timestamp": "2025-09-15T18:10:34.144454",
       "regime": "bull",
       "confidence": 0.8
     }

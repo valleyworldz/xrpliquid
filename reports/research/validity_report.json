@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-09-16T17:15:49.058373",
+  "research_validity_metrics": {
+    "deflated_sharpe_ratio": 0.04752029380985453,
+    "probabilistic_sharpe_ratio": 0.9889125482358239,
+    "trial_count": 11,
+    "parameter_stability": {
+      "sharpe_stability": {
+        "mean": 1.7054545454545456,
+        "std": 0.12957017308032787,
+        "cv": 0.0759739820833479,
+        "min": 1.45,
+        "max": 1.89,
+        "range": 0.43999999999999995
+      },
+      "drawdown_stability": {
+        "mean": 3.8000000000000003,
+        "std": 0.2215646837627989,
+        "cv": 0.058306495727052335,
+        "min": 3.5,
+        "max": 4.2,
+        "range": 0.7000000000000002
+      },
+      "win_rate_stability": {
+        "mean": 0.35727272727272724,
+        "std": 0.020928844424038796,
+        "cv": 0.05857946276448518,
+        "min": 0.32,
+        "max": 0.39,
+        "range": 0.07
+      }
+    }
+  },
+  "interpretation": {
+    "deflated_sharpe": {
+      "value": 0.04752029380985453,
+      "interpretation": "Adjusted Sharpe ratio accounting for multiple testing",
+      "threshold": 1.0,
+      "status": "NEEDS_IMPROVEMENT"
+    },
+    "psr": {
+      "value": 0.9889125482358239,
+      "interpretation": "Probability that Sharpe ratio exceeds benchmark",
+      "threshold": 0.7,
+      "status": "GOOD"
+    },
+    "parameter_stability": {
+      "sharpe_cv": 0.0759739820833479,
+      "interpretation": "Coefficient of variation across splits (lower is better)",
+      "threshold": 0.3,
+      "status": "STABLE"
+    }
+  },
+  "recommendations": [
+    "Improve strategy performance to increase Deflated Sharpe ratio"
+  ]
+}

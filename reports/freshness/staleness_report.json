@@ -1,0 +1,89 @@
+{
+  "timestamp": "2025-09-16T17:10:28.464837",
+  "check_type": "artifact_staleness",
+  "artifact_freshness": {
+    "timestamp": "2025-09-16T17:10:28.302831",
+    "max_age_hours": 1.0,
+    "artifacts": {
+      "tearsheets/comprehensive_tearsheet.html": {
+        "status": "stale",
+        "age_hours": 18.85,
+        "fresh": false,
+        "last_modified": "2025-09-15T22:19:36.391029"
+      },
+      "ledgers/trades.parquet": {
+        "status": "stale",
+        "age_hours": 18.85,
+        "fresh": false,
+        "last_modified": "2025-09-15T22:19:36.337003"
+      },
+      "ledgers/trades.csv": {
+        "status": "stale",
+        "age_hours": 18.85,
+        "fresh": false,
+        "last_modified": "2025-09-15T22:19:36.277014"
+      },
+      "executive_dashboard.html": {
+        "status": "fresh",
+        "age_hours": 0.69,
+        "fresh": true,
+        "last_modified": "2025-09-16T16:28:58.926837"
+      },
+      "latency/latency_analysis.json": {
+        "status": "stale",
+        "age_hours": 18.85,
+        "fresh": false,
+        "last_modified": "2025-09-15T22:19:36.404006"
+      },
+      "final_system_status.json": {
+        "status": "stale",
+        "age_hours": 1.2,
+        "fresh": false,
+        "last_modified": "2025-09-16T15:58:33.473372"
+      }
+    },
+    "stale_count": 5,
+    "missing_count": 0,
+    "all_fresh": false
+  },
+  "code_config_changes": {
+    "recent_changes": [
+      {
+        "path": "src\\core\\analytics\\canonical_dashboard.py",
+        "age_hours": 0.69,
+        "last_modified": "2025-09-16T16:28:50.989210"
+      },
+      {
+        "path": "src\\core\\execution\\idempotency_manager.py",
+        "age_hours": 1.26,
+        "last_modified": "2025-09-16T15:55:10.252809"
+      },
+      {
+        "path": "scripts\\check_artifact_staleness.py",
+        "age_hours": 0.0,
+        "last_modified": "2025-09-16T17:10:24.637839"
+      },
+      {
+        "path": "scripts\\complete_audit_proof_implementation.py",
+        "age_hours": 1.26,
+        "last_modified": "2025-09-16T15:55:10.253812"
+      },
+      {
+        "path": "scripts\\generate_sbom.py",
+        "age_hours": 1.08,
+        "last_modified": "2025-09-16T16:05:58.172686"
+      },
+      {
+        "path": "scripts\\verify_reproducibility.py",
+        "age_hours": 0.61,
+        "last_modified": "2025-09-16T16:33:57.216768"
+      }
+    ],
+    "latest_change_hours": 1.2550147287713156,
+    "has_recent_changes": true
+  },
+  "recommendations": [
+    "Regenerate 5 stale artifacts",
+    "Code/config changes detected - artifacts should be regenerated"
+  ]
+}

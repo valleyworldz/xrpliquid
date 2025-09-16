@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-16T17:14:06.033622",
+  "validation_type": "no_lookahead_bias",
+  "code_analysis": {
+    "files_checked": 40,
+    "violations": [],
+    "total_violations": 0
+  },
+  "data_lineage": {
+    "provenance_exists": true,
+    "splits_exist": true,
+    "provenance_valid": true,
+    "splits_valid": true,
+    "issues": []
+  },
+  "timestamp_validation": {
+    "timestamp_validation": true,
+    "decision_ts_respected": true,
+    "issues": []
+  },
+  "overall_status": "PASSED",
+  "recommendations": [
+    "No lookahead bias detected - validation passed"
+  ]
+}
