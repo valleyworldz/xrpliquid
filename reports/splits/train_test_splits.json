@@ -1,178 +1,45 @@
 {
-  "timestamp": "2025-09-16T16:00:00.000Z",
-  "split_type": "walk_forward_validation",
-  "total_period": {
-    "start": "2025-01-01T00:00:00.000Z",
-    "end": "2025-09-16T23:59:59.999Z",
-    "duration_days": 258
-  },
+  "timestamp": "2025-09-16T18:00:00.000Z",
+  "split_type": "walk_forward",
   "splits": [
     {
-      "split_id": 1,
+      "split_id": "split_001",
       "train_start": "2025-01-01T00:00:00.000Z",
-      "train_end": "2025-02-15T23:59:59.999Z",
-      "test_start": "2025-02-16T00:00:00.000Z", 
-      "test_end": "2025-03-15T23:59:59.999Z",
-      "train_days": 46,
-      "test_days": 28,
-      "wall_clock_train_start": "2025-01-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-02-15T23:59:59.999Z",
-      "wall_clock_test_start": "2025-02-16T00:00:00.000Z",
-      "wall_clock_test_end": "2025-03-15T23:59:59.999Z"
-    },
-    {
-      "split_id": 2,
-      "train_start": "2025-01-16T00:00:00.000Z",
-      "train_end": "2025-03-01T23:59:59.999Z",
-      "test_start": "2025-03-02T00:00:00.000Z",
-      "test_end": "2025-03-31T23:59:59.999Z",
-      "train_days": 45,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-01-16T00:00:00.000Z",
-      "wall_clock_train_end": "2025-03-01T23:59:59.999Z",
-      "wall_clock_test_start": "2025-03-02T00:00:00.000Z",
-      "wall_clock_test_end": "2025-03-31T23:59:59.999Z"
-    },
-    {
-      "split_id": 3,
-      "train_start": "2025-02-01T00:00:00.000Z",
-      "train_end": "2025-03-16T23:59:59.999Z",
-      "test_start": "2025-03-17T00:00:00.000Z",
-      "test_end": "2025-04-15T23:59:59.999Z",
-      "train_days": 44,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-02-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-03-16T23:59:59.999Z",
-      "wall_clock_test_start": "2025-03-17T00:00:00.000Z",
-      "wall_clock_test_end": "2025-04-15T23:59:59.999Z"
-    },
-    {
-      "split_id": 4,
-      "train_start": "2025-02-16T00:00:00.000Z",
-      "train_end": "2025-04-01T23:59:59.999Z",
-      "test_start": "2025-04-02T00:00:00.000Z",
-      "test_end": "2025-04-30T23:59:59.999Z",
-      "train_days": 45,
-      "test_days": 29,
-      "wall_clock_train_start": "2025-02-16T00:00:00.000Z",
-      "wall_clock_train_end": "2025-04-01T23:59:59.999Z",
-      "wall_clock_test_start": "2025-04-02T00:00:00.000Z",
-      "wall_clock_test_end": "2025-04-30T23:59:59.999Z"
-    },
-    {
-      "split_id": 5,
-      "train_start": "2025-03-01T00:00:00.000Z",
-      "train_end": "2025-04-16T23:59:59.999Z",
-      "test_start": "2025-04-17T00:00:00.000Z",
-      "test_end": "2025-05-15T23:59:59.999Z",
-      "train_days": 47,
-      "test_days": 29,
-      "wall_clock_train_start": "2025-03-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-04-16T23:59:59.999Z",
-      "wall_clock_test_start": "2025-04-17T00:00:00.000Z",
-      "wall_clock_test_end": "2025-05-15T23:59:59.999Z"
-    },
-    {
-      "split_id": 6,
-      "train_start": "2025-03-16T00:00:00.000Z",
-      "train_end": "2025-05-01T23:59:59.999Z",
-      "test_start": "2025-05-02T00:00:00.000Z",
-      "test_end": "2025-05-31T23:59:59.999Z",
-      "train_days": 47,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-03-16T00:00:00.000Z",
-      "wall_clock_train_end": "2025-05-01T23:59:59.999Z",
-      "wall_clock_test_start": "2025-05-02T00:00:00.000Z",
-      "wall_clock_test_end": "2025-05-31T23:59:59.999Z"
-    },
-    {
-      "split_id": 7,
-      "train_start": "2025-04-01T00:00:00.000Z",
-      "train_end": "2025-05-16T23:59:59.999Z",
-      "test_start": "2025-05-17T00:00:00.000Z",
-      "test_end": "2025-06-15T23:59:59.999Z",
-      "train_days": 46,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-04-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-05-16T23:59:59.999Z",
-      "wall_clock_test_start": "2025-05-17T00:00:00.000Z",
-      "wall_clock_test_end": "2025-06-15T23:59:59.999Z"
-    },
-    {
-      "split_id": 8,
-      "train_start": "2025-04-16T00:00:00.000Z",
-      "train_end": "2025-06-01T23:59:59.999Z",
-      "test_start": "2025-06-02T00:00:00.000Z",
-      "test_end": "2025-06-30T23:59:59.999Z",
-      "train_days": 47,
-      "test_days": 29,
-      "wall_clock_train_start": "2025-04-16T00:00:00.000Z",
-      "wall_clock_train_end": "2025-06-01T23:59:59.999Z",
-      "wall_clock_test_start": "2025-06-02T00:00:00.000Z",
-      "wall_clock_test_end": "2025-06-30T23:59:59.999Z"
-    },
-    {
-      "split_id": 9,
-      "train_start": "2025-05-01T00:00:00.000Z",
-      "train_end": "2025-06-16T23:59:59.999Z",
-      "test_start": "2025-06-17T00:00:00.000Z",
-      "test_end": "2025-07-15T23:59:59.999Z",
-      "train_days": 47,
-      "test_days": 29,
-      "wall_clock_train_start": "2025-05-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-06-16T23:59:59.999Z",
-      "wall_clock_test_start": "2025-06-17T00:00:00.000Z",
-      "wall_clock_test_end": "2025-07-15T23:59:59.999Z"
-    },
-    {
-      "split_id": 10,
-      "train_start": "2025-05-16T00:00:00.000Z",
-      "train_end": "2025-07-01T23:59:59.999Z",
-      "test_start": "2025-07-02T00:00:00.000Z",
+      "train_end": "2025-06-30T23:59:59.999Z",
+      "test_start": "2025-07-01T00:00:00.000Z",
       "test_end": "2025-07-31T23:59:59.999Z",
-      "train_days": 47,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-05-16T00:00:00.000Z",
-      "wall_clock_train_end": "2025-07-01T23:59:59.999Z",
-      "wall_clock_test_start": "2025-07-02T00:00:00.000Z",
-      "wall_clock_test_end": "2025-07-31T23:59:59.999Z"
+      "train_duration_days": 181,
+      "test_duration_days": 31
     },
     {
-      "split_id": 11,
-      "train_start": "2025-06-01T00:00:00.000Z",
-      "train_end": "2025-07-16T23:59:59.999Z",
-      "test_start": "2025-07-17T00:00:00.000Z",
-      "test_end": "2025-08-15T23:59:59.999Z",
-      "train_days": 46,
-      "test_days": 30,
-      "wall_clock_train_start": "2025-06-01T00:00:00.000Z",
-      "wall_clock_train_end": "2025-07-16T23:59:59.999Z",
-      "wall_clock_test_start": "2025-07-17T00:00:00.000Z",
-      "wall_clock_test_end": "2025-08-15T23:59:59.999Z"
+      "split_id": "split_002",
+      "train_start": "2025-02-01T00:00:00.000Z",
+      "train_end": "2025-07-31T23:59:59.999Z",
+      "test_start": "2025-08-01T00:00:00.000Z",
+      "test_end": "2025-08-31T23:59:59.999Z",
+      "train_duration_days": 181,
+      "test_duration_days": 31
+    },
+    {
+      "split_id": "split_003",
+      "train_start": "2025-03-01T00:00:00.000Z",
+      "train_end": "2025-08-31T23:59:59.999Z",
+      "test_start": "2025-09-01T00:00:00.000Z",
+      "test_end": "2025-09-16T23:59:59.999Z",
+      "train_duration_days": 184,
+      "test_duration_days": 16
     }
   ],
-  "validation_metadata": {
-    "no_lookahead_enforced": true,
-    "feature_engineering_cutoff": "decision_timestamp",
-    "max_feature_lag_hours": 0,
-    "validation_method": "walk_forward",
-    "overlap_days": 15,
-    "min_train_days": 44,
-    "max_train_days": 47,
-    "min_test_days": 28,
-    "max_test_days": 30
+  "validation_rules": {
+    "no_lookahead": true,
+    "min_train_days": 90,
+    "min_test_days": 7,
+    "gap_between_splits": "1_day"
   },
-  "performance_by_split": {
-    "split_1": {"sharpe": 1.45, "max_dd": 4.2, "win_rate": 0.32},
-    "split_2": {"sharpe": 1.67, "max_dd": 3.8, "win_rate": 0.35},
-    "split_3": {"sharpe": 1.52, "max_dd": 4.1, "win_rate": 0.33},
-    "split_4": {"sharpe": 1.89, "max_dd": 3.5, "win_rate": 0.38},
-    "split_5": {"sharpe": 1.73, "max_dd": 3.9, "win_rate": 0.36},
-    "split_6": {"sharpe": 1.61, "max_dd": 4.0, "win_rate": 0.34},
-    "split_7": {"sharpe": 1.78, "max_dd": 3.7, "win_rate": 0.37},
-    "split_8": {"sharpe": 1.84, "max_dd": 3.6, "win_rate": 0.39},
-    "split_9": {"sharpe": 1.69, "max_dd": 3.8, "win_rate": 0.35},
-    "split_10": {"sharpe": 1.76, "max_dd": 3.7, "win_rate": 0.36},
-    "split_11": {"sharpe": 1.82, "max_dd": 3.5, "win_rate": 0.38}
+  "metadata": {
+    "total_splits": 3,
+    "total_train_days": 546,
+    "total_test_days": 78,
+    "coverage_period": "2025-01-01 to 2025-09-16"
   }
 }
