@@ -1,249 +1,170 @@
-# 🚀 **Production Runbook**
+# 📋 XRPLiquid Operational Runbook
 
-## **System Overview**
+## Daily Operations
 
-The Hat Manifesto Ultimate Trading System is a production-grade algorithmic trading platform designed for institutional operations on Hyperliquid exchange.
+### 1. System Startup
+```bash
+# Check system status
+python -c "from src.core.engines.ultra_efficient_xrp_system import UltraEfficientXRPSystem; print('System ready')"
 
-### **Key Components**
-- **Trading Engine**: Core execution logic
-- **Risk Management**: Real-time risk controls
-- **Market Data**: WebSocket feeds and processing
-- **Monitoring**: Prometheus metrics and Grafana dashboards
-- **Backtesting**: Historical simulation engine
+# Start data capture
+python src/data_capture/enhanced_tick_capture.py &
 
-## **Startup Procedures**
+# Start trading system
+python run_bot.py
+```
 
-### **1. Pre-Flight Checks**
+### 2. Daily Reconciliation
+```bash
+# Run daily reconciliation
+python src/core/accounting/daily_reconciliation.py
+
+# Check reconciliation status
+cat reports/reconciliation/exchange_vs_ledger_$(date +%Y-%m-%d).json
+```
+
+### 3. Risk Monitoring
+```bash
+# Check VaR/ES
+cat reports/risk/var_es.json
+
+# Check kill-switch status
+cat reports/risk/hysteresis_state.json
+```
+
+## Emergency Procedures
+
+### 1. Kill-Switch Activation
+If kill-switch is triggered:
+1. Check `reports/risk_events/risk_events.jsonl` for details
+2. Review `reports/risk/hysteresis_state.json` for status
+3. Wait for cooldown period before manual intervention
+4. Monitor recovery stages in hysteresis manager
+
+### 2. System Recovery
 ```bash
 # Check system health
-python scripts/health_check.py
+python scripts/check_system_health.py
 
-# Verify configuration
-python scripts/validate_config.py
-
-# Check market connectivity
-python scripts/test_connectivity.py
+# Restart components if needed
+pkill -f "enhanced_tick_capture"
+python src/data_capture/enhanced_tick_capture.py &
 ```
 
-### **2. Start Services**
+### 3. Data Recovery
 ```bash
-# Start main trading system
-python run_bot.py
+# Check data integrity
+python scripts/verify_data_integrity.py
 
-# Start monitoring (separate terminal)
-python monitoring/prometheus_exporter.py --port 8000
-
-# Start Grafana (if local)
-docker run -d -p 3000:3000 grafana/grafana
+# Restore from backup if needed
+python scripts/restore_from_backup.py
 ```
 
-### **3. Verification**
-- Check Grafana dashboard: http://localhost:3000
-- Verify Prometheus metrics: http://localhost:8000/metrics
-- Confirm trading status in logs
+## Monitoring
 
-## **Operational Procedures**
+### 1. Key Metrics
+- P95 latency: < 100ms
+- Sharpe ratio: > 1.0
+- Max drawdown: < 5%
+- Maker ratio: > 60%
 
-### **Daily Operations**
+### 2. Alerts
+- Kill-switch activation
+- High latency (> 200ms)
+- Large drawdown (> 3%)
+- Data capture failures
 
-#### **Morning Checklist**
-1. **System Health Check**
-   - Review overnight logs
-   - Check risk metrics
-   - Verify position reconciliation
+### 3. Health Checks
+```bash
+# System health
+curl http://localhost:8080/healthz
 
-2. **Market Data Validation**
-   - Confirm WebSocket connectivity
-   - Validate price feeds
-   - Check for data gaps
+# Data capture health
+curl http://localhost:8080/data_health
 
-3. **Risk Review**
-   - Review overnight P&L
-   - Check drawdown levels
-   - Validate position sizes
+# Trading health
+curl http://localhost:8080/trading_health
+```
 
-#### **End-of-Day Procedures**
-1. **Position Reconciliation**
-   - Compare ledger vs exchange
-   - Resolve any discrepancies
-   - Generate daily reports
+## Maintenance
 
-2. **Performance Review**
-   - Calculate daily metrics
-   - Update dashboards
-   - Archive logs
+### 1. Daily Tasks
+- [ ] Check system status
+- [ ] Review reconciliation reports
+- [ ] Monitor risk metrics
+- [ ] Check data capture
 
-### **Incident Response**
+### 2. Weekly Tasks
+- [ ] Review performance reports
+- [ ] Update risk parameters
+- [ ] Clean up old data
+- [ ] Security scan
 
-#### **Severity Levels**
-- **P1 (Critical)**: System down, trading halted
-- **P2 (High)**: Performance degradation, risk exposure
-- **P3 (Medium)**: Minor issues, monitoring alerts
-- **P4 (Low)**: Cosmetic issues, documentation
+### 3. Monthly Tasks
+- [ ] Full system backup
+- [ ] Performance review
+- [ ] Security audit
+- [ ] Documentation update
 
-#### **Response Procedures**
+## Troubleshooting
 
-**P1 - Critical Incident**
-1. **Immediate Response** (< 5 minutes)
-   - Activate kill-switch
-   - Notify on-call engineer
-   - Begin incident response
+### 1. Common Issues
 
-2. **Investigation** (< 15 minutes)
-   - Gather logs and metrics
-   - Identify root cause
-   - Implement fix
+#### High Latency
+- Check network connectivity
+- Review system resources
+- Check for memory leaks
+- Review order queue
 
-3. **Recovery** (< 30 minutes)
-   - Deploy fix
-   - Verify system health
-   - Resume trading
+#### Data Capture Issues
+- Check WebSocket connection
+- Review data storage
+- Check disk space
+- Verify data format
 
-**P2 - High Priority**
-1. **Assessment** (< 10 minutes)
-   - Evaluate impact
-   - Determine mitigation
-   - Notify stakeholders
+#### Trading Issues
+- Check exchange connectivity
+- Review order status
+- Check risk limits
+- Verify position sizes
 
-2. **Resolution** (< 60 minutes)
-   - Implement fix
-   - Monitor results
-   - Document actions
+### 2. Log Analysis
+```bash
+# Check system logs
+tail -f logs/system.log
 
-## **Disaster Recovery**
+# Check trading logs
+tail -f logs/trading.log
 
-### **Backup Procedures**
-- **Data Backups**: Daily automated backups
-- **Configuration Backups**: Version controlled
-- **Code Backups**: Git repository with tags
+# Check error logs
+tail -f logs/error.log
+```
 
-### **Recovery Procedures**
+## Contact Information
 
-#### **Hot Standby**
-1. **Activate Standby System**
-   - Switch to backup instance
-   - Verify connectivity
-   - Resume operations
+### 1. Escalation
+- Level 1: System monitoring
+- Level 2: Technical support
+- Level 3: Development team
 
-2. **Data Synchronization**
-   - Sync latest data
-   - Reconcile positions
-   - Validate state
+### 2. Emergency Contacts
+- On-call engineer: [Contact Info]
+- System administrator: [Contact Info]
+- Risk manager: [Contact Info]
 
-#### **Cold Recovery**
-1. **System Restoration**
-   - Deploy from backup
-   - Restore configuration
-   - Initialize services
+## Appendix
 
-2. **Data Recovery**
-   - Restore from backup
-   - Validate integrity
-   - Resume operations
+### 1. Configuration Files
+- `config/sizing_by_regime.json`: Position sizing
+- `config/risk_parameters.json`: Risk limits
+- `config/trading_parameters.json`: Trading parameters
 
-### **RPO/RTO Targets**
-- **RPO (Recovery Point Objective)**: 1 hour
-- **RTO (Recovery Time Objective)**: 15 minutes
-- **Data Loss Tolerance**: < 1 hour
+### 2. Key Scripts
+- `scripts/check_system_health.py`: Health checks
+- `scripts/verify_data_integrity.py`: Data verification
+- `scripts/backup_system.py`: System backup
 
-## **Monitoring & Alerting**
-
-### **Key Metrics**
-- **System Health**: CPU, memory, disk usage
-- **Trading Performance**: P&L, win rate, slippage
-- **Risk Metrics**: Drawdown, VaR, position sizes
-- **Latency**: Execution time, API response time
-
-### **Alert Channels**
-- **P1/P2**: Phone call + SMS + Email
-- **P3**: Email + Slack
-- **P4**: Slack only
-
-### **Escalation Matrix**
-- **Level 1**: On-call engineer (0-15 min)
-- **Level 2**: Senior engineer (15-30 min)
-- **Level 3**: Engineering manager (30-60 min)
-- **Level 4**: CTO (60+ min)
-
-## **Maintenance Windows**
-
-### **Scheduled Maintenance**
-- **Weekly**: Sunday 2-4 AM UTC
-- **Monthly**: First Sunday 1-3 AM UTC
-- **Quarterly**: First Sunday 12-6 AM UTC
-
-### **Maintenance Procedures**
-1. **Pre-Maintenance**
-   - Notify stakeholders
-   - Prepare rollback plan
-   - Backup current state
-
-2. **During Maintenance**
-   - Stop trading system
-   - Apply updates
-   - Run tests
-
-3. **Post-Maintenance**
-   - Verify system health
-   - Resume operations
-   - Monitor closely
-
-## **Security Procedures**
-
-### **Access Control**
-- **Production Access**: 2FA required
-- **API Keys**: Rotated monthly
-- **Logs**: Encrypted at rest
-
-### **Incident Response**
-1. **Detection**: Automated monitoring
-2. **Containment**: Isolate affected systems
-3. **Investigation**: Gather evidence
-4. **Recovery**: Restore normal operations
-5. **Lessons Learned**: Document improvements
-
-## **Performance Optimization**
-
-### **Latency Optimization**
-- **Code Profiling**: Weekly performance reviews
-- **Database Optimization**: Monthly query analysis
-- **Network Optimization**: Continuous monitoring
-
-### **Capacity Planning**
-- **Resource Monitoring**: Real-time tracking
-- **Scaling Triggers**: Automated alerts
-- **Growth Projections**: Monthly planning
-
-## **Compliance & Auditing**
-
-### **Audit Trail**
-- **All Trades**: Immutable ledger
-- **Risk Events**: Complete log
-- **System Changes**: Version control
-
-### **Regulatory Reporting**
-- **Daily Reports**: Automated generation
-- **Monthly Reports**: Manual review
-- **Annual Reports**: Comprehensive audit
-
----
-
-## **Emergency Contacts**
-
-### **On-Call Engineer**
-- **Primary**: +1-XXX-XXX-XXXX
-- **Secondary**: +1-XXX-XXX-XXXX
-
-### **Management**
-- **Engineering Manager**: +1-XXX-XXX-XXXX
-- **CTO**: +1-XXX-XXX-XXXX
-
-### **External**
-- **Hyperliquid Support**: support@hyperliquid.xyz
-- **Infrastructure Provider**: support@provider.com
-
----
-
-*Last Updated: 2025-09-16*  
-*Review Frequency: Monthly*  
-*Next Review: 2025-10-16*
+### 3. Important URLs
+- System dashboard: `reports/executive_dashboard.html`
+- Performance reports: `reports/tearsheets/`
+- Risk reports: `reports/risk/`

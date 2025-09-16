@@ -1,400 +1,320 @@
-# 🚀 **Onboarding Guide**
+# 🚀 XRPLiquid Onboarding Guide
 
-## **Welcome to the Hat Manifesto Ultimate Trading System**
+## Welcome to XRPLiquid
 
-This guide will help you get up and running with the system in under 30 minutes.
+XRPLiquid is an institutional-grade XRP trading system built on the Hat Manifesto framework. This guide will help you get started with the system.
 
-## **Prerequisites**
+## Prerequisites
 
-### **System Requirements**
-- **Operating System**: Windows 10/11, macOS 10.15+, or Ubuntu 20.04+
-- **Python**: 3.11 or higher
-- **Memory**: Minimum 8GB RAM (16GB recommended)
-- **Storage**: 10GB free space
+### 1. System Requirements
+- **Python**: 3.9 or higher
+- **Operating System**: Linux, macOS, or Windows
+- **Memory**: 8GB RAM minimum
+- **Storage**: 100GB free space
 - **Network**: Stable internet connection
 
-### **Required Software**
-- **Python 3.11+**: [Download here](https://www.python.org/downloads/)
-- **Git**: [Download here](https://git-scm.com/downloads)
-- **VS Code** (recommended): [Download here](https://code.visualstudio.com/)
+### 2. Required Software
+- **Python**: [Download Python](https://www.python.org/downloads/)
+- **Git**: [Download Git](https://git-scm.com/downloads)
+- **IDE**: VS Code, PyCharm, or similar
+- **Terminal**: Command line interface
 
-### **Hyperliquid Account**
-- **Exchange Account**: [Sign up at Hyperliquid](https://hyperliquid.xyz)
-- **API Keys**: Generate API keys with appropriate permissions
-- **Testnet Access**: Recommended for initial testing
+## Installation
 
-## **Quick Start (5 Minutes)**
-
-### **1. Clone the Repository**
+### 1. Clone Repository
 ```bash
 git clone https://github.com/valleyworldz/xrpliquid.git
 cd xrpliquid
 ```
 
-### **2. Install Dependencies**
+### 2. Set Up Virtual Environment
 ```bash
-# Install Python dependencies
-pip install -r requirements.txt
-pip install -r requirements_ultimate.txt
-
-# Verify installation
-python -c "import pandas, numpy, aiohttp; print('✅ Dependencies installed')"
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-### **3. Configure Environment**
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configuration
 ```bash
 # Copy configuration template
-cp config/template.json config/production.json
+cp config/template.json config/config.json
 
-# Edit configuration (see Configuration section below)
-# Set your API keys and trading parameters
+# Edit configuration
+nano config/config.json
 ```
 
-### **4. Run Health Check**
+## Quick Start
+
+### 1. Run System Check
 ```bash
-# Verify system health
-python scripts/health_check.py
-
-# Expected output: ✅ System healthy
+python -c "from src.core.engines.ultra_efficient_xrp_system import UltraEfficientXRPSystem; print('System ready')"
 ```
 
-### **5. Start Trading System**
+### 2. Start Data Capture
 ```bash
-# Start the Hat Manifesto system
-python run_bot.py
-
-# Expected output: 🎩 Hat Manifesto Ultimate Trading System started
+python src/data_capture/enhanced_tick_capture.py
 ```
 
-## **Configuration Guide**
-
-### **API Configuration**
-```json
-{
-  "hyperliquid": {
-    "api_key": "your_api_key_here",
-    "secret_key": "your_secret_key_here",
-    "testnet": true,
-    "base_url": "https://api.hyperliquid.xyz"
-  }
-}
+### 3. Run Backtest
+```bash
+python run_hat_manifesto_backtest.py
 ```
 
-### **Trading Configuration**
-```json
-{
-  "trading": {
-    "symbol": "XRP",
-    "base_capital": 10000.0,
-    "risk_per_trade": 0.02,
-    "max_positions": 3,
-    "strategies": {
-      "funding_arbitrage": true,
-      "mean_reversion": true,
-      "momentum": false
-    }
-  }
-}
+### 4. View Results
+```bash
+# Open dashboard
+open reports/executive_dashboard.html
+
+# View tearsheet
+open reports/tearsheets/comprehensive_tearsheet.html
 ```
 
-### **Risk Management**
-```json
-{
-  "risk": {
-    "daily_drawdown_limit": 0.05,
-    "max_position_size": 0.1,
-    "kill_switch_enabled": true,
-    "volatility_target": 0.15
-  }
-}
-```
+## System Overview
 
-## **System Components Overview**
-
-### **🎩 Hat Manifesto Framework**
+### 1. Hat Manifesto Framework
 The system implements 9 specialized roles:
+- **Hyperliquid Exchange Architect**: Exchange integration
+- **Chief Quantitative Strategist**: Strategy development
+- **Market Microstructure Analyst**: Order routing
+- **Low-Latency Engineer**: Performance optimization
+- **Automated Execution Manager**: Order management
+- **Risk Oversight Officer**: Risk management
+- **Cryptographic Security Architect**: Security
+- **Performance Quant Analyst**: Analytics
+- **Machine Learning Research Scientist**: ML models
 
-1. **Hyperliquid Exchange Architect**: Exchange-specific optimizations
-2. **Chief Quantitative Strategist**: Strategy development and backtesting
-3. **Market Microstructure Analyst**: Order book and execution analysis
-4. **Low-Latency Engineer**: Performance optimization
-5. **Automated Execution Manager**: Order management and routing
-6. **Risk Oversight Officer**: Risk management and compliance
-7. **Cryptographic Security Architect**: Security and key management
-8. **Performance Quant Analyst**: Analytics and reporting
-9. **Machine Learning Research Scientist**: Adaptive algorithms
+### 2. Key Components
+- **Trading Engine**: Core trading logic
+- **Data Capture**: Real-time data collection
+- **Risk Management**: Position sizing and limits
+- **Analytics**: Performance measurement
+- **Reporting**: Comprehensive reports
 
-### **Core Modules**
-- **`src/core/engines/`**: Main trading engines
-- **`src/core/strategies/`**: Trading strategies
-- **`src/core/risk/`**: Risk management
-- **`src/core/api/`**: Exchange integration
-- **`src/core/analytics/`**: Performance analytics
+## Configuration
 
-## **Running Your First Trade**
-
-### **1. Paper Trading (Recommended)**
-```bash
-# Enable paper trading mode
-python run_bot.py --mode paper
-
-# Monitor the system
-tail -f logs/trading.log
+### 1. Trading Parameters
+Edit `config/trading_parameters.json`:
+```json
+{
+  "position_size": 1000,
+  "stop_loss": 0.02,
+  "take_profit": 0.04,
+  "max_drawdown": 0.05
+}
 ```
 
-### **2. Live Trading (Advanced)**
-```bash
-# Start with small capital
-python run_bot.py --mode live --capital 100
-
-# Monitor closely
-python scripts/monitor_performance.py
+### 2. Risk Parameters
+Edit `config/risk_parameters.json`:
+```json
+{
+  "max_daily_drawdown": 0.05,
+  "var_confidence_level": 0.95,
+  "position_risk_limit": 0.02
+}
 ```
 
-### **3. Backtesting**
+### 3. Exchange Configuration
+Edit `config/exchange_config.json`:
+```json
+{
+  "exchange": "hyperliquid",
+  "api_key": "your_api_key",
+  "secret_key": "your_secret_key",
+  "testnet": true
+}
+```
+
+## Running the System
+
+### 1. Development Mode
+```bash
+# Run with debug logging
+python run_bot.py --debug
+
+# Run specific component
+python src/core/engines/ultra_efficient_xrp_system.py
+```
+
+### 2. Production Mode
+```bash
+# Run with production settings
+python run_bot.py --production
+
+# Run with specific configuration
+python run_bot.py --config config/production.json
+```
+
+### 3. Backtesting
 ```bash
 # Run comprehensive backtest
 python run_hat_manifesto_backtest.py
 
-# View results
-open reports/tearsheets/comprehensive_tearsheet.html
+# Run specific strategy
+python src/core/strategies/funding_arbitrage.py
 ```
 
-## **Monitoring & Observability**
+## Monitoring
 
-### **Health Endpoints**
-- **Health Check**: `http://localhost:8000/healthz`
-- **Readiness**: `http://localhost:8000/readyz`
-- **Metrics**: `http://localhost:8000/metrics`
-
-### **Key Metrics to Monitor**
-- **P&L**: Real-time profit/loss
-- **Drawdown**: Current and maximum drawdown
-- **Latency**: Order execution latency
-- **Fill Rate**: Order fill success rate
-- **Risk Metrics**: VaR, position sizes
-
-### **Logs and Reports**
-- **Trading Logs**: `logs/trading.log`
-- **Performance Reports**: `reports/tearsheets/`
-- **Risk Reports**: `reports/risk/`
-- **Latency Reports**: `reports/latency/`
-
-## **Common Operations**
-
-### **Starting the System**
+### 1. System Health
 ```bash
-# Standard startup
-python run_bot.py
-
-# With specific configuration
-python run_bot.py --config config/custom.json
-
-# In background
-nohup python run_bot.py > logs/system.log 2>&1 &
-```
-
-### **Stopping the System**
-```bash
-# Graceful shutdown
-python scripts/graceful_shutdown.py
-
-# Emergency stop
-python scripts/emergency_stop.py
-```
-
-### **Updating Configuration**
-```bash
-# Reload configuration without restart
-python scripts/reload_config.py
-
-# Validate configuration
-python scripts/validate_config.py
-```
-
-### **Monitoring Performance**
-```bash
-# Real-time dashboard
-python scripts/dashboard.py
-
-# Performance report
-python scripts/generate_report.py
-
-# Risk analysis
-python scripts/risk_analysis.py
-```
-
-## **Troubleshooting**
-
-### **Common Issues**
-
-#### **1. Connection Issues**
-```bash
-# Check network connectivity
-python scripts/test_connectivity.py
-
-# Verify API keys
-python scripts/verify_api_keys.py
-```
-
-#### **2. Performance Issues**
-```bash
-# Check system resources
-python scripts/system_check.py
-
-# Profile latency
-python scripts/latency_profile.py
-```
-
-#### **3. Trading Issues**
-```bash
-# Check order status
-python scripts/check_orders.py
-
-# Verify positions
-python scripts/check_positions.py
-```
-
-### **Error Codes**
-- **E001**: API connection failed
-- **E002**: Invalid configuration
-- **E003**: Insufficient funds
-- **E004**: Risk limit exceeded
-- **E005**: Order rejected
-
-### **Getting Help**
-- **Documentation**: Check `docs/` directory
-- **Logs**: Review `logs/` directory
-- **Issues**: Create GitHub issue
-- **Support**: Contact system administrator
-
-## **Security Best Practices**
-
-### **API Key Management**
-- **Never commit keys**: Use environment variables
-- **Rotate regularly**: Change keys monthly
-- **Limit permissions**: Use minimal required scopes
-- **Monitor usage**: Track API key activity
-
-### **System Security**
-- **Keep updated**: Regular system updates
-- **Use VPN**: Secure network connections
-- **Monitor access**: Track system access
-- **Backup data**: Regular data backups
-
-## **Advanced Configuration**
-
-### **Multi-Strategy Setup**
-```json
-{
-  "strategies": {
-    "funding_arbitrage": {
-      "enabled": true,
-      "allocation": 0.4,
-      "parameters": {
-        "min_funding_rate": 0.0001,
-        "max_position_size": 0.1
-      }
-    },
-    "mean_reversion": {
-      "enabled": true,
-      "allocation": 0.3,
-      "parameters": {
-        "lookback_period": 20,
-        "threshold": 2.0
-      }
-    }
-  }
-}
-```
-
-### **Custom Risk Rules**
-```json
-{
-  "risk_rules": {
-    "daily_loss_limit": 0.02,
-    "position_size_limit": 0.05,
-    "correlation_limit": 0.7,
-    "volatility_limit": 0.3
-  }
-}
-```
-
-## **Performance Optimization**
-
-### **System Tuning**
-- **CPU**: Use high-frequency processors
-- **Memory**: Allocate sufficient RAM
-- **Network**: Use low-latency connections
-- **Storage**: Use SSD for data storage
-
-### **Code Optimization**
-- **Profiling**: Regular performance profiling
-- **Caching**: Implement data caching
-- **Async**: Use asynchronous operations
-- **Compilation**: Consider Cython for critical paths
-
-## **Next Steps**
-
-### **Learning Path**
-1. **Week 1**: Basic system operation
-2. **Week 2**: Strategy configuration
-3. **Week 3**: Risk management
-4. **Week 4**: Performance optimization
-
-### **Advanced Topics**
-- **Custom Strategies**: Develop your own strategies
-- **Machine Learning**: Implement ML models
-- **Multi-Asset**: Trade multiple assets
-- **Portfolio Management**: Advanced portfolio techniques
-
-### **Resources**
-- **Documentation**: `docs/` directory
-- **Examples**: `examples/` directory
-- **Tests**: `tests/` directory
-- **Community**: GitHub discussions
-
----
-
-## **Quick Reference**
-
-### **Essential Commands**
-```bash
-# Start system
-python run_bot.py
-
-# Health check
-python scripts/health_check.py
+# Check system status
+python scripts/check_system_health.py
 
 # View logs
-tail -f logs/trading.log
-
-# Stop system
-python scripts/graceful_shutdown.py
-
-# Generate report
-python scripts/generate_report.py
+tail -f logs/system.log
 ```
 
-### **Key Files**
-- **Configuration**: `config/production.json`
-- **Logs**: `logs/trading.log`
-- **Reports**: `reports/tearsheets/`
-- **Data**: `data/warehouse/`
+### 2. Performance Metrics
+```bash
+# View performance dashboard
+open reports/executive_dashboard.html
 
-### **Important URLs**
-- **Health**: `http://localhost:8000/healthz`
-- **Metrics**: `http://localhost:8000/metrics`
-- **Dashboard**: `http://localhost:3000`
+# Check latency metrics
+cat reports/latency/latency_analysis.json
+```
 
----
+### 3. Risk Monitoring
+```bash
+# Check risk metrics
+cat reports/risk/var_es.json
 
-**🎉 Congratulations! You're now ready to start trading with the Hat Manifesto Ultimate Trading System.**
+# View kill-switch status
+cat reports/risk/hysteresis_state.json
+```
 
-*For additional support, refer to the documentation in the `docs/` directory or create an issue on GitHub.*
+## Development
 
----
+### 1. Code Structure
+```
+src/
+├── core/           # Core system components
+├── strategies/     # Trading strategies
+├── data_capture/   # Data collection
+├── analytics/      # Performance analysis
+└── utils/          # Utility functions
+```
 
-*Last Updated: 2025-09-16*  
-*Version: 2.1.0*  
-*Next Review: 2025-10-16*
+### 2. Adding New Strategies
+```python
+# Create new strategy file
+# src/strategies/my_strategy.py
+
+class MyStrategy:
+    def __init__(self, config):
+        self.config = config
+    
+    def generate_signal(self, data):
+        # Strategy logic here
+        return signal
+```
+
+### 3. Testing
+```bash
+# Run unit tests
+python -m pytest tests/
+
+# Run specific test
+python -m pytest tests/test_strategy.py
+```
+
+## Troubleshooting
+
+### 1. Common Issues
+
+#### Import Errors
+```bash
+# Check Python path
+python -c "import sys; print(sys.path)"
+
+# Reinstall dependencies
+pip install -r requirements.txt --force-reinstall
+```
+
+#### Configuration Issues
+```bash
+# Validate configuration
+python scripts/validate_config.py
+
+# Check configuration format
+python -c "import json; json.load(open('config/config.json'))"
+```
+
+#### Data Issues
+```bash
+# Check data directory
+ls -la data/
+
+# Verify data format
+python scripts/verify_data_format.py
+```
+
+### 2. Getting Help
+- **Documentation**: Check `docs/` directory
+- **Issues**: Create GitHub issue
+- **Discussions**: Use GitHub discussions
+- **Email**: Contact development team
+
+## Best Practices
+
+### 1. Development
+- **Code Style**: Follow PEP 8
+- **Testing**: Write unit tests
+- **Documentation**: Document all functions
+- **Version Control**: Use Git properly
+
+### 2. Trading
+- **Risk Management**: Always use stop-losses
+- **Position Sizing**: Follow risk limits
+- **Monitoring**: Watch system health
+- **Backtesting**: Test before live trading
+
+### 3. Security
+- **API Keys**: Keep secure
+- **Access Control**: Use least privilege
+- **Monitoring**: Watch for anomalies
+- **Updates**: Keep system updated
+
+## Next Steps
+
+### 1. Learn More
+- Read `docs/ARCHITECTURE.md`
+- Study `docs/RUNBOOK.md`
+- Review `docs/SECURITY.md`
+
+### 2. Practice
+- Run backtests
+- Experiment with strategies
+- Monitor performance
+- Analyze results
+
+### 3. Contribute
+- Report bugs
+- Suggest improvements
+- Submit pull requests
+- Share knowledge
+
+## Support
+
+### 1. Documentation
+- **Architecture**: `docs/ARCHITECTURE.md`
+- **Operations**: `docs/RUNBOOK.md`
+- **Security**: `docs/SECURITY.md`
+- **SLOs**: `docs/SLOs.md`
+
+### 2. Community
+- **GitHub**: Repository and issues
+- **Discussions**: Community forum
+- **Wiki**: Additional documentation
+- **Examples**: Code examples
+
+### 3. Professional Support
+- **Consulting**: Custom development
+- **Training**: Team training
+- **Support**: Technical support
+- **Maintenance**: System maintenance
+
+Welcome to XRPLiquid! 🚀
