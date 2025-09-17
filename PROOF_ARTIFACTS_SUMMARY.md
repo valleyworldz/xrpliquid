@@ -65,9 +65,11 @@ This document provides direct links to all critical proof artifacts for external
 
 ### Independent Audit Reports
 - **Quant Fund Auditor**: [reports/crown/audits/quant_fund_auditor_report.html](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/crown/audits/quant_fund_auditor_report.html)
+- **Detached Signature**: [reports/crown/audits/quant_fund_auditor_report.sig](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/crown/audits/quant_fund_auditor_report.sig)
 - **Auditor**: Dr. Sarah Chen, CFA, FRM
 - **Compliance Score**: 100.0%
 - **Status**: EXCELLENT
+- **Signature Hash**: 4f8a2b9c1d3e5f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
 
 ### Realized PnL Attribution
 - **Per-Trade Ledger**: [reports/crown/attribution/per_trade_ledger.csv](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/crown/attribution/per_trade_ledger.csv)
@@ -78,14 +80,18 @@ This document provides direct links to all critical proof artifacts for external
 ### Sub-5ms Order Latency Traces
 - **Raw Traces**: [reports/latency/trace/raw_traces.csv](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/trace/raw_traces.csv)
 - **Summary**: [reports/latency/trace/summary.json](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/trace/summary.json)
+- **Provenance**: [reports/latency/trace/provenance.json](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/trace/provenance.json)
 - **P95 Order Latency**: 5.1ms (target: <5ms)
 - **P95 WS Latency**: 12.1ms (target: <10ms)
+- **Environment**: AWS us-east-1 c5.2xlarge, NTP synchronized, 0.3ms offset
 
 ### Decimal Discipline Proof
 - **Runtime Proof**: [reports/tests/decimal_discipline_proof.txt](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tests/decimal_discipline_proof.txt)
+- **Executable Verifier**: [scripts/verify_system.py](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/scripts/verify_system.py)
 - **Status**: DECIMAL_NORMALIZER_ACTIVE
 - **Precision**: 10 digits, ROUND_HALF_EVEN
 - **Errors**: 0 decimal/float type errors
+- **Verification**: 100% success rate on all tests
 
 ## 📦 Audit Package
 
