@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-09-16T21:44:14.335540",
+  "results": {
+    "maker_only": {
+      "policy": "maker_only",
+      "total_trades": 100,
+      "successful_trades": 89,
+      "total_pnl": -69.11341221555168,
+      "avg_slippage_bps": 14.407787821756544,
+      "avg_fill_time_ms": 577.1074083314919,
+      "total_rebates": 15.32552776235793,
+      "success_rate": 0.89,
+      "sharpe_ratio": -1.4990713449490256
+    },
+    "taker_only": {
+      "policy": "taker_only",
+      "total_trades": 100,
+      "successful_trades": 100,
+      "total_pnl": 1.1102230246251565e-16,
+      "avg_slippage_bps": 26.077247647843205,
+      "avg_fill_time_ms": 128.9530431848119,
+      "total_rebates": 0.0,
+      "success_rate": 1.0,
+      "sharpe_ratio": 0.010160534588237647
+    },
+    "adaptive": {
+      "policy": "adaptive",
+      "total_trades": 100,
+      "successful_trades": 93,
+      "total_pnl": -75.51106726614852,
+      "avg_slippage_bps": 17.267382289644218,
+      "avg_fill_time_ms": 447.0986119029145,
+      "total_rebates": 12.874815067557893,
+      "success_rate": 0.93,
+      "sharpe_ratio": -1.2151712934149372
+    },
+    "twap": {
+      "policy": "twap",
+      "total_trades": 100,
+      "successful_trades": 49,
+      "total_pnl": 4.099288583128382,
+      "avg_slippage_bps": 22.33467001265082,
+      "avg_fill_time_ms": 852.5131266321519,
+      "total_rebates": 7.562478837396025,
+      "success_rate": 0.49,
+      "sharpe_ratio": 3.041714300474542
+    },
+    "vwap": {
+      "policy": "vwap",
+      "total_trades": 100,
+      "successful_trades": 45,
+      "total_pnl": 2.623992187154169,
+      "avg_slippage_bps": 1.578674137725167,
+      "avg_fill_time_ms": 280.2304026124077,
+      "total_rebates": 12.21507305276986,
+      "success_rate": 0.45,
+      "sharpe_ratio": 0.4697536620483752
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "constraints": [
+    {
+      "name": "max_total_exposure",
+      "type": "exposure",
+      "limit": 0.8,
+      "severity": "critical",
+      "enabled": true
+    },
+    {
+      "name": "max_single_symbol_exposure",
+      "type": "concentration",
+      "limit": 0.2,
+      "severity": "high",
+      "enabled": true
+    },
+    {
+      "name": "max_funding_directional_ratio",
+      "type": "funding_directional",
+      "limit": 0.3,
+      "severity": "medium",
+      "enabled": true
+    },
+    {
+      "name": "max_daily_var",
+      "type": "var",
+      "limit": 0.05,
+      "severity": "critical",
+      "enabled": true
+    },
+    {
+      "name": "max_drawdown",
+      "type": "drawdown",
+      "limit": 0.1,
+      "severity": "critical",
+      "enabled": true
+    },
+    {
+      "name": "min_liquidity_ratio",
+      "type": "liquidity",
+      "limit": 0.1,
+      "severity": "medium",
+      "enabled": true
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-09-16T21:44:08.770520",
+    "last_updated": "2025-09-16T21:44:08.770520"
+  }
+}

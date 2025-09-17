@@ -1,0 +1,72 @@
+{
+  "gates": [
+    {
+      "name": "development_validation",
+      "stage": "development",
+      "criteria": {
+        "backtest_sharpe": ">= 1.5",
+        "max_drawdown": "<= 0.1",
+        "win_rate": ">= 0.6"
+      },
+      "required_metrics": [
+        "sharpe_ratio",
+        "max_drawdown",
+        "win_rate"
+      ],
+      "thresholds": {
+        "sharpe_ratio": 1.5,
+        "max_drawdown": 0.1,
+        "win_rate": 0.6
+      },
+      "duration_days": 7,
+      "min_observations": 100
+    },
+    {
+      "name": "paper_trade_validation",
+      "stage": "paper_trade",
+      "criteria": {
+        "paper_sharpe": ">= 1.2",
+        "paper_drawdown": "<= 0.08",
+        "execution_quality": ">= 0.8"
+      },
+      "required_metrics": [
+        "sharpe_ratio",
+        "max_drawdown",
+        "execution_quality"
+      ],
+      "thresholds": {
+        "sharpe_ratio": 1.2,
+        "max_drawdown": 0.08,
+        "execution_quality": 0.8
+      },
+      "duration_days": 14,
+      "min_observations": 200
+    },
+    {
+      "name": "low_risk_prod_validation",
+      "stage": "low_risk_prod",
+      "criteria": {
+        "prod_sharpe": ">= 1.0",
+        "prod_drawdown": "<= 0.06",
+        "risk_controls": ">= 0.9"
+      },
+      "required_metrics": [
+        "sharpe_ratio",
+        "max_drawdown",
+        "risk_controls"
+      ],
+      "thresholds": {
+        "sharpe_ratio": 1.0,
+        "max_drawdown": 0.06,
+        "risk_controls": 0.9
+      },
+      "duration_days": 21,
+      "min_observations": 500
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-09-16T21:46:12.354430",
+    "last_updated": "2025-09-16T21:46:12.355435"
+  }
+}

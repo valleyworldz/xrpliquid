@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-09-16T21:44:08.776535",
+  "summary": {
+    "total_decisions": 4,
+    "approved_decisions": 0,
+    "rejected_decisions": 4,
+    "approval_rate": 0.0
+  },
+  "constraint_violations": {
+    "max_total_exposure": 4,
+    "max_single_symbol_exposure": 3
+  },
+  "constraint_status": {
+    "total_constraints": 6,
+    "enabled_constraints": 6,
+    "current_exposure": 1500,
+    "current_var": 0.03,
+    "current_drawdown": 0.05,
+    "recent_decisions": 4,
+    "constraints": {
+      "max_total_exposure": {
+        "type": "exposure",
+        "limit": 0.8,
+        "severity": "critical",
+        "enabled": true
+      },
+      "max_single_symbol_exposure": {
+        "type": "concentration",
+        "limit": 0.2,
+        "severity": "high",
+        "enabled": true
+      },
+      "max_funding_directional_ratio": {
+        "type": "funding_directional",
+        "limit": 0.3,
+        "severity": "medium",
+        "enabled": true
+      },
+      "max_daily_var": {
+        "type": "var",
+        "limit": 0.05,
+        "severity": "critical",
+        "enabled": true
+      },
+      "max_drawdown": {
+        "type": "drawdown",
+        "limit": 0.1,
+        "severity": "critical",
+        "enabled": true
+      },
+      "min_liquidity_ratio": {
+        "type": "liquidity",
+        "limit": 0.1,
+        "severity": "medium",
+        "enabled": true
+      }
+    }
+  },
+  "recent_decisions": [
+    {
+      "decision_id": "decision_1758073448.772522",
+      "symbol": "XRP",
+      "side": "buy",
+      "quantity": 100,
+      "strategy": "momentum",
+      "approved": false,
+      "violations": [
+        "max_total_exposure",
+        "max_single_symbol_exposure"
+      ]
+    },
+    {
+      "decision_id": "decision_1758073448.772522",
+      "symbol": "XRP",
+      "side": "buy",
+      "quantity": 5000,
+      "strategy": "momentum",
+      "approved": false,
+      "violations": [
+        "max_total_exposure",
+        "max_single_symbol_exposure"
+      ]
+    },
+    {
+      "decision_id": "decision_1758073448.773529",
+      "symbol": "BTC",
+      "side": "sell",
+      "quantity": 100,
+      "strategy": "mean_reversion",
+      "approved": false,
+      "violations": [
+        "max_total_exposure",
+        "max_single_symbol_exposure"
+      ]
+    },
+    {
+      "decision_id": "decision_1758073448.775542",
+      "symbol": "ETH",
+      "side": "buy",
+      "quantity": 10,
+      "strategy": "funding_arb",
+      "approved": false,
+      "violations": [
+        "max_total_exposure"
+      ]
+    }
+  ]
+}
