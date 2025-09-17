@@ -1,0 +1,1240 @@
+{
+  "timestamp": "2025-09-16T21:33:22.902375",
+  "total_violations": 154,
+  "high_severity": 21,
+  "medium_severity": 133,
+  "violations": [
+    {
+      "file": "src\\analytics\\market_scanner.py",
+      "line": 75,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(price_history)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\advanced_optimizer.py",
+      "line": 159,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\autonomous_master_engine.py",
+      "line": 410,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\enhanced_risk_manager.py",
+      "line": 113,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\enhanced_risk_manager.py",
+      "line": 151,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(p1)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\enhanced_risk_manager.py",
+      "line": 152,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(p2)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 2919,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 29385,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 2915,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 3143,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 20003,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 29431,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 2582,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(close)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 2614,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(close)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 2949,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 6146,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(price_data)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 19695,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(arr)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 20016,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(arr)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 20093,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(arr)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 20166,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(arr)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 24802,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 24836,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\main_bot.py",
+      "line": 29392,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\profit_acceleration_engine.py",
+      "line": 188,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\profit_maximizer.py",
+      "line": 78,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\profit_maximizer.py",
+      "line": 193,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\utils.py",
+      "line": 86,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\comprehensive_trade_ledger.py",
+      "line": 243,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\executive_dashboard.py",
+      "line": 96,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\executive_dashboard.py",
+      "line": 306,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\executive_dashboard.py",
+      "line": 306,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\research_validity.py",
+      "line": 198,
+      "pattern": "\\.cumprod\\(\\)",
+      "description": "Cumulative product operations",
+      "match": ".cumprod()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\statistical_validation.py",
+      "line": 248,
+      "pattern": "\\.rolling\\([^)]*\\)\\.apply\\([^)]*\\)",
+      "description": "Rolling window operations",
+      "match": ".rolling(window=window_size).apply(\n            lambda x: x.mean()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\statistical_validation.py",
+      "line": 260,
+      "pattern": "\\.rolling\\([^)]*\\)\\.apply\\([^)]*\\)",
+      "description": "Rolling window operations",
+      "match": ".rolling(window=window_size).apply(\n            lambda x: (x > 0)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\statistical_validation.py",
+      "line": 272,
+      "pattern": "\\.rolling\\([^)]*\\)\\.apply\\([^)]*\\)",
+      "description": "Rolling window operations",
+      "match": ".rolling(window=window_size).apply(\n            lambda x: x.mean()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\trade_ledger.py",
+      "line": 334,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\analytics\\trade_ledger.py",
+      "line": 334,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\backtesting\\deterministic_backtest.py",
+      "line": 332,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\backtesting\\production_backtest_harness.py",
+      "line": 269,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\backtesting\\production_backtest_harness.py",
+      "line": 671,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_grid_engine.py",
+      "line": 115,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_grid_engine.py",
+      "line": 153,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_grid_engine.py",
+      "line": 161,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_grid_engine.py",
+      "line": 188,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_market_intelligence.py",
+      "line": 486,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_market_intelligence.py",
+      "line": 569,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_market_intelligence.py",
+      "line": 633,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_risk_manager.py",
+      "line": 407,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_risk_manager.py",
+      "line": 446,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(window)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\advanced_risk_manager.py",
+      "line": 546,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\hat_manifesto_backtester.py",
+      "line": 504,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\market_intelligence_engine.py",
+      "line": 199,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\market_intelligence_engine.py",
+      "line": 475,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\multi_timeframe_engine.py",
+      "line": 101,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\multi_timeframe_engine.py",
+      "line": 183,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\multi_timeframe_engine.py",
+      "line": 466,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\real_time_risk_engine.py",
+      "line": 188,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(list(self.portfolio_history)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\real_time_risk_engine.py",
+      "line": 195,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(list(self.portfolio_history)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_autonomous_brain.py",
+      "line": 355,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_autonomous_brain.py",
+      "line": 592,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_low_latency_engine.py",
+      "line": 52,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_low_latency_engine_simple.py",
+      "line": 52,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_sentiment_intelligence.py",
+      "line": 403,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\ultimate_sentiment_intelligence.py",
+      "line": 596,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_sentiments)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_grid_engine.py",
+      "line": 115,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_grid_engine.py",
+      "line": 153,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_grid_engine.py",
+      "line": 161,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_grid_engine.py",
+      "line": 188,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_market_intelligence.py",
+      "line": 486,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_market_intelligence.py",
+      "line": 569,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_market_intelligence.py",
+      "line": 633,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_risk_manager.py",
+      "line": 407,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_risk_manager.py",
+      "line": 446,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(window)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\advanced_risk_manager.py",
+      "line": 546,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\market_intelligence_engine.py",
+      "line": 199,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\market_intelligence_engine.py",
+      "line": 475,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\multi_timeframe_engine.py",
+      "line": 101,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\multi_timeframe_engine.py",
+      "line": 183,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\multi_timeframe_engine.py",
+      "line": 466,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\ultimate_autonomous_brain.py",
+      "line": 355,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\ultimate_autonomous_brain.py",
+      "line": 592,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\ultimate_sentiment_intelligence.py",
+      "line": 403,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\engines\\engines\\ultimate_sentiment_intelligence.py",
+      "line": 596,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_sentiments)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ledgers\\canonical_trade_ledger.py",
+      "line": 285,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ledgers\\canonical_trade_ledger.py",
+      "line": 290,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\adaptive_parameter_tuner.py",
+      "line": 210,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\machine_learning_research_scientist.py",
+      "line": 927,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change(periods=5)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\machine_learning_research_scientist.py",
+      "line": 937,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\machine_learning_research_scientist.py",
+      "line": 948,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change(periods=5)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\machine_learning_research_scientist.py",
+      "line": 852,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\ml\\machine_learning_research_scientist.py",
+      "line": 949,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\monitors\\real_time_monitor.py",
+      "line": 375,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\monitors\\monitors\\real_time_monitor.py",
+      "line": 375,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\reproducibility\\data_lineage_manager.py",
+      "line": 387,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\reproducibility\\data_provenance.py",
+      "line": 289,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\capital_scaling_plan.py",
+      "line": 314,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 334,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(portfolio_values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 366,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(price_histories[symbol1])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 367,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(price_histories[symbol2])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 413,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(portfolio_values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 434,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(portfolio_values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\risk\\risk_oversight_officer.py",
+      "line": 460,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(portfolio_values)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 128,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[-15:])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 169,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 170,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(level1)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 186,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices + 1e-8)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 217,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[indices])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 271,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(short_term)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 272,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(long_term[-len(short_returns)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\ai_ultimate.py",
+      "line": 671,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(np.log(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\grid_trading.py",
+      "line": 67,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\optimized_funding_arbitrage.py",
+      "line": 177,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\optimized_funding_arbitrage.py",
+      "line": 462,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\quantitative_strategist.py",
+      "line": 170,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(list(self.price_history)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\quantitative_strategist.py",
+      "line": 211,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[-20:])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\quantitative_strategist.py",
+      "line": 281,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[-10:])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\quantitative_strategist.py",
+      "line": 427,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[-20:])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\quantitative_strategist.py",
+      "line": 483,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices[-20:])",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\rl_ai.py",
+      "line": 83,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\rl_ai.py",
+      "line": 129,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\scalping.py",
+      "line": 65,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\scalping.py",
+      "line": 114,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\strategies\\grid_trading.py",
+      "line": 67,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\strategies\\rl_ai.py",
+      "line": 83,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\strategies\\rl_ai.py",
+      "line": 129,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\strategies\\scalping.py",
+      "line": 65,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\strategies\\strategies\\scalping.py",
+      "line": 114,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff(recent_prices)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 36,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 36,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-2)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 36,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-3)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 37,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 38,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 41,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 42,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 43,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 46,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 47,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 48,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 51,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 52,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 53,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 162,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 162,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 371,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 374,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 51,
+      "pattern": "\\.groupby\\([^)]*\\)\\.transform\\([^)]*\\)",
+      "description": "Group transform operations",
+      "match": ".groupby().transform()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 41,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 374,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 42,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\lookahead_guard.py",
+      "line": 43,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\core\\validation\\schema_validator.py",
+      "line": 345,
+      "pattern": "\\.diff\\([^)]*\\)",
+      "description": "Difference operations",
+      "match": ".diff()",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\ml\\feature_store.py",
+      "line": 138,
+      "pattern": "\\.shift\\(-?\\d+\\)",
+      "description": "Future/past data shifts",
+      "match": ".shift(-1)",
+      "severity": "high"
+    },
+    {
+      "file": "src\\ml\\feature_store.py",
+      "line": 291,
+      "pattern": "\\.pct_change\\([^)]*\\)",
+      "description": "Percentage change operations",
+      "match": ".pct_change(5)",
+      "severity": "medium"
+    },
+    {
+      "file": "src\\ml\\feature_store.py",
+      "line": 130,
+      "pattern": "\\.cumsum\\(\\)",
+      "description": "Cumulative sum operations",
+      "match": ".cumsum()",
+      "severity": "medium"
+    }
+  ]
+}

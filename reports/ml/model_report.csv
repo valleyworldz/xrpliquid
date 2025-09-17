@@ -1,0 +1,2 @@
+model_id,model_name,status,experiment_id,commit_sha,dataset_version,sharpe_ratio,sortino_ratio,psr_confidence,max_drawdown,total_return,promoted_at,created_at
+model_b5baec2b6e95,xrp_momentum_prod,deployed,b5baec2b6e95,abc123def456,2025-09-16,1.85,2.12,95.5,0.032,0.124,2025-09-16T21:33:28.001281,2025-09-16T21:33:28.001281

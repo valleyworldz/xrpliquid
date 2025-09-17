@@ -1,0 +1,202 @@
+{
+  "timestamp": "2025-09-16T21:34:11.784642",
+  "monitoring_status": {
+    "active": true,
+    "last_check": "2025-09-16T21:34:11.783642"
+  },
+  "data_drift_summary": {
+    "total_alerts": 8,
+    "features_monitored": 3
+  },
+  "concept_drift_summary": {
+    "total_alerts": 0,
+    "performance_history_length": 3
+  },
+  "risk_status": {
+    "current_risk_level": "critical",
+    "position_multiplier": 1.0,
+    "paused_features": [
+      "price",
+      "spread",
+      "volume"
+    ],
+    "paused_strategies": [],
+    "feature_weights": {
+      "spread": 0.5
+    },
+    "total_alerts": 8,
+    "critical_alerts": 5,
+    "high_alerts": 1,
+    "recent_actions": [
+      {
+        "timestamp": "2025-09-16 21:34:11.740640",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 740640), drift_type='statistical_drift', feature_name='price', severity='critical', drift_score=0.5946631274016767, threshold=0.1, action_taken='pause_feature', details={'reference_mean': 0.5201933205582233, 'current_mean': 0.5194480860102354, 'reference_std': 0.009792159381796756, 'current_std': 0.011194219228772131})",
+        "action_result": {
+          "action": "pause_feature",
+          "success": true,
+          "details": {
+            "paused_features": [
+              "price"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.748637",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 748637), drift_type='statistical_drift', feature_name='spread', severity='high', drift_score=0.3527903892786787, threshold=0.1, action_taken='reduce_weight', details={'reference_mean': 0.0009877781482397366, 'current_mean': 0.000977475425716593, 'reference_std': 0.0009806791258499161, 'current_std': 0.0008920034337719936})",
+        "action_result": {
+          "action": "reduce_weight",
+          "success": true,
+          "details": {
+            "new_weight": 0.5
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.757638",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 757638), drift_type='distribution_shift', feature_name='price', severity='critical', drift_score=3.6527401824711476, threshold=0.1, action_taken='pause_feature', details={'reference_mean': 0.5201933205582233, 'current_mean': 0.5481721238305584, 'reference_std': 0.009792159381796756, 'current_std': 0.009537746762530096})",
+        "action_result": {
+          "action": "pause_feature",
+          "success": true,
+          "details": {
+            "paused_features": [
+              "price"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.761639",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 761639), drift_type='statistical_drift', feature_name='volume', severity='critical', drift_score=0.8911862216574798, threshold=0.1, action_taken='pause_feature', details={'reference_mean': 5219.327005784942, 'current_mean': 5818.8618580268985, 'reference_std': 6421.7006656261265, 'current_std': 6950.67230231104})",
+        "action_result": {
+          "action": "pause_feature",
+          "success": true,
+          "details": {
+            "paused_features": [
+              "price",
+              "volume"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.765641",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 765641), drift_type='statistical_drift', feature_name='spread', severity='critical', drift_score=0.7998257097455644, threshold=0.1, action_taken='pause_feature', details={'reference_mean': 0.0009877781482397366, 'current_mean': 0.0009283067836415231, 'reference_std': 0.0009806791258499161, 'current_std': 0.0010360802947005905})",
+        "action_result": {
+          "action": "pause_feature",
+          "success": true,
+          "details": {
+            "paused_features": [
+              "price",
+              "spread",
+              "volume"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.774644",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 774644), drift_type='statistical_drift', feature_name='price', severity='medium', drift_score=0.25707184436066577, threshold=0.1, action_taken='increase_monitoring', details={'reference_mean': 0.5201933205582233, 'current_mean': 0.5208994412642929, 'reference_std': 0.009792159381796756, 'current_std': 0.010958896306406446})",
+        "action_result": {
+          "action": "increase_monitoring",
+          "success": true,
+          "details": {
+            "monitoring_increased": true
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.779645",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 779645), drift_type='statistical_drift', feature_name='volume', severity='critical', drift_score=0.5946631274016767, threshold=0.1, action_taken='pause_feature', details={'reference_mean': 5219.327005784942, 'current_mean': 5053.9729033085105, 'reference_std': 6421.7006656261265, 'current_std': 6105.717095384382})",
+        "action_result": {
+          "action": "pause_feature",
+          "success": true,
+          "details": {
+            "paused_features": [
+              "price",
+              "spread",
+              "volume"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2025-09-16 21:34:11.783642",
+        "alert": "DriftAlert(timestamp=datetime.datetime(2025, 9, 16, 21, 34, 11, 783642), drift_type='statistical_drift', feature_name='spread', severity='medium', drift_score=0.14154115156668134, threshold=0.1, action_taken='increase_monitoring', details={'reference_mean': 0.0009877781482397366, 'current_mean': 0.001017968838917343, 'reference_std': 0.0009806791258499161, 'current_std': 0.000968761810385165})",
+        "action_result": {
+          "action": "increase_monitoring",
+          "success": true,
+          "details": {
+            "monitoring_increased": true
+          }
+        }
+      }
+    ]
+  },
+  "recent_alerts": [
+    {
+      "timestamp": "2025-09-16T21:34:11.740640",
+      "type": "statistical_drift",
+      "feature": "price",
+      "severity": "critical",
+      "score": 0.5946631274016767,
+      "action": "pause_feature"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.748637",
+      "type": "statistical_drift",
+      "feature": "spread",
+      "severity": "high",
+      "score": 0.3527903892786787,
+      "action": "reduce_weight"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.757638",
+      "type": "distribution_shift",
+      "feature": "price",
+      "severity": "critical",
+      "score": 3.6527401824711476,
+      "action": "pause_feature"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.761639",
+      "type": "statistical_drift",
+      "feature": "volume",
+      "severity": "critical",
+      "score": 0.8911862216574798,
+      "action": "pause_feature"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.765641",
+      "type": "statistical_drift",
+      "feature": "spread",
+      "severity": "critical",
+      "score": 0.7998257097455644,
+      "action": "pause_feature"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.774644",
+      "type": "statistical_drift",
+      "feature": "price",
+      "severity": "medium",
+      "score": 0.25707184436066577,
+      "action": "increase_monitoring"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.779645",
+      "type": "statistical_drift",
+      "feature": "volume",
+      "severity": "critical",
+      "score": 0.5946631274016767,
+      "action": "pause_feature"
+    },
+    {
+      "timestamp": "2025-09-16T21:34:11.783642",
+      "type": "statistical_drift",
+      "feature": "spread",
+      "severity": "medium",
+      "score": 0.14154115156668134,
+      "action": "increase_monitoring"
+    }
+  ]
+}
