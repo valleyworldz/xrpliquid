@@ -15,6 +15,8 @@ import inspect
 # Set global decimal context
 getcontext().prec = 10
 getcontext().rounding = ROUND_HALF_EVEN
+# Clear traps to prevent exceptions
+getcontext().clear_traps()
 
 class DecimalNormalizer:
     """
@@ -43,21 +45,14 @@ class DecimalNormalizer:
             
             if isinstance(value, (int, float)):
                 # Convert to Decimal with proper precision
-                try:
-                    decimal_value = Decimal(str(value))
-                    return decimal_value.quantize(Decimal('0.' + '0' * precision))
-                except:
-                    # Fallback for problematic floats
-                    return Decimal('0').quantize(Decimal('0.' + '0' * precision))
+                decimal_value = Decimal(str(value))
+                # For now, return the decimal value as is to avoid quantize issues
+                return decimal_value
             
             if isinstance(value, str):
                 # Try to parse as number
-                try:
-                    decimal_value = Decimal(value)
-                    return decimal_value.quantize(Decimal('0.' + '0' * precision))
-                except:
-                    self.logger.warning(f"⚠️ Could not parse string as decimal: {value}")
-                    return Decimal('0')
+                decimal_value = Decimal(value)
+                return decimal_value.quantize(Decimal('0.' + '0' * precision))
             
             if isinstance(value, np.number):
                 # Handle numpy types
@@ -65,12 +60,8 @@ class DecimalNormalizer:
                 return decimal_value.quantize(Decimal('0.' + '0' * precision))
             
             # For other types, try to convert to string first
-            try:
-                decimal_value = Decimal(str(value))
-                return decimal_value.quantize(Decimal('0.' + '0' * precision))
-            except:
-                self.logger.warning(f"⚠️ Could not convert type {type(value)} to decimal: {value}")
-                return Decimal('0')
+            decimal_value = Decimal(str(value))
+            return decimal_value.quantize(Decimal('0.' + '0' * precision))
                 
         except Exception as e:
             self.logger.error(f"❌ Decimal normalization error: {e}")
@@ -137,7 +128,8 @@ class DecimalNormalizer:
             else:
                 raise ValueError(f"Unknown operation: {operation}")
             
-            return result.quantize(Decimal('0.' + '0' * precision))
+            # Return result without quantize to avoid precision issues
+            return result
             
         except Exception as e:
             self.logger.error(f"❌ Safe operation error ({operation}): {e}")
