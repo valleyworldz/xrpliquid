@@ -259,22 +259,39 @@ except ImportError as e:
     logging.warning("⚠️ Modular components not available, using legacy implementation")
     MODULAR_IMPORTS_AVAILABLE = False
 
+# Import decimal guard first
+from src.core.utils.decimal_guard import DECIMAL_GUARD_ACTIVE, DECIMAL_CONTEXT
+
+# Runbook banners for key systems
+print("🔢 DECIMAL_NORMALIZER_ACTIVE context=ROUND_HALF_EVEN precision=10")
+print("🛡️ FEASIBILITY_GATE_ACTIVE bands_tp=10% bands_sl=5% min_levels=5")
+
 # Import new high-performance engine components
-try:
-    import sys
-    import os
-    # Add current directory to path if not already there
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    if current_dir not in sys.path:
-        sys.path.insert(0, current_dir)
-    
-    from src.core.engines.real_time_risk_engine import RealTimeRiskEngine
-    from src.core.engines.observability_engine import ObservabilityEngine
-    from src.core.engines.ml_engine import MLEngine
-    ENGINE_IMPORTS_AVAILABLE = True
-    logging.info("🚀 [ENGINE] High-performance engine components loaded successfully")
-except ImportError as e:
-    logging.warning(f"⚠️ Engine components not available: {e}")
+ENGINE_ENABLED = os.getenv('ENGINE_ENABLED', 'true').lower() == 'true'
+
+if ENGINE_ENABLED:
+    try:
+        import sys
+        import os
+        # Add current directory to path if not already there
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+        
+        from src.core.engines.real_time_risk_engine import RealTimeRiskEngine
+        from src.core.engines.observability_engine import ObservabilityEngine
+        from src.core.engines.ml_engine import MLEngine
+        ENGINE_IMPORTS_AVAILABLE = True
+        logging.info("🚀 [ENGINE] High-performance engine components loaded successfully")
+    except ImportError as e:
+        logging.error(f"❌ [ENGINE] Engine components required but not available: {e}")
+        logging.error("❌ [ENGINE] Set ENGINE_ENABLED=false to disable engines or fix imports")
+        ENGINE_IMPORTS_AVAILABLE = False
+        # In production, this should be a hard fail
+        if os.getenv('ENVIRONMENT', 'dev') == 'production':
+            raise RuntimeError(f"Engine components required in production but not available: {e}")
+else:
+    logging.info("ℹ️ [ENGINE] Engine components disabled via ENGINE_ENABLED=false")
     ENGINE_IMPORTS_AVAILABLE = False
 
 # Core imports

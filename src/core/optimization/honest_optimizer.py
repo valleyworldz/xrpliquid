@@ -156,13 +156,16 @@ class HonestOptimizer:
                     if data_check['sharpe_ratio'] < self.min_sharpe_ratio:
                         reasons.append(f"Sharpe ratio {data_check['sharpe_ratio']:.2f} below {self.min_sharpe_ratio:.2f} threshold")
                 
-                message = f"Not enough data to optimize: {', '.join(reasons)}"
+                message = f"REASON=insufficient_data: {', '.join(reasons)}"
+                
+                # Log explicit no-op status
+                self.logger.warning(f"📊 OPTIMIZER_NO_OP: {message}")
                 
                 return OptimizationResult(
                     status=OptimizationStatus.INSUFFICIENT_DATA,
                     message=message,
                     confidence=0.0,
-                    parameters=current_params,
+                    parameters=current_params,  # Return unchanged parameters
                     metrics=data_check,
                     data_quality=data_check,
                     recommendations=[
