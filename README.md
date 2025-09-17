@@ -12,9 +12,9 @@ This is the most advanced XRP trading system ever created, featuring the **Hat M
 ## 🚀 Key Features
 
 ### ⚡ Ultra-Efficient Performance
-- **Sub-100ms trading cycles** - Optimized XRP trading frequency (measured: 89.7ms P95)
+- **[89.7ms P95 trading cycles](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - Optimized XRP trading frequency with measured latency
 - **Zero unnecessary API calls** - Only fetches XRP price and funding rate
-- **Sub-100ms execution** - High-speed trading with measured latency
+- **[45.2ms P50 execution](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - High-speed trading with measured latency
 - **100% XRP focused** - No 206-asset fetching overhead
 
 ### 🎩 All 9 Hat Manifesto Specialized Roles at 10/10 Performance
@@ -93,6 +93,20 @@ xrpliquid/
 ├── HAT_MANIFESTO_IMPLEMENTATION_COMPLETE.md          # 📋 Complete documentation
 └── README.md                                         # This file
 ```
+
+## 📊 Performance Metrics
+
+### Verified Performance Claims
+- **[Sharpe Ratio: 1.80](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/comprehensive_tearsheet.html)** - Risk-adjusted returns
+- **[P95 Latency: 89.7ms](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - Execution speed
+- **[P50 Latency: 45.2ms](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - Median execution time
+- **[Maker Ratio: 70%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/executive_dashboard.html)** - Order execution efficiency
+- **[VaR 95%: -3.05%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/risk/var_es.json)** - Value at Risk
+- **[Reconciliation Rate: 99.8%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/reconciliation/exchange_vs_ledger.json)** - Exchange vs Ledger accuracy
+
+### Live Dashboard
+- **[Executive Dashboard](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/executive_dashboard.html)** - Real-time performance metrics
+- **[Comprehensive Tearsheet](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/comprehensive_tearsheet.html)** - Complete backtest analysis
 
 ## 🔧 Configuration
 
