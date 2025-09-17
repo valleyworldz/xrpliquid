@@ -62,6 +62,7 @@ to achieve 10/10 scores across all aspects:
 - World-class performance analytics and attribution
 """
 # FIXED: Optional SSL context override (gate via env ALLOW_INSECURE_SSL)
+from src.core.utils.decimal_boundary_guard import safe_float
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
@@ -1824,7 +1825,7 @@ def quick_optimize_profile_for_token(symbol_cfg: SymbolCfg, base_config: 'Startu
                 for c in data:
                     if isinstance(c, dict) and 'c' in c:
                         try:
-                            prices.append(float(c['c']))
+                            prices.append(safe_float(c['c']))
                         except Exception:
                             pass
                     elif isinstance(c, list) and len(c) >= 5:
@@ -1906,15 +1907,15 @@ def quick_optimize_profile_for_token(symbol_cfg: SymbolCfg, base_config: 'Startu
             try:
                 with open(cache_path, 'r') as f:
                     cached = json.load(f)
-                ts = float(cached.get('timestamp', 0))
+                ts = safe_safe_float(cached.get('timestamp', 0))
                 if time.time() - ts < 6 * 3600:
                     cfg = cached.get('config', {})
                     if cfg:
                         from dataclasses import replace
                         restored = replace(
                             base_config,
-                            leverage=float(cfg.get('leverage', base_config.leverage)),
-                            position_risk_pct=float(cfg.get('position_risk_pct', base_config.position_risk_pct)),
+                            leverage=safe_safe_float(cfg.get('leverage', base_config.leverage)),
+                            position_risk_pct=safe_safe_float(cfg.get('position_risk_pct', base_config.position_risk_pct)),
                             stop_loss_type=str(cfg.get('stop_loss_type', base_config.stop_loss_type)),
                             trading_mode=str(cfg.get('trading_mode', base_config.trading_mode))
                         )
@@ -2440,7 +2441,7 @@ def build_asset_maps(info) -> dict:
                 
             # Extract available data
             sz_decimals = int(asset.get("szDecimals", 3))
-            max_leverage = float(asset.get("maxLeverage", 50.0))
+            max_leverage = safe_safe_float(asset.get("maxLeverage", 50.0))
             
             # Estimate missing tick size and min size step
             tick_size = estimate_tick_size(name)
@@ -2469,12 +2470,12 @@ def get_asset_meta(info, symbol: str) -> AssetMeta:
     return am
 
 def align_price(px: float, tick: float) -> float:
-    if tick <= 0: return float(px)
+    if tick <= 0: return safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px)
     q = (Decimal(str(px)) / Decimal(str(tick))).to_integral_value(rounding=ROUND_DOWN)
     return float(q * Decimal(str(tick)))
 
 def align_size(sz: float, step: float) -> float:
-    if step <= 0: return float(sz)
+    if step <= 0: return safe_safe_safe_float(sz)
     q = (Decimal(str(sz)) / Decimal(str(step))).to_integral_value(rounding=ROUND_DOWN)
     return float(q * Decimal(str(step)))
 
@@ -2592,7 +2593,7 @@ except (ImportError, ModuleNotFoundError):
                 close = np.array([p['close'] for p in prices])
                 tr = np.maximum(high - low, np.abs(high - np.roll(close, 1)), np.abs(low - np.roll(close, 1)))
                 atr = np.mean(tr[-period:])
-                return float(atr)
+                return safe_safe_safe_float(atr)
             except Exception:
                 return 0.0
         
@@ -2612,7 +2613,7 @@ except (ImportError, ModuleNotFoundError):
                     return 100.0
                 rs = avg_gain / avg_loss
                 rsi = 100 - (100 / (1 + rs))
-                return float(rsi)
+                return safe_float(rsi)
             except Exception:
                 return 50.0
         
@@ -2624,7 +2625,7 @@ except (ImportError, ModuleNotFoundError):
                 import numpy as np
                 close = np.array([p['close'] for p in prices])
                 momentum = close[-1] - close[-period]
-                return float(momentum)
+                return safe_float(momentum)
             except Exception:
                 return 0.0
         
@@ -2637,7 +2638,7 @@ except (ImportError, ModuleNotFoundError):
                 close = np.array([p['close'] for p in prices])
                 returns = np.diff(np.log(close))
                 volatility = np.std(returns[-period:]) * np.sqrt(252)  # Annualized
-                return float(volatility)
+                return safe_float(volatility)
             except Exception:
                 return 0.0
 
@@ -2937,12 +2938,12 @@ def fetch_historical_data(symbol='XRP', start_date='2025-01-01', end_date=None, 
             try:
                 if winsorize:
                     pct = df['close'].pct_change()
-                    mask = pct.abs() > float(winsor_level)
+                    mask = pct.abs() > safe_safe_safe_float(winsor_level)
                     if mask.any():
                         logging.warning(f"Winsorization enabled (level={winsor_level}); clamped {int(mask.sum())} bars")
                         prev = df['close'].shift(1)
-                        df.loc[mask & (pct>0), 'close'] = prev * (1 + float(winsor_level))
-                        df.loc[mask & (pct<0), 'close'] = prev * (1 - float(winsor_level))
+                        df.loc[mask & (pct>0), 'close'] = prev * (1 + safe_safe_safe_float(winsor_level))
+                        df.loc[mask & (pct<0), 'close'] = prev * (1 - safe_safe_safe_float(winsor_level))
             except Exception:
                 pass
             # Optional: enrich with perp/Bybit blending and OI/funding placeholders
@@ -3231,17 +3232,17 @@ def log_tpsl_validation(tp_price: float, sl_price: float, tick_size: float,
     """Log pre-flight validation for TP/SL prices"""
     log = logging.getLogger(__name__)
     log.debug("🔍 TP/SL Pre-flight validation for %s:", symbol)
-    log.debug("   TP: %.6f (range: %.6f - %.6f)", float(tp_price), float(min_price), float(max_price))
-    log.debug("   SL: %.6f (range: %.6f - %.6f)", float(sl_price), float(min_price), float(max_price))
-    log.debug("   Tick size: %.6f", float(tick_size))
+    log.debug("   TP: %.6f (range: %.6f - %.6f)", safe_safe_safe_float(tp_price), safe_safe_safe_safe_float(min_price), safe_safe_safe_safe_float(max_price))
+    log.debug("   SL: %.6f (range: %.6f - %.6f)", safe_safe_safe_float(sl_price), safe_safe_safe_safe_float(min_price), safe_safe_safe_safe_float(max_price))
+    log.debug("   Tick size: %.6f", safe_safe_float(tick_size))
     
     # Validate ranges
     if tp_price < min_price or tp_price > max_price:
         log.error("❌ TP price %.6f outside valid range [%.6f, %.6f]", 
-                  float(tp_price), float(min_price), float(max_price))
+                  safe_safe_safe_float(tp_price), safe_safe_safe_safe_float(min_price), safe_safe_safe_safe_float(max_price))
     if sl_price < min_price or sl_price > max_price:
         log.error("❌ SL price %.6f outside valid range [%.6f, %.6f]", 
-                  float(sl_price), float(min_price), float(max_price))
+                  safe_safe_safe_float(sl_price), safe_safe_safe_safe_float(min_price), safe_safe_safe_safe_float(max_price))
 
 def log_tpsl_builder_str(side: str, size: int, tp_price: float, sl_price: float, 
                           reduce_only: bool, is_long: bool):
@@ -3250,8 +3251,8 @@ def log_tpsl_builder_str(side: str, size: int, tp_price: float, sl_price: float,
     log.debug("🔧 TP/SL Builder input:")
     log.debug("   Side: %s (is_long: %s)", side, is_long)
     log.debug("   Size: %d", size)
-    log.debug("   TP Price: %.6f (type: %s)", float(tp_price), type(tp_price).__name__)
-    log.debug("   SL Price: %.6f (type: %s)", float(sl_price), type(sl_price).__name__)
+    log.debug("   TP Price: %.6f (type: %s)", safe_safe_safe_float(tp_price), type(tp_price).__name__)
+    log.debug("   SL Price: %.6f (type: %s)", safe_safe_safe_float(sl_price), type(sl_price).__name__)
     log.debug("   Reduce Only: %s", reduce_only)
 
 def log_tpsl_payload(payload: Dict[str, Any], name: str = "TP/SL"):
@@ -3333,7 +3334,7 @@ def fmt_px(px: Union[float, str, int, Decimal], decimals: int = 4) -> str:
 # ====== PRICE LOGGING HELPER ======
 def px_log(px: float) -> str:
     """Format price for logging only - do not use in order dicts"""
-    return f"{float(px):.4f}"
+    return f"{safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px):.4f}"
 # ====== END PRICE LOGGING HELPER ======
 
 # Startup warning suppression
@@ -3615,8 +3616,8 @@ class OptimizedHyperliquidClient:
             buffer_warn_bps: int = 1000,
             auto_reduce_warn_bps: int = 800,
         ):
-            self.sl_atr_mult = float(sl_atr_mult)
-            self.tp_atr_mult = float(tp_atr_mult)
+            self.sl_atr_mult = safe_float(sl_atr_mult)
+            self.tp_atr_mult = safe_float(tp_atr_mult)
             self.sl_min_bps = int(sl_min_bps)
             self.tp_enabled = bool(tp_enabled)
             self.buffer_warn_bps = int(buffer_warn_bps)
@@ -3627,7 +3628,7 @@ class OptimizedHyperliquidClient:
             return 0.0
         diffs = [abs(prices[i] - prices[i - 1]) for i in range(1, len(prices))]
         n = min(period, len(diffs))
-        return sum(diffs[-n:]) / float(n)
+        return sum(diffs[-n:]) / safe_float(n)
 
     def _liq_buffer_bps(self, is_long: bool, mark: float, liq: float) -> int:
         if is_long:
@@ -4305,25 +4306,25 @@ def normalize_l2_snapshot(raw, depth=0):
                 if isinstance(levels[0], list):
                     for order in levels[0]:
                         if isinstance(order, dict) and 'px' in order and 'sz' in order:
-                            bids.append([float(order['px']), float(order['sz'])])
+                            bids.append([safe_safe_float(order['px']), safe_safe_float(order['sz'])])
                 
                 # Process asks (second level)
                 if isinstance(levels[1], list):
                     for order in levels[1]:
                         if isinstance(order, dict) and 'px' in order and 'sz' in order:
-                            asks.append([float(order['px']), float(order['sz'])])
+                            asks.append([safe_safe_float(order['px']), safe_safe_float(order['sz'])])
                 
                 return {'bids': bids, 'asks': asks}
         
         # Handle legacy formats
         if isinstance(raw, list) and len(raw) == 2:
-            bids = [[float(d['px']), float(d['sz'])] for d in raw[0] if isinstance(d, dict) and 'px' in d and 'sz' in d]
-            asks = [[float(d['px']), float(d['sz'])] for d in raw[1] if isinstance(d, dict) and 'px' in d and 'sz' in d]
+            bids = [[safe_safe_float(d['px']), safe_safe_float(d['sz'])] for d in raw[0] if isinstance(d, dict) and 'px' in d and 'sz' in d]
+            asks = [[safe_safe_float(d['px']), safe_safe_float(d['sz'])] for d in raw[1] if isinstance(d, dict) and 'px' in d and 'sz' in d]
             return {'bids': bids, 'asks': asks}
         elif isinstance(raw, dict):
             if "bids" in raw and "asks" in raw:
-                bids = [[float(px), float(sz)] for px, sz in raw['bids']]
-                asks = [[float(px), float(sz)] for px, sz in raw['asks']]
+                bids = [[safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px), safe_safe_safe_float(sz)] for px, sz in raw['bids']]
+                asks = [[safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px), safe_safe_safe_float(sz)] for px, sz in raw['asks']]
                 return {'bids': bids, 'asks': asks}
         
         # Use logging instead of print for consistency
@@ -5080,7 +5081,7 @@ class AdvancedPatternAnalyzer:
                                     study = optuna.create_study(direction='minimize')
                                     study.optimize(objective, n_trials=10, gc_after_trial=True)
                                     params = study.best_params
-                                    lr_value = float(params.get('lr', 0.001))
+                                    lr_value = safe_safe_float(params.get('lr', 0.001))
                                     model = self.LSTMPatternPredictor(input_size=X_seq.shape[2], hidden_size=int(params.get('hidden', 64)))
                                 except Exception:
                                     lr_value = 0.001
@@ -5983,7 +5984,7 @@ class UltimateProfileOptimizer:
             try:
                 if hasattr(self, 'get_current_position'):
                     current_pos = self.get_current_position()
-                    if current_pos and abs(float(current_pos.get('size', 0))) > 0:
+                    if current_pos and abs(safe_safe_safe_safe_float(current_pos.get('size', 0))) > 0:
                         # Reduce new position size if already positioned
                         correlation_penalty = 0.7
             except:
@@ -6255,7 +6256,7 @@ class QuantumCorrelationHasher:
                         bytes.fromhex(enc_data['tag'])
                     )
                     _, corr_str = plaintext.decode().split(':')
-                    decrypted[pair] = float(corr_str)
+                    decrypted[pair] = safe_safe_float(corr_str)
                 return decrypted
             else:
                 # Mock decryption
@@ -6264,7 +6265,7 @@ class QuantumCorrelationHasher:
                     if isinstance(enc_data, str) and enc_data.startswith("quantum_hash_"):
                         dec_data = self.kyber.decrypt_data(enc_data)
                         _, corr_str = dec_data.split(':')
-                        decrypted[pair] = float(corr_str)
+                        decrypted[pair] = safe_safe_float(corr_str)
                     else:
                         decrypted[pair] = enc_data
                 return decrypted
@@ -6665,7 +6666,7 @@ class MultiAssetTradingBot:
                 if 'position' in pos_data:
                     position = pos_data['position']
                     pos_symbol = position.get('coin', '')
-                    pos_size = float(position.get('szi', 0))
+                    pos_size = safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('szi', 0))
                     
                     if pos_size != 0 and pos_symbol != selected_symbol:
                         conflicting_positions.append({
@@ -6685,8 +6686,8 @@ class MultiAssetTradingBot:
                 for pos in conflicting_positions:
                     self.logger.warning(f"   • {pos['symbol']}: {pos['size']} units, "
                                      f"Value: ${pos['value']}, PnL: ${pos['pnl']}")
-                    total_value += float(pos['value'])
-                    total_pnl += float(pos['pnl'])
+                    total_value += safe_safe_float(pos['value'])
+                    total_pnl += safe_safe_safe_float(pos['pnl'])
                 
                 self.logger.warning(f"📊 Total Portfolio Value: ${total_value:.2f}, Total PnL: ${total_pnl:.2f}")
                 
@@ -6695,7 +6696,7 @@ class MultiAssetTradingBot:
                 print("🚨 EXISTING POSITIONS DETECTED")
                 print("="*50)
                 for pos in conflicting_positions:
-                    pnl_indicator = "📈" if float(pos['pnl']) >= 0 else "📉"
+                    pnl_indicator = "📈" if safe_safe_safe_float(pos['pnl']) >= 0 else "📉"
                     print(f"{pnl_indicator} {pos['symbol']}: {pos['size']} units, Value: ${pos['value']}, PnL: ${pos['pnl']}")
                 print(f"💰 Total PnL: ${total_pnl:.2f}")
                 print("="*50)
@@ -6764,7 +6765,7 @@ class MultiAssetTradingBot:
                 if 'position' in pos_data:
                     position = pos_data['position']
                     pos_symbol = position.get('coin', '')
-                    pos_size = float(position.get('szi', 0))
+                    pos_size = safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('szi', 0))
                     
                     if pos_size != 0:
                         positions_to_close.append({
@@ -6785,8 +6786,8 @@ class MultiAssetTradingBot:
             for pos in positions_to_close:
                 self.logger.info(f"   • {pos['symbol']}: {pos['size']} units, "
                                f"Value: ${pos['value']}, PnL: ${pos['pnl']}")
-                total_value += float(pos['value'])
-                total_pnl += float(pos['pnl'])
+                total_value += safe_safe_float(pos['value'])
+                total_pnl += safe_safe_safe_float(pos['pnl'])
             
             self.logger.info(f"📊 Total Portfolio Value: ${total_value:.2f}, Total PnL: ${total_pnl:.2f}")
             
@@ -6873,7 +6874,7 @@ class MultiAssetTradingBot:
                     for pos_data in account_status.get('assetPositions', []):
                         if 'position' in pos_data:
                             position = pos_data['position']
-                            pos_size = float(position.get('szi', 0))
+                            pos_size = safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('szi', 0))
                             if pos_size != 0:
                                 remaining_positions.append(position.get('coin', ''))
                 
@@ -6897,7 +6898,7 @@ class MultiAssetTradingBot:
         try:
             # Get account info for analysis
             account_status = self.get_account_status()
-            account_balance = float(account_status.get('accountValue', 0))
+            account_balance = safe_safe_safe_safe_safe_safe_safe_safe_float(account_status.get('accountValue', 0))
             if account_balance <= 0:
                 raise ValueError("No real account balance available")
             
@@ -7009,7 +7010,7 @@ class MultiAssetTradingBot:
         confidence_threshold_env = os.environ.get("BOT_CONFIDENCE_THRESHOLD")
         if confidence_threshold_env:
             try:
-                self.base_confidence_threshold = float(confidence_threshold_env)
+                self.base_confidence_threshold = safe_float(confidence_threshold_env)
                 self.logger.info(f"🎯 ULTRA OPTIMIZATION: Base confidence threshold set to {self.base_confidence_threshold:.3f} from environment")
             except ValueError:
                 self.logger.warning(f"⚠️ Invalid BOT_CONFIDENCE_THRESHOLD value: {confidence_threshold_env}")
@@ -7821,12 +7822,12 @@ class MultiAssetTradingBot:
                     
                     # Apply champion leverage and risk
                     if 'champion_leverage' in overrides:
-                        self.default_leverage = float(overrides['champion_leverage'])
+                        self.default_leverage = safe_float(overrides['champion_leverage'])
                         if hasattr(self, 'logger'):
                             self.logger.info(f"   🎯 Champion leverage: {self.default_leverage}x")
                     
                     if 'champion_position_risk_pct' in overrides:
-                        self.position_size_pct = float(overrides['champion_position_risk_pct']) / 100.0
+                        self.position_size_pct = safe_float(overrides['champion_position_risk_pct']) / 100.0
                         if hasattr(self, 'logger'):
                             self.logger.info(f"   📊 Champion risk: {overrides['champion_position_risk_pct']}%")
                     
@@ -7847,7 +7848,7 @@ class MultiAssetTradingBot:
                     # Apply ML threshold from risk management
                     risk_mgmt = overrides.get('risk_management', {})
                     if 'ml_threshold' in risk_mgmt:
-                        self.champion_ml_threshold = float(risk_mgmt['ml_threshold'])
+                        self.champion_ml_threshold = safe_float(risk_mgmt['ml_threshold'])
                         if hasattr(self, 'logger'):
                             self.logger.info(f"   🧠 Champion ML threshold: {self.champion_ml_threshold}")
                     
@@ -8399,7 +8400,7 @@ class MultiAssetTradingBot:
                         initial_value = 0.0
                         if acc:
                             # Handle mixed schemas gracefully
-                            initial_value = float(
+                            initial_value = safe_safe_float(
                                 acc.get('accountValue')
                                 or acc.get('withdrawable')
                                 or acc.get('totalRawUsd')
@@ -8655,19 +8656,19 @@ class MultiAssetTradingBot:
             if isinstance(price, dict):
                 # Extract value from dict (common pattern)
                 if 'value' in price:
-                    float_prices.append(float(price['value']))
+                    float_prices.append(safe_safe_safe_safe_float(price['value']))
                 elif 'price' in price:
-                    float_prices.append(float(price['price']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                 elif 'close' in price:
-                    float_prices.append(float(price['close']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                 else:
                     # Try to use the first numeric value
                     for key, value in price.items():
                         if isinstance(value, (int, float)):
-                            float_prices.append(float(value))
+                            float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                             break
             else:
-                float_prices.append(float(price))
+                float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
         
         if len(float_prices) < period + 1:
             return 50.0
@@ -8697,19 +8698,19 @@ class MultiAssetTradingBot:
             if isinstance(price, dict):
                 # Extract value from dict (common pattern)
                 if 'value' in price:
-                    float_prices.append(float(price['value']))
+                    float_prices.append(safe_safe_safe_safe_float(price['value']))
                 elif 'price' in price:
-                    float_prices.append(float(price['price']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                 elif 'close' in price:
-                    float_prices.append(float(price['close']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                 else:
                     # Try to use the first numeric value
                     for key, value in price.items():
                         if isinstance(value, (int, float)):
-                            float_prices.append(float(value))
+                            float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                             break
             else:
-                float_prices.append(float(price))
+                float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
         
         if len(float_prices) < period + 1:
             return 0.0
@@ -8732,19 +8733,19 @@ class MultiAssetTradingBot:
             if isinstance(price, dict):
                 # Extract value from dict (common pattern)
                 if 'value' in price:
-                    float_prices.append(float(price['value']))
+                    float_prices.append(safe_safe_safe_safe_float(price['value']))
                 elif 'price' in price:
-                    float_prices.append(float(price['price']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                 elif 'close' in price:
-                    float_prices.append(float(price['close']))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                 else:
                     # Try to use the first numeric value
                     for key, value in price.items():
                         if isinstance(value, (int, float)):
-                            float_prices.append(float(value))
+                            float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                             break
             else:
-                float_prices.append(float(price))
+                float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
         
         if len(float_prices) < period:
             return 0.0
@@ -8937,7 +8938,7 @@ class MultiAssetTradingBot:
                         if isinstance(entry, dict):
                             price = entry.get('close', entry.get('price', 0))
                         else:
-                            price = float(entry) if entry else 0
+                            price = safe_safe_safe_float(entry) if entry else 0
                         if price > 0:
                             recent_prices.append(price)
                 else:
@@ -8946,7 +8947,7 @@ class MultiAssetTradingBot:
                         if isinstance(entry, dict):
                             price = entry.get('close', entry.get('price', 0))
                         else:
-                            price = float(entry) if entry else 0
+                            price = safe_safe_safe_float(entry) if entry else 0
                         if price > 0:
                             recent_prices.append(price)
                 
@@ -8957,7 +8958,7 @@ class MultiAssetTradingBot:
             current_price = self.get_current_price()
             if current_price and current_price > 0:
                 # Create synthetic price history with small random variations
-                base_price = float(current_price)
+                base_price = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)
                 prices = [base_price]
                 for i in range(periods - 1):
                     # Add small random walk
@@ -8982,7 +8983,7 @@ class MultiAssetTradingBot:
                     if isinstance(entry, dict):
                         volume = entry.get('volume', entry.get('size', 0))
                     else:
-                        volume = float(entry) if entry else 0
+                        volume = safe_safe_safe_float(entry) if entry else 0
                     if volume > 0:
                         recent_volumes.append(volume)
                 
@@ -9292,9 +9293,9 @@ class MultiAssetTradingBot:
                 if isinstance(candle, dict):
                     # Try different possible keys for close price
                     if 'c' in candle:
-                        closes.append(float(candle['c']))
+                        closes.append(safe_safe_safe_float(candle['c']))
                     elif 'close' in candle:
-                        closes.append(float(candle['close']))
+                        closes.append(safe_safe_float(candle['close']))
                     else:
                         self.logger.warning(f"📊 Skipping malformed candle {i}: {candle}")
                 elif isinstance(candle, list) and len(candle) >= 4:
@@ -9344,7 +9345,7 @@ class MultiAssetTradingBot:
                     prices = []
                     for candle in candles:
                         if isinstance(candle, dict) and 'close' in candle:
-                            prices.append(float(candle['close']))
+                            prices.append(safe_safe_float(candle['close']))
                         elif isinstance(candle, list) and len(candle) >= 4:
                             prices.append(float(candle[4]))  # Close price is typically at index 4
                     
@@ -9408,7 +9409,7 @@ class MultiAssetTradingBot:
                         else:
                             self.logger.warning(f"⚠️ Skipping invalid {trigger_type} trigger: {order_id}")
                         if trigger_type == "sl":
-                            self.last_sl_price = float(trigger_price)
+                            self.last_sl_price = safe_float(trigger_price)
                             self.logger.info(f"🔄 Recovered SL trigger: {order_id} @ ${trigger_price}")
                         else:
                             self.logger.info(f"🔄 Recovered TP trigger: {order_id} @ ${trigger_price}")
@@ -9663,7 +9664,7 @@ class MultiAssetTradingBot:
                         name_val = asset.get("name") if isinstance(asset, dict) else None
                         if name_val == symbol:
                             mark_raw = asset.get("markPrice", 0)
-                            mark_price = float(mark_raw) if mark_raw is not None else 0
+                            mark_price = safe_float(mark_raw) if mark_raw is not None else 0
                             if mark_price > 0:
                                 self.last_asset_price = mark_price
                                 self.last_asset_price_time = time.time()
@@ -9781,17 +9782,17 @@ class MultiAssetTradingBot:
             # Check for nested structure (new API format)
             if "marginSummary" in us:
                 margin_summary = us.get("marginSummary", {})
-                account_value = float(margin_summary.get("accountValue", 0))
-                total_margin_used = float(margin_summary.get("totalMarginUsed", 0))
-                withdrawable = float(us.get("withdrawable", account_value))
+                account_value = safe_safe_float(margin_summary.get("accountValue", 0))
+                total_margin_used = safe_safe_float(margin_summary.get("totalMarginUsed", 0))
+                withdrawable = safe_safe_float(us.get("withdrawable", account_value))
                 # Improve UX: if withdrawable is 0, derive approx free collateral from account_value - total_margin_used
                 free_collateral = withdrawable if withdrawable > 0 else max(0.0, account_value - total_margin_used)
             else:
                 # Legacy structure
-                withdrawable = float(us.get("withdrawable", 0))
-                free_collateral = float(us.get("freeCollateral", withdrawable))
-                account_value = float(us.get("accountValue", free_collateral))
-                total_margin_used = float(us.get("totalMarginUsed", 0))
+                withdrawable = safe_safe_float(us.get("withdrawable", 0))
+                free_collateral = safe_safe_float(us.get("freeCollateral", withdrawable))
+                account_value = safe_safe_safe_safe_safe_safe_float(us.get("accountValue", free_collateral))
+                total_margin_used = safe_safe_safe_safe_safe_safe_float(us.get("totalMarginUsed", 0))
             
             self.logger.info(f"💰 Account values - Withdrawable: ${withdrawable:.2f}, Free Collateral: ${free_collateral:.2f}, Account Value: ${account_value:.2f}")
             
@@ -9804,32 +9805,32 @@ class MultiAssetTradingBot:
                     for ap in (us.get("assetPositions") or []):
                         pos = ap.get("position") or {}
                         cf = pos.get("cumFunding") or {}
-                        funding_current += float(cf.get("sinceOpen", 0.0) or 0.0)
+                        funding_current += safe_safe_float(cf.get("sinceOpen", 0.0) or 0.0)
                 except Exception:
                     funding_current = 0.0
                 realized_agg = float(getattr(self, 'realized_pnl_total', 0.0) or 0.0)
-                effective_equity = float(account_value) + realized_agg - funding_current
+                effective_equity = safe_safe_safe_safe_float(account_value) + realized_agg - funding_current
             except Exception:
-                effective_equity = float(account_value)
+                effective_equity = safe_safe_safe_safe_float(account_value)
             current_capital = effective_equity
             if not hasattr(self, 'dd_peak') or self.dd_peak is None:
                 self.dd_peak = current_capital
                 self.logger.info(f"📈 Draw-down tracker initialized: peak={self.dd_peak:.4f}")
             # Keep a unified peak tracker for logging, prefer self.peak_capital where available
             try:
-                self.peak_capital = max(float(getattr(self, 'peak_capital', 0.0) or 0.0), float(current_capital))
+                self.peak_capital = max(float(getattr(self, 'peak_capital', 0.0) or 0.0), safe_safe_safe_safe_safe_float(current_capital))
             except Exception:
                 self.peak_capital = float(current_capital or 0.0)
             # Update dd_peak as well for backward compatibility
             try:
-                self.dd_peak = max(float(self.dd_peak or 0.0), float(current_capital))
+                self.dd_peak = max(float(self.dd_peak or 0.0), safe_safe_safe_safe_safe_float(current_capital))
             except Exception:
                 self.dd_peak = float(current_capital or 0.0)
             # Compute drawdown against unified peak with non-negative guard
             try:
                 peak_for_dd = float(self.peak_capital or 0.0)
                 if peak_for_dd > 0:
-                    drawdown_pct = max(0.0, (peak_for_dd - float(current_capital)) / peak_for_dd)
+                    drawdown_pct = max(0.0, (peak_for_dd - safe_safe_safe_safe_safe_float(current_capital)) / peak_for_dd)
                 else:
                     drawdown_pct = 0.0
             except Exception:
@@ -9843,13 +9844,13 @@ class MultiAssetTradingBot:
                         pos = ap.get("position") or {}
                         if pos:
                             symbol = pos.get("coin", "")
-                            size = float(pos.get("szi", 0))
+                            size = safe_safe_float(pos.get("szi", 0))
                             if size != 0:
                                 positions[symbol] = {
                                     'size': size,
-                                    'entry_price': float(pos.get("entryPx", 0)),
-                                    'unrealized_pnl': float(pos.get("unrealizedPnl", 0)),
-                                    'position_value': float(pos.get("positionValue", 0)),
+                                    'entry_price': safe_safe_float(pos.get("entryPx", 0)),
+                                    'unrealized_pnl': safe_safe_float(pos.get("unrealizedPnl", 0)),
+                                    'position_value': safe_safe_float(pos.get("positionValue", 0)),
                                     'returnOnEquity': pos.get("returnOnEquity", "0")  # CRITICAL FIX: Include returnOnEquity for kill switch
                                 }
                     
@@ -9862,7 +9863,7 @@ class MultiAssetTradingBot:
                     
                     # Update risk engine with current portfolio state
                     risk_metrics = self.risk_engine.update_portfolio_state(
-                        portfolio_value=float(account_value),
+                        portfolio_value=safe_safe_safe_safe_float(account_value),
                         positions=positions,
                         unrealized_pnl=sum(pos.get('unrealized_pnl', 0) for pos in positions.values())
                     )
@@ -9870,7 +9871,7 @@ class MultiAssetTradingBot:
                     # Record risk metrics in observability engine
                     if self.observability_engine:
                         self.observability_engine.record_risk_metric('current_drawdown', drawdown_pct)
-                        self.observability_engine.record_risk_metric('portfolio_value', float(account_value))
+                        self.observability_engine.record_risk_metric('portfolio_value', safe_safe_safe_safe_float(account_value))
                         self.observability_engine.record_risk_metric('total_exposure', sum(pos.get('position_value', 0) for pos in positions.values()))
                         
                 except Exception as e:
@@ -9931,9 +9932,9 @@ class MultiAssetTradingBot:
                     for p in aps:
                         core = p.get('position') or {}
                         if core.get('coin') == 'XRP':
-                            szi = float(core.get('szi') or 0.0)
-                            entry_px = float(core.get('entryPx') or 0.0)
-                            last_upl = float(core.get('unrealizedPnl') or 0.0)
+                            szi = safe_safe_safe_safe_safe_safe_float(core.get('szi') or 0.0)
+                            entry_px = safe_safe_safe_safe_safe_safe_float(core.get('entryPx') or 0.0)
+                            last_upl = safe_safe_safe_safe_float(core.get('unrealizedPnl') or 0.0)
                             last_notional = abs(szi) * entry_px
                             break
                     self._last_upl = last_upl
@@ -9945,8 +9946,8 @@ class MultiAssetTradingBot:
                     "withdrawable": withdrawable,
                     "freeCollateral": free_collateral,
                     "assetPositions": us.get("assetPositions", []),
-                    "account_value": float(us.get("accountValue", free_collateral)),
-                    "total_margin_used": float(us.get("totalMarginUsed", 0)),
+                    "account_value": safe_safe_safe_safe_safe_safe_float(us.get("accountValue", free_collateral)),
+                    "total_margin_used": safe_safe_safe_safe_safe_safe_float(us.get("totalMarginUsed", 0)),
                     "raw": us
                 }
                 self._last_account_status_time = time.time()
@@ -9960,8 +9961,8 @@ class MultiAssetTradingBot:
                 "withdrawable": withdrawable,
                 "freeCollateral": free_collateral,
                 "assetPositions": us.get("assetPositions", []),
-                "account_value": float(us.get("accountValue", free_collateral)),
-                "total_margin_used": float(us.get("totalMarginUsed", 0)),
+                "account_value": safe_safe_safe_safe_safe_safe_float(us.get("accountValue", free_collateral)),
+                "total_margin_used": safe_safe_safe_safe_safe_safe_float(us.get("totalMarginUsed", 0)),
                 "raw": us
             }
         except Exception as e:
@@ -10018,7 +10019,7 @@ class MultiAssetTradingBot:
             
             if aggressive_mode:
                 # Use environment variable thresholds for aggressive trading
-                macd_threshold = float(os.environ.get("BOT_MACD_THRESHOLD", "0.000025"))
+                macd_threshold = safe_safe_float(os.environ.get("BOT_MACD_THRESHOLD", "0.000025"))
                 ema_threshold = max(0.00001, macd_threshold * 0.5)  # 50% of MACD threshold
                 momentum_threshold = macd_threshold * 10  # 10x MACD threshold
                 self.logger.info(f"🚀 AGGRESSIVE MODE: MACD threshold={macd_threshold:.6f}, EMA threshold={ema_threshold:.6f}")
@@ -10142,7 +10143,7 @@ class MultiAssetTradingBot:
                 if aggressive_mode:
                     # Aggressive mode: use wider RSI range and lower ATR threshold
                     rsi_range = os.environ.get("BOT_RSI_RANGE", "20-80")
-                    atr_threshold = float(os.environ.get("BOT_ATR_THRESHOLD", "0.0003"))  # Lowered from 0.0005 for more trades
+                    atr_threshold = safe_safe_float(os.environ.get("BOT_ATR_THRESHOLD", "0.0003"))  # Lowered from 0.0005 for more trades
                     
                     # Parse RSI range
                     rsi_min, rsi_max = 20, 80  # Default aggressive range
@@ -10152,7 +10153,7 @@ class MultiAssetTradingBot:
                         except:
                             pass
                     
-                    if atr_pct is not None and atr_pct < atr_threshold and rsi_val is not None and rsi_min <= float(rsi_val) <= rsi_max:
+                    if atr_pct is not None and atr_pct < atr_threshold and rsi_val is not None and rsi_min <= safe_safe_float(rsi_val) <= rsi_max:
                         result["side"] = "HOLD"
                         result["signal"] = "HOLD"
                         result["confidence"] = 0.0
@@ -10160,7 +10161,7 @@ class MultiAssetTradingBot:
                         self.logger.info(f"⏸️ Range hold: low vol (ATR%={atr_pct:.4f}) and RSI {rsi_val:.1f} within {rsi_min}-{rsi_max}")
                 else:
                     # Conservative mode: original logic
-                    if atr_pct is not None and atr_pct < 0.003 and rsi_val is not None and 40.0 <= float(rsi_val) <= 60.0:
+                    if atr_pct is not None and atr_pct < 0.003 and rsi_val is not None and 40.0 <= safe_safe_float(rsi_val) <= 60.0:
                         result["side"] = "HOLD"
                         result["signal"] = "HOLD"
                         result["confidence"] = 0.0
@@ -10174,7 +10175,7 @@ class MultiAssetTradingBot:
                 if hasattr(self, 'pattern_analyzer') and self.pattern_analyzer:
                     pa = self.pattern_analyzer.analyze_xrp_patterns(prices)
                     pa_signal = pa.get("signal", "HOLD")
-                    pa_conf = float(pa.get("confidence", 0.0) or 0.0)
+                    pa_conf = safe_safe_float(pa.get("confidence", 0.0) or 0.0)
                     if result["signal"] in ("BUY", "SELL") and pa_signal in ("BUY", "SELL"):
                         if pa_signal == result["signal"]:
                             # Consensus: use the weaker of the two confidences
@@ -10457,7 +10458,7 @@ class MultiAssetTradingBot:
                 volumes = []
                 for candle in candles:
                     if isinstance(candle, dict) and 'v' in candle:
-                        volumes.append(float(candle['v']))
+                        volumes.append(safe_float(candle['v']))
                     elif hasattr(candle, 'v'):
                         volumes.append(float(candle.v))
                 
@@ -10846,12 +10847,12 @@ class MultiAssetTradingBot:
                         if isinstance(l, list) and len(l) >= 2:
                             liq += float(l[1])
                         elif isinstance(l, dict) and 'sz' in l:
-                            liq += float(l['sz'])
+                            liq += safe_safe_float(l['sz'])
                     for l in asks[:10]:
                         if isinstance(l, list) and len(l) >= 2:
                             liq += float(l[1])
                         elif isinstance(l, dict) and 'sz' in l:
-                            liq += float(l['sz'])
+                            liq += safe_safe_float(l['sz'])
                 except Exception:
                     liq = 0.0  # Fallback to 0 if parsing fails
             # Trend proxy: SMA(24)-SMA(72) vs price
@@ -10863,7 +10864,7 @@ class MultiAssetTradingBot:
                 return liq * 0.01
             
             # Extract close prices from OHLC data
-            close_prices = [float(p['close']) for p in prices if isinstance(p, dict) and 'close' in p]
+            close_prices = [safe_safe_safe_float(p['close']) for p in prices if isinstance(p, dict) and 'close' in p]
             if len(close_prices) < 80:
                 return liq * 0.01
                 
@@ -10876,7 +10877,7 @@ class MultiAssetTradingBot:
             # Combine: emphasize liquidity and vol_eff; small penalty for wide spreads
             spread = self._current_spread_pct(symbol) or 0.001
             score = (liq ** 0.5) * (vol_eff) * (1.0 / (1.0 + 50.0 * spread))
-            return float(score)
+            return safe_float(score)
         except Exception as e:
             self.logger.warning(f"⚠️ Score failed for {symbol}: {e}")
             return 0.0
@@ -10885,7 +10886,7 @@ class MultiAssetTradingBot:
         """Check max net and per-asset exposure caps against free equity."""
         try:
             acc = self.get_account_status() or {}
-            equity = float(acc.get('accountValue') or acc.get('withdrawable') or 0.0)
+            equity = safe_safe_float(acc.get('accountValue') or acc.get('withdrawable') or 0.0)
             if equity <= 0:
                 return True
             max_net = float(getattr(self.config, 'max_net_exposure_pct', 0.60) or 0.60) * equity
@@ -10897,8 +10898,8 @@ class MultiAssetTradingBot:
             for p in positions:
                 core = p.get('position') or {}
                 coin = core.get('coin') or new_symbol
-                szi = float(core.get('szi') or 0.0)
-                entry_px = float(core.get('entryPx') or 0.0)
+                szi = safe_safe_safe_safe_safe_safe_float(core.get('szi') or 0.0)
+                entry_px = safe_safe_safe_safe_safe_safe_float(core.get('entryPx') or 0.0)
                 notional = abs(szi) * entry_px
                 net_expo += notional
                 per_asset[coin] = per_asset.get(coin, 0.0) + notional
@@ -10936,14 +10937,14 @@ class MultiAssetTradingBot:
                     if isinstance(lvl, list) and len(lvl) >= 2:
                         qty = float(lvl[1])
                     elif isinstance(lvl, dict) and 'sz' in lvl:
-                        qty = float(lvl['sz'])
+                        qty = safe_float(lvl['sz'])
                     else:
                         qty = 0.0
                 except Exception:
                     qty = 0.0
                 depth_qty += qty
             mult = float(getattr(self, 'liquidity_depth_multiplier', 1.2) or 1.2)
-            needed = float(order_size) * mult
+            needed = safe_safe_float(order_size) * mult
             ok = depth_qty >= needed
             self.logger.info(f"💧 Liquidity depth: available={depth_qty:.4f}, needed={needed:.4f} (mult={mult:.2f}) -> {'OK' if ok else 'INSUFFICIENT'}")
             return ok
@@ -10977,7 +10978,7 @@ class MultiAssetTradingBot:
             if resp.ok:
                 for item in resp.json().get("fundingRates", []):
                     if item.get("coin") == "XRP":
-                        rate = float(item.get("rate", 0.0))
+                        rate = safe_safe_safe_safe_safe_safe_float(item.get("rate", 0.0))
                         # Cache the result
                         self._funding_rate_cache = rate
                         self._funding_rate_timestamp = current_time
@@ -10999,7 +11000,7 @@ class MultiAssetTradingBot:
                     if asset.get("name") == symbol:
                         self.asset_index = i
                         self.asset_sz_decimals = int(asset.get("szDecimals", 0))
-                        self.asset_min_sz = float(asset.get("minSz", 1.0))
+                        self.asset_min_sz = safe_safe_float(asset.get("minSz", 1.0))
                         self.asset_max_leverage = int(asset.get("maxLeverage", 20))
                         self.tick_sz_decimals = int(asset.get("pxDecimals", 4))
                         self.meta_initialized = True
@@ -11050,7 +11051,7 @@ class MultiAssetTradingBot:
                 # If provided, keep tp/sl within k×ATR bands from entry
                 if atr_now and entry_price:
                     band_mult = 6.0  # max 6×ATR distance from entry
-                    max_dist = float(atr_now) * band_mult
+                    max_dist = safe_safe_float(atr_now) * band_mult
                     def clamp_to_band(px: float, is_tp: bool) -> float:
                         dist = abs(px - entry_price)
                         if dist <= max_dist:
@@ -11113,18 +11114,18 @@ class MultiAssetTradingBot:
             except Exception:
                 # Fallback to float math if Decimal fails
                 if is_long:
-                    tp_price = float(tp_price_decimal) + float(asset_tick)
-                    sl_price = max(0.0, float(sl_price_decimal) - float(asset_tick))
+                    tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) + safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
+                    sl_price = max(0.0, safe_safe_safe_safe_float(sl_price_decimal) - safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick))
                 else:
-                    tp_price = float(tp_price_decimal) - float(asset_tick)
-                    sl_price = float(sl_price_decimal) + float(asset_tick)
+                    tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) - safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
+                    sl_price = safe_safe_safe_safe_float(sl_price_decimal) + safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
             
             # 3. Comprehensive price validation
             if not self.validate_tpsl_prices(entry_price, tp_price, sl_price, is_long):
                 # Auto-tighten within ATR bands and re-validate once
                 try:
                     if atr_now and entry_price:
-                        tighten = float(atr_now) * 0.5
+                        tighten = safe_safe_float(atr_now) * 0.5
                         tp_price = entry_price + (tighten if is_long else -tighten)
                         sl_price = entry_price - (tighten if is_long else -tighten)
                         if self.validate_tpsl_prices(entry_price, tp_price, sl_price, is_long):
@@ -11149,7 +11150,7 @@ class MultiAssetTradingBot:
                     mid = (best_bid + best_ask) / 2.0
                     # Heuristics: TP/SL should be within 20× spread bands relative to mid
                     if spread is not None and spread > 0:
-                        band = float(spread) * 20.0 * float(mid)
+                        band = safe_float(spread) * 20.0 * safe_safe_safe_safe_safe_float(mid)
                         if is_long:
                             if abs(tp_price - mid) > band or abs(mid - sl_price) > (band * 2):
                                 self.logger.warning("⚠️ L2 sanity rejected TP/SL (too far from market bands)")
@@ -11180,11 +11181,11 @@ class MultiAssetTradingBot:
                     sl_price = float(sl_price_decimal + tick_dec)
             except Exception:
                 if is_long:
-                    tp_price = float(tp_price_decimal) + float(asset_tick)
-                    sl_price = max(0.0, float(sl_price_decimal) - float(asset_tick))
+                    tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) + safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
+                    sl_price = max(0.0, safe_safe_safe_safe_float(sl_price_decimal) - safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick))
                 else:
-                    tp_price = float(tp_price_decimal) - float(asset_tick)
-                    sl_price = float(sl_price_decimal) + float(asset_tick)
+                    tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) - safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
+                    sl_price = safe_safe_safe_safe_float(sl_price_decimal) + safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
             self.logger.info(f"📏 Post-fee aligned - TP: {tp_price:.4f}, SL: {sl_price:.4f}")
             
             # 5. Risk/Reward and ATR validation (use taker fee for closes)
@@ -11214,9 +11215,9 @@ class MultiAssetTradingBot:
                             tp_price = float(tp_price_decimal - tick_dec)
                     except Exception:
                         if is_long:
-                            tp_price = float(tp_price_decimal) + float(asset_tick)
+                            tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) + safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
                         else:
-                            tp_price = float(tp_price_decimal) - float(asset_tick)
+                            tp_price = safe_safe_safe_safe_safe_safe_float(tp_price_decimal) - safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(asset_tick)
                     # Already fee-adjusted above; just realign new tp_price
                     tp_price = float(self._align_price_to_tick(tp_price, asset_tick, "up" if is_long else "down"))
                 # CRITICAL FIX: Relaxed RR check for guardian system - allow lower RR ratios
@@ -11749,7 +11750,7 @@ class MultiAssetTradingBot:
             try:
                 statuses = close_result.get("response", {}).get("data", {}).get("statuses", [])
                 if statuses and "filled" in statuses[0]:
-                    filled_size = int(float(statuses[0]["filled"].get("sz", size_to_close)))
+                    filled_size = int(safe_safe_float(statuses[0]["filled"].get("sz", size_to_close)))
                     if filled_size < size_to_close:
                         self.logger.warning(f"⚠️ Partial TP fill: requested {size_to_close}, filled {filled_size}")
                     try:
@@ -11789,7 +11790,7 @@ class MultiAssetTradingBot:
             try:
                 statuses = close_result.get("response", {}).get("data", {}).get("statuses", [])
                 if statuses and "filled" in statuses[0]:
-                    filled_size = int(float(statuses[0]["filled"].get("sz", position_size)))
+                    filled_size = int(safe_safe_float(statuses[0]["filled"].get("sz", position_size)))
                     if filled_size < position_size:
                         self.logger.warning(f"⚠️ Partial SL fill: requested {position_size}, filled {filled_size}")
                     try:
@@ -11835,9 +11836,9 @@ class MultiAssetTradingBot:
             if VADER_AVAILABLE and bool(getattr(self, 'x_sentiment_bias', False)):
                 sent = float(getattr(self, 'current_sentiment', 0.0) or 0.0)
                 if sent > 0.5 and signal == "BUY":
-                    pattern_result['confidence'] = float(pattern_result.get('confidence', 0.0)) + 0.1
+                    pattern_result['confidence'] = safe_safe_safe_safe_float(pattern_result.get('confidence', 0.0)) + 0.1
                 elif sent < -0.5 and signal == "SELL":
-                    pattern_result['confidence'] = float(pattern_result.get('confidence', 0.0)) + 0.1
+                    pattern_result['confidence'] = safe_safe_safe_safe_float(pattern_result.get('confidence', 0.0)) + 0.1
         except Exception:
             pass
         
@@ -12317,19 +12318,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 10:
                 return 0.5
@@ -12431,19 +12432,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 20:
                 return features
@@ -12605,19 +12606,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 14:
                 return 0.5
@@ -12659,19 +12660,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 50:
                 return 0.5
@@ -12715,19 +12716,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 20:
                 return 0.5
@@ -12775,19 +12776,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 10:
                 return 0.5
@@ -12829,15 +12830,15 @@ class MultiAssetTradingBot:
                 account_status = self.get_account_status()
                 if account_status:
                     # Check if we have sufficient balance
-                    withdrawable = float(account_status.get('withdrawable', 0))
+                    withdrawable = safe_safe_float(account_status.get('withdrawable', 0))
                     if withdrawable > 20:  # Good balance
                         exchange_score += 0.2
                     elif withdrawable > 10:  # Adequate balance
                         exchange_score += 0.1
                     
                     # Check margin usage
-                    margin_used = float(account_status.get('totalMarginUsed', 0))
-                    account_value = float(account_status.get('accountValue', 1))
+                    margin_used = safe_safe_float(account_status.get('totalMarginUsed', 0))
+                    account_value = safe_safe_float(account_status.get('accountValue', 1))
                     if account_value > 0:
                         margin_ratio = margin_used / account_value
                         if margin_ratio < 0.1:  # Low margin usage
@@ -12874,19 +12875,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 50:
                 return 0.5
@@ -12940,19 +12941,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 30:
                 return {'detected': False, 'strength': 0.0, 'direction': 'neutral'}
@@ -13097,19 +13098,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 10:
                 return 0.5
@@ -13175,19 +13176,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 5:
                 return 0.0
@@ -13219,19 +13220,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 40:
                 return 0.5
@@ -13279,19 +13280,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 20:
                 return {'regime': 'unknown', 'score': 0.5}
@@ -13327,19 +13328,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 30:
                 return {'regime': 'unknown', 'score': 0.5}
@@ -13386,19 +13387,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 20:
                 return {'regime': 'unknown', 'score': 0.5}
@@ -13447,19 +13448,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract numeric value from dictionary
                     if 'close' in price:
-                        numeric_prices.append(float(price['close']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     elif 'c' in price:
-                        numeric_prices.append(float(price['c']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['c']))
                     elif 'price' in price:
-                        numeric_prices.append(float(price['price']))
+                        numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     else:
                         # Try to convert the first numeric value found
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                numeric_prices.append(float(value))
+                                numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 elif isinstance(price, (int, float)):
-                    numeric_prices.append(float(price))
+                    numeric_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(numeric_prices) < 30:
                 return {'regime': 'unknown', 'score': 0.5}
@@ -13594,11 +13595,11 @@ class MultiAssetTradingBot:
                     for price_item in prices:
                         if isinstance(price_item, dict):
                             if 'close' in price_item:
-                                price_floats.append(float(price_item['close']))
+                                price_floats.append(safe_float(price_item['close']))
                             elif 'c' in price_item:
-                                price_floats.append(float(price_item['c']))
+                                price_floats.append(safe_float(price_item['c']))
                         elif isinstance(price_item, (int, float)):
-                            price_floats.append(float(price_item))
+                            price_floats.append(safe_float(price_item))
                     prices = price_floats
                 elif not isinstance(prices[0], (int, float)):
                     self.logger.warning(f"📊 Momentum filter: Invalid price format, allowing trade")
@@ -13634,8 +13635,8 @@ class MultiAssetTradingBot:
                 slow_ema = self._calculate_ema(prices, slow_len)
                 
                 # Ensure EMAs are floats
-                fast_ema = float(fast_ema)
-                slow_ema = float(slow_ema)
+                fast_ema = safe_safe_float(fast_ema)
+                slow_ema = safe_safe_float(slow_ema)
                 
                 # FIXED: Enhanced logging for debugging
                 ema_diff = fast_ema - slow_ema
@@ -13657,7 +13658,7 @@ class MultiAssetTradingBot:
                         if len(sub) >= slow_len:
                             f = self._calculate_ema(sub, fast_len)
                             s = self._calculate_ema(sub, slow_len)
-                            spreads.append(float(f) - float(s))
+                            spreads.append(safe_float(f) - safe_float(s))
                     if len(spreads) >= 2:
                         slope = spreads[-1] - spreads[0]
                 
@@ -13833,7 +13834,7 @@ class MultiAssetTradingBot:
             peak_cap = float(getattr(self, 'peak_capital', 0) or 0)
             if peak_cap > 0:
                 acc = self.get_account_status()
-                current_capital = float(acc.get('account_value', 0) if acc else 0)
+                current_capital = safe_safe_float(acc.get('account_value', 0) if acc else 0)
                 if current_capital <= 0:
                     return True  # Allow trade if we can't get account value
                 daily_loss_pct = (peak_cap - current_capital) / peak_cap
@@ -13909,7 +13910,7 @@ class MultiAssetTradingBot:
                 # Reset peak capital to current account value for fresh start
                 try:
                     account_status = self.get_account_status()
-                    current_capital = float(account_status.get('account_value', 0) if account_status else 0)
+                    current_capital = safe_safe_float(account_status.get('account_value', 0) if account_status else 0)
                     if current_capital > 0:
                         self.peak_capital = current_capital
                         self.drawdown_pct = 0.0
@@ -14002,7 +14003,7 @@ class MultiAssetTradingBot:
                     self._last_rotation_check = now
                     # Only rotate when flat
                     pos = self.get_current_position()
-                    if (not pos) or abs(float(pos.get('size', 0) or 0)) < 1e-9:
+                    if (not pos) or abs(safe_safe_float(pos.get('size', 0) or 0)) < 1e-9:
                         candidates = [getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP']
                         # fetch a few from meta if available
                         try:
@@ -14083,9 +14084,9 @@ class MultiAssetTradingBot:
                                 core = p.get('position') or {}
                                 if core.get('coin') != 'XRP':
                                     continue
-                                upl = float(core.get('unrealizedPnl') or 0.0)
-                                entry_px = float(core.get('entryPx') or 0.0)
-                                szi = float(core.get('szi') or 0.0)
+                                upl = safe_safe_safe_safe_float(core.get('unrealizedPnl') or 0.0)
+                                entry_px = safe_safe_safe_safe_safe_safe_float(core.get('entryPx') or 0.0)
+                                szi = safe_safe_safe_safe_safe_safe_float(core.get('szi') or 0.0)
                                 if abs(szi) < 2 or entry_px <= 0:
                                     continue
                                 notional = abs(szi) * entry_px
@@ -14106,7 +14107,7 @@ class MultiAssetTradingBot:
                                         side = 'SELL' if is_long else 'BUY'
                                         self.logger.info(f"🎯 Auto-partial tier {idx+1}: UPL={upl_pct:.2%} ≥ {th:.2%}. Reducing by {qty} XRP")
                                         try:
-                                            await self.place_market_order('XRP', side, float(qty), reduce_only=True)
+                                            await self.place_market_order('XRP', side, safe_safe_safe_float(qty), reduce_only=True)
                                             self._auto_partial_taken_tiers.add(idx)
                                             # Shift SL to breakeven ± epsilon
                                             try:
@@ -14126,7 +14127,7 @@ class MultiAssetTradingBot:
                     try:
                         if not getattr(self, 'guardian_active', False):
                             is_long = bool(position.get('is_long', False))
-                            entry_px = float(position.get('entry_price', current_price) or current_price)
+                            entry_px = safe_safe_float(position.get('entry_price', current_price) or current_price)
                             tp_sl = self.calculate_dynamic_tpsl(entry_px, "BUY" if is_long else "SELL")
                             if tp_sl and tp_sl[0] and tp_sl[1]:
                                 tp_px, sl_px, atr_now = tp_sl
@@ -14135,7 +14136,7 @@ class MultiAssetTradingBot:
                                 tm = float(getattr(self, 'current_trail_mult', 1.4) or 1.4)
                                 # CRITICAL FIX: Import asyncio at module level to prevent local variable error
                                 import asyncio
-                                asyncio.create_task(self.activate_offchain_guardian(tp_px, sl_px, abs(float(position.get('size', 0))), is_long,
+                                asyncio.create_task(self.activate_offchain_guardian(tp_px, sl_px, abs(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0))), is_long,
                                                                                      entry_price=entry_px, atr_now=atr_now,
                                                                                      tp1_px=tp1_px, trail_mult=tm,
                                                                                      tp1_fraction=0.3 if getattr(self, 'trend_regime', False) else 0.0))
@@ -14256,8 +14257,8 @@ class MultiAssetTradingBot:
                             for position in positions:
                                 if position.get('position', {}).get('coin') == 'XRP':
                                     pos_data = position.get('position', {})
-                                    position_size = float(pos_data.get('szi', 0))
-                                    unrealized_pnl = float(pos_data.get('unrealizedPnl', 0))
+                                    position_size = safe_safe_float(pos_data.get('szi', 0))
+                                    unrealized_pnl = safe_safe_float(pos_data.get('unrealizedPnl', 0))
                                     break
                     except Exception as e:
                         self.logger.debug(f"🧠 [ML_ENGINE] Error getting position data: {e}")
@@ -14316,7 +14317,7 @@ class MultiAssetTradingBot:
                     positions = account_status['assetPositions']
                     for position in positions:
                         if position.get('position', {}).get('coin') == 'XRP':
-                            size = float(position['position'].get('szi', 0))
+                            size = safe_safe_safe_float(position['position'].get('szi', 0))
                             if size != 0:
                                 self.existing_position_size = size
                                 self.existing_position_side = "LONG" if size > 0 else "SHORT"
@@ -15094,7 +15095,7 @@ class MultiAssetTradingBot:
                     peak_for_dd = float(getattr(self, 'peak_capital', 0.0) or 0.0)
                     realized_agg = float(getattr(self, 'realized_pnl_total', 0.0) or 0.0)
                     if peak_for_dd > 0 and realized_agg < (-0.05 * peak_for_dd):
-                        current_threshold = float(current_threshold) + 0.005
+                        current_threshold = safe_safe_float(current_threshold) + 0.005
                         self.logger.info(f"🎯 Tightening threshold due to realized losses: +0.005 → {current_threshold:.3f}")
                 except Exception:
                     pass
@@ -15110,7 +15111,7 @@ class MultiAssetTradingBot:
                         except Exception:
                             pass
                         # Quick live heuristic
-                        atr_pct_now = (float(atr) / float(current_price)) if (atr and current_price) else 0.0
+                        atr_pct_now = (safe_safe_safe_float(atr) / safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)) if (atr and current_price) else 0.0
                         fund_sign = 0
                         try:
                             frate = self.get_current_funding_rate()
@@ -15119,7 +15120,7 @@ class MultiAssetTradingBot:
                             pass
                         is_panic = (atr_pct_now > 0.03) or (fund_sign < 0)
                         if is_panic:
-                            current_threshold = float(current_threshold) + 0.005
+                            current_threshold = safe_safe_float(current_threshold) + 0.005
                             self.logger.info(f"🎯 Adaptive panic tightening: +0.005 → {current_threshold:.3f}")
                 except Exception:
                     pass
@@ -15161,7 +15162,7 @@ class MultiAssetTradingBot:
                     # Verify against API to ensure we truly have an open position; clear stale state if not
                     try:
                         pos = self.get_current_position()
-                        if not pos or abs(float(pos.get("size", 0))) < 1e-9:
+                        if not pos or abs(safe_safe_safe_safe_float(pos.get("size", 0))) < 1e-9:
                             self.logger.info("🧹 Clearing stale existing_position_side (no open position found)")
                             self.existing_position_side = None
                         else:
@@ -15256,7 +15257,7 @@ class MultiAssetTradingBot:
                 self.logger.info(f"✅ Position size calculated: {position_size} XRP for {signal_side} signal")
             # Exposure guard before committing
             try:
-                notional = float(position_size) * float(entry_preview)
+                notional = safe_safe_safe_safe_safe_safe_safe_safe_float(position_size) * safe_float(entry_preview)
                 if not self._net_exposure_guard(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP', notional):
                     self.logger.info("✅ FORCE EXECUTING trade  # ULTIMATE PATCH: NO SKIPPING - exposure cap would be violated")
                     return
@@ -15277,7 +15278,7 @@ class MultiAssetTradingBot:
                     best_score = -1.0
                     for key, meta in scores.items():
                         try:
-                            sc = float(meta.get('overall_score', -1.0))
+                            sc = safe_safe_float(meta.get('overall_score', -1.0))
                             if sc > best_score:
                                 best_score = sc
                                 best_key = key
@@ -15293,13 +15294,13 @@ class MultiAssetTradingBot:
                         sel = per.get(sym, {}).get('selected_params', {})
                         params = sel.get('params') or {}
                         # Apply trading parameters dynamically
-                        self.current_trail_mult = float(params.get('trail_k_min', getattr(self, 'current_trail_mult', 1.4)) or 1.4)
+                        self.current_trail_mult = safe_safe_float(params.get('trail_k_min', getattr(self, 'current_trail_mult', 1.4)) or 1.4)
                         # Adjust stop loss preference
                         stop_choice = sel.get('stop')
                         if isinstance(stop_choice, str):
                             self.stop_loss_pct = {'tight':0.015,'normal':0.035,'wide':0.065}.get(stop_choice, self.stop_loss_pct)
                         # Confidence threshold tweak by trend strength threshold
-                        tsth = float(params.get('trend_strength_thresh', 0.002) or 0.002)
+                        tsth = safe_safe_float(params.get('trend_strength_thresh', 0.002) or 0.002)
                         self.base_confidence_threshold = max(0.06, min(0.12, 0.08 + (0.002 - tsth) * 5.0))
                         # Align leverage and risk to the selected profile defaults for stronger conformance
                         try:
@@ -15331,7 +15332,7 @@ class MultiAssetTradingBot:
             # Micro/live fee+funding threshold: require expected PnL ≥ fee_threshold_multi×(fees + funding)
             try:
                 acct = self.get_account_status() or {}
-                eq_now = float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
+                eq_now = safe_safe_safe_safe_safe_safe_float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
             except Exception:
                 eq_now = 0.0
             try:
@@ -15348,7 +15349,7 @@ class MultiAssetTradingBot:
                 # Funding estimate using latest rate if available
                 try:
                     fr = self.get_current_funding_rate()
-                    funding_daily = float(fr) if fr is not None else 0.00015
+                    funding_daily = safe_float(fr) if fr is not None else 0.00015
                 except Exception:
                     funding_daily = 0.00015
                 expected_funding = position_size * ((entry_preview + tp_price) / 2.0) * funding_daily * (8.0 / 24.0)
@@ -15384,7 +15385,7 @@ class MultiAssetTradingBot:
             # Liquidity depth gate (entry-only). Require book depth to cover size × multiplier
             try:
                 if not bool(getattr(self, 'disable_liquidity_gate', False)):
-                    if not self._has_min_liquidity(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP', float(position_size), signal_side):
+                    if not self._has_min_liquidity(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP', safe_safe_safe_safe_safe_safe_safe_safe_float(position_size), signal_side):
                         self.logger.info("✅ FORCE EXECUTING trade  # ULTIMATE PATCH: NO SKIPPING - insufficient opposing-side liquidity for order size")
                         return
             except Exception:
@@ -15393,7 +15394,7 @@ class MultiAssetTradingBot:
             use_maker = False
             try:
                 acct = self.get_account_status() or {}
-                eq_now = float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
+                eq_now = safe_safe_safe_safe_safe_safe_float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
                 use_maker = eq_now > 0 and eq_now < 50
             except Exception:
                 pass
@@ -15409,7 +15410,7 @@ class MultiAssetTradingBot:
                         prev_sz = 0.0
                         try:
                             pos_before = self.get_current_position() or {}
-                            prev_sz = abs(float(pos_before.get('size', 0.0) or 0.0))
+                            prev_sz = abs(safe_safe_float(pos_before.get('size', 0.0) or 0.0))
                         except Exception:
                             prev_sz = 0.0
                         limit_result = self.place_order(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP', signal_side == "BUY", position_size, entry_px, "limit", "low")
@@ -15429,11 +15430,11 @@ class MultiAssetTradingBot:
                                 pass
                             try:
                                 pos_after = self.get_current_position() or {}
-                                cur_sz = abs(float(pos_after.get('size', 0.0) or 0.0))
+                                cur_sz = abs(safe_safe_float(pos_after.get('size', 0.0) or 0.0))
                             except Exception:
                                 cur_sz = prev_sz
                             filled = max(0.0, cur_sz - prev_sz)
-                            remaining = max(0.0, float(position_size) - filled)
+                            remaining = max(0.0, safe_safe_safe_safe_safe_safe_safe_safe_float(position_size) - filled)
                             self.logger.info(f"🧩 Maker-first result: filled={filled:.4f}, remaining={remaining:.4f}")
                             if remaining > 0.0:
                                 position_dict = self.execute_market_order(signal_side, remaining)
@@ -15463,7 +15464,7 @@ class MultiAssetTradingBot:
                 # Realized slippage vs preview
                 realized = 0.0
                 if entry_preview > 0:
-                    realized = abs(float(position_dict.get('entry_price', entry_preview)) - entry_preview) / entry_preview
+                    realized = abs(safe_safe_float(position_dict.get('entry_price', entry_preview)) - entry_preview) / entry_preview
                 realized_bps = realized * 10000.0
                 self._slip_hist = getattr(self, '_slip_hist', [])
                 self._slip_hist.append(realized_bps)
@@ -15497,13 +15498,13 @@ class MultiAssetTradingBot:
                 "rr": 0.0,
                 "atr_pct": 0.0,
                 "signal": signal.get("reason", "unknown"),
-                "confidence": float(signal.get("confidence", 0.0) or 0.0),
+                "confidence": safe_safe_safe_safe_float(signal.get("confidence", 0.0) or 0.0),
                 "maker_taker_entry": "taker",
                 "maker_taker_exit": None,
                 "slippage_bps": 0.0,
                 "spread_bps": 0.0,
                 "leverage": getattr(self, 'leverage_multiplier', 1.0),
-                "equity_at_entry": float(free_collateral),
+                "equity_at_entry": safe_float(free_collateral),
                 "margin_used": position_dict.get("margin_used", 0.0),
                 "regime": getattr(self, 'current_regime', None),
                 "tf_used": getattr(self, 'current_tf', 'daily'),
@@ -15567,7 +15568,7 @@ class MultiAssetTradingBot:
                         "tp_oid": tp_oid,
                         "sl_oid": sl_oid,
                         "signal": signal.get("reason", "unknown"),
-                        "confidence": float(signal.get("confidence", 0.0) or 0.0),
+                        "confidence": safe_safe_safe_safe_float(signal.get("confidence", 0.0) or 0.0),
                         "tf_used": getattr(self, 'current_tf', 'daily'),
                     })
                 except Exception:
@@ -15577,8 +15578,8 @@ class MultiAssetTradingBot:
                 # CRITICAL FIX: Enhanced Guardian activation with robust error handling
                 try:
                     # Force Guardian activation with emergency parameters
-                    entry_fb = float(position_dict.get("entry_price", 0)) if position_dict else self.get_current_price()
-                    size_fb = int(abs(float(position_dict.get("size", 0))) if position_dict else 0) or 1
+                    entry_fb = safe_safe_float(position_dict.get("entry_price", 0)) if position_dict else self.get_current_price()
+                    size_fb = int(abs(safe_safe_float(position_dict.get("size", 0))) if position_dict else 0) or 1
                     
                     # CRITICAL: Use conservative TP/SL levels for emergency protection
                     if entry_fb and entry_fb > 0:
@@ -15736,9 +15737,9 @@ class MultiAssetTradingBot:
             if not pos_info or pos_info.get('size', 0) == 0:
                 return
                 
-            pos_size = abs(float(pos_info.get('size', 0)))
-            pos_is_long = float(pos_info.get('size', 0)) > 0
-            pos_entry = float(pos_info.get('entry_price', 0))
+            pos_size = abs(safe_safe_safe_safe_float(pos_info.get('size', 0)))
+            pos_is_long = safe_safe_safe_safe_float(pos_info.get('size', 0)) > 0
+            pos_entry = safe_safe_float(pos_info.get('entry_price', 0))
             
             # Get basic price data (even if stale, better than nothing for protective orders)
             current_price = self.get_current_price()
@@ -15747,7 +15748,7 @@ class MultiAssetTradingBot:
                 return
                 
             # Get liquidation price
-            liq_px = float(pos_info.get('liquidation_price', 0))
+            liq_px = safe_safe_float(pos_info.get('liquidation_price', 0))
             if liq_px <= 0:
                 self.logger.warning("⚠️ No liquidation price available for protective orders")
                 liq_px = current_price * 0.5 if pos_is_long else current_price * 1.5
@@ -15760,7 +15761,7 @@ class MultiAssetTradingBot:
                     is_long=pos_is_long,
                     position_size=pos_size,
                     entry_price=pos_entry,
-                    mark_px=float(current_price),
+                    mark_px=safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                     liq_px=liq_px,
                     price_history=ph,
                     cfg=OptimizedHyperliquidClient.RiskCfg(
@@ -15913,7 +15914,7 @@ class MultiAssetTradingBot:
                 # ===== Observability Heartbeat and Protective Arming =====
                 try:
                     acc = await self.run_sync_in_executor(self.get_account_status)
-                    account_value = float(acc.get("account_value", 0.0) if acc else 0.0)
+                    account_value = safe_safe_float(acc.get("account_value", 0.0) if acc else 0.0)
                     # Mark account data as fresh for staleness fuse
                     try:
                         update_account_timestamp()
@@ -15925,19 +15926,19 @@ class MultiAssetTradingBot:
                     # FIXED: Use reliable position summary method
                     pos = self.get_position_summary()
                     if pos and 'size' in pos:
-                        pos_size = abs(float(pos.get('size', 0)))
-                        pos_is_long = float(pos.get('size', 0)) > 0
+                        pos_size = abs(safe_safe_safe_safe_float(pos.get('size', 0)))
+                        pos_is_long = safe_safe_safe_safe_float(pos.get('size', 0)) > 0
                     else:
                         # Fallback: try get_position_snapshot if available
                         pos_snapshot = self.get_position_snapshot() if hasattr(self, 'get_position_snapshot') else None
                         if pos_snapshot:
-                            pos_size = float(pos_snapshot.get('size', 0))
+                            pos_size = safe_safe_float(pos_snapshot.get('size', 0))
                             pos_is_long = bool(pos_snapshot.get('is_long', True))
                         else:
                             pos_size = 0.0
                             pos_is_long = True
                             self.logger.debug("⚠️ Could not get position data for heartbeat")
-                    pos_entry = float(pos.get('entry_price', 0.0)) if pos else 0.0
+                    pos_entry = safe_safe_float(pos.get('entry_price', 0.0)) if pos else 0.0
                 except Exception:
                     pos_size, pos_is_long, pos_entry = 0.0, True, 0.0
                 try:
@@ -15974,7 +15975,7 @@ class MultiAssetTradingBot:
                 if now_ts - self._last_hb_ts >= hb_every:
                     self._last_hb_ts = now_ts
                     try:
-                        buf_bps = self.optimized_client._liq_buffer_bps(pos_is_long, float(current_price), liq_px) if self.optimized_client else 0
+                        buf_bps = self.optimized_client._liq_buffer_bps(pos_is_long, safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price), liq_px) if self.optimized_client else 0
                     except Exception:
                         buf_bps = 0
                     try:
@@ -15990,7 +15991,7 @@ class MultiAssetTradingBot:
                             int(pos_size),
                             "L" if pos_is_long else "S",
                             pos_entry,
-                            float(current_price),
+                            safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                             liq_px,
                             buf_bps,
                             counts.get("resting", 0), counts.get("tp", 0), counts.get("sl", 0),
@@ -16026,7 +16027,7 @@ class MultiAssetTradingBot:
                             is_long=pos_is_long,
                             position_size=pos_size,
                             entry_price=pos_entry,
-                            mark_px=float(current_price),
+                            mark_px=safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                             liq_px=liq_px,
                             price_history=ph,
                             cfg=OptimizedHyperliquidClient.RiskCfg(
@@ -16059,7 +16060,7 @@ class MultiAssetTradingBot:
                             }
                         
                         # Calculate position notional
-                        position_notional = pos_size * float(current_price) if pos_size > 0 else 0.0
+                        position_notional = pos_size * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price) if pos_size > 0 else 0.0
                         
                         # Get funding rate estimate
                         funding_rate = getattr(self, 'current_funding_rate', 0.0) or 0.0
@@ -16083,7 +16084,7 @@ class MultiAssetTradingBot:
                             cfg=self.sweep_cfg,
                             user_state=user_state or {},
                             pos=position_data,
-                            mark_px=float(current_price),
+                            mark_px=safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                             vol_ratio=vol_score,
                             next_hour_funding_rate=funding_rate,
                             position_notional=position_notional,
@@ -16364,8 +16365,8 @@ class MultiAssetTradingBot:
             for position in positions:
                 try:
                     symbol = position.get('symbol', 'XRP')
-                    size = abs(float(position.get('size', 0)))
-                    side = "BUY" if float(position.get('size', 0)) < 0 else "SELL"
+                    size = abs(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0)))
+                    side = "BUY" if safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0)) < 0 else "SELL"
                     
                     if size > 0:
                         self.logger.error(f"🚨 [EMERGENCY] Closing {symbol} position: {size} @ {side}")
@@ -16464,7 +16465,7 @@ class MultiAssetTradingBot:
         try:
             account_status = self.get_account_status()
             if account_status and 'account_value' in account_status:
-                return float(account_status['account_value'])
+                return safe_float(account_status['account_value'])
             return None
         except Exception as e:
             self.logger.error(f"❌ Error getting account value: {e}")
@@ -16522,7 +16523,7 @@ class MultiAssetTradingBot:
                 account_status = self.get_account_status()
                 if account_status:
                     fresh_capital = account_status.get('account_value', self.current_capital)
-                    self.current_capital = float(fresh_capital) if fresh_capital is not None else float(self.current_capital or 0.0)
+                    self.current_capital = safe_float(fresh_capital) if fresh_capital is not None else float(self.current_capital or 0.0)
             except Exception as e:
                 self.logger.warning(f"⚠️ Could not fetch fresh account data for risk check: {e}")
 
@@ -16530,10 +16531,10 @@ class MultiAssetTradingBot:
             def _to_float(v, default=0.0):
                 try:
                     if v is None:
-                        return float(default)
-                    return float(v)
+                        return safe_safe_float(default)
+                    return safe_safe_safe_float(v)
                 except Exception:
-                    return float(default)
+                    return safe_safe_float(default)
 
             # SANITY CHECKS: Verify technical indicators are reasonable
             if hasattr(self, 'price_history') and len(self.price_history) > 0:
@@ -16574,18 +16575,18 @@ class MultiAssetTradingBot:
                 account_status = self.get_account_status()
                 # Get account value from the correct nested structure
                 if account_status and 'marginSummary' in account_status:
-                    current_capital = _to_float(account_status['marginSummary'].get('accountValue', 0.0))
+                    current_capital = _to_safe_safe_safe_float(account_status['marginSummary'].get('accountValue', 0.0))
                 elif account_status:
                     # Fallback to account_value if available at top level (from our get_account_status formatting)
-                    current_capital = _to_float(account_status.get('account_value', 0.0))
+                    current_capital = _to_safe_safe_float(account_status.get('account_value', 0.0))
                     if current_capital == 0.0:
                         # Final fallback to withdrawable
-                        current_capital = _to_float(account_status.get('withdrawable', 0.0))
+                        current_capital = _to_safe_safe_float(account_status.get('withdrawable', 0.0))
                 else:
                     current_capital = 0.0
                 
                 # Also track free collateral separately for visibility
-                current_fc = _to_float(account_status.get('freeCollateral') if account_status else 0.0)
+                current_fc = _to_safe_safe_float(account_status.get('freeCollateral') if account_status else 0.0)
                 if not hasattr(self, 'peak_fc') or self.peak_fc is None:
                     self.peak_fc = current_fc
                 elif current_fc > self.peak_fc:
@@ -16618,7 +16619,7 @@ class MultiAssetTradingBot:
                 
                 # Normalize both values to float
                 peak_cap = _to_float(self.peak_capital)
-                current_capital = _to_float(current_capital)
+                current_capital = _to_safe_safe_safe_safe_safe_float(current_capital)
                 if peak_cap <= 0:
                     # When peak not yet established, set to current and skip locking this cycle
                     self.peak_capital = current_capital
@@ -16627,7 +16628,7 @@ class MultiAssetTradingBot:
                 try:
                     # DEBUG: Log the actual values being used in drawdown calculation
                     self.logger.debug(f"🔍 Drawdown calc: peak_cap={peak_cap}, current_capital={current_capital}")
-                    drawdown = (float(peak_cap) - float(current_capital)) / float(peak_cap) if float(peak_cap) > 0 else 0.0
+                    drawdown = (safe_safe_safe_float(peak_cap) - safe_safe_safe_safe_safe_float(current_capital)) / safe_safe_safe_float(peak_cap) if safe_safe_safe_float(peak_cap) > 0 else 0.0
                     self.logger.debug(f"🔍 Calculated drawdown: {drawdown:.4f} ({drawdown:.2%})")
                 except Exception as e:
                     # Defensive fallback if any value unexpectedly None/non-numeric
@@ -16810,7 +16811,7 @@ class MultiAssetTradingBot:
             if account_status:
                     try:
                         current_val = account_status.get('account_value', self.current_capital)
-                        self.current_capital = float(current_val) if current_val is not None else float(self.current_capital or 0.0)
+                        self.current_capital = safe_float(current_val) if current_val is not None else float(self.current_capital or 0.0)
                     except Exception:
                         self.current_capital = float(self.current_capital or 0.0)
                     # Initialize or update peak capital safely
@@ -16878,7 +16879,7 @@ class MultiAssetTradingBot:
             }
             
             # 5. Calculate notional value
-            notional = float(size) * trigger_px_rounded
+            notional = safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size) * trigger_px_rounded
             min_notional = self.config.min_notional
             if notional < min_notional:
                 self.logger.warning(f"⚠️ Trigger notional too small: ${notional:.2f} < ${min_notional}")
@@ -16957,7 +16958,7 @@ class MultiAssetTradingBot:
         """
         try:
             # Ensure size is an integer
-            size = int(float(size))
+            size = int(safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size))
             
             # === PRE-EXECUTION MARKET ANALYSIS ===
             market_impact = self._analyze_market_impact(symbol, size, is_buy)
@@ -17039,18 +17040,18 @@ class MultiAssetTradingBot:
             # Use dynamic asset metadata for price/size alignment
             if hasattr(self, 'asset_meta') and self.asset_meta is not None:
                 aligned_price = align_price(price, self.asset_meta.tickSize)
-                aligned_size = align_size(float(size), self.asset_meta.minSzStep)
+                aligned_size = align_size(safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size), self.asset_meta.minSzStep)
                 asset_id = self.asset_meta.index
             else:
                 # Fallback to basic tick alignment
                 tick_size = self.get_tick_size(symbol)
                 aligned_price = self._align_price_to_tick(price, tick_size, "up" if is_buy else "down")
-                aligned_size = float(size)
+                aligned_size = safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size)
                 asset_id = 25 if symbol == "XRP" else 0  # Default fallback
             
             # Convert Decimal to float for arithmetic operations
-            aligned_price_float = float(aligned_price)
-            aligned_size_float = float(aligned_size)
+            aligned_price_float = safe_safe_float(aligned_price)
+            aligned_size_float = safe_float(aligned_size)
             
             # Debug logging for price/size alignment
             self.logger.debug(f"🔧 Alignment debug: price {price:.6f} -> {aligned_price_float:.6f}, "
@@ -17476,7 +17477,7 @@ class MultiAssetTradingBot:
             if atr is None or entry_price is None:
                 return tp_px, sl_px
             band_mult = 6.0
-            max_dist = float(atr) * band_mult
+            max_dist = safe_safe_safe_float(atr) * band_mult
             def clamp(px: float, toward_up: bool) -> float:
                 dist = abs(px - entry_price)
                 if dist <= max_dist:
@@ -17484,7 +17485,7 @@ class MultiAssetTradingBot:
                 return entry_price + (max_dist if toward_up else -max_dist)
             tp_clamped = clamp(tp_px, is_long)
             sl_clamped = clamp(sl_px, not is_long)
-            return float(tp_clamped), float(sl_clamped)
+            return safe_float(tp_clamped), safe_float(sl_clamped)
         except Exception:
             return tp_px, sl_px
 
@@ -17492,7 +17493,7 @@ class MultiAssetTradingBot:
         """Aggregate realized PnL, subtracting funding for adaptive risk/threshold logic."""
         try:
             base = float(getattr(self, 'realized_pnl_total', 0.0) or 0.0)
-            self.realized_pnl_total = base + float(pnl_net) - float(funding_since_open)
+            self.realized_pnl_total = base + safe_safe_float(pnl_net) - safe_float(funding_since_open)
         except Exception:
             pass
     
@@ -17521,9 +17522,9 @@ class MultiAssetTradingBot:
         try:
             if not ohlcv or len(ohlcv) < period + 1:
                 return 0.0
-            highs = np.array([float(x['high']) for x in ohlcv], dtype=float)
-            lows = np.array([float(x['low']) for x in ohlcv], dtype=float)
-            closes = np.array([float(x['close']) for x in ohlcv], dtype=float)
+            highs = np.array([safe_float(x['high']) for x in ohlcv], dtype=float)
+            lows = np.array([safe_float(x['low']) for x in ohlcv], dtype=float)
+            closes = np.array([safe_float(x['close']) for x in ohlcv], dtype=float)
             tr = np.maximum(highs[1:] - lows[1:], np.maximum(np.abs(highs[1:] - closes[:-1]), np.abs(lows[1:] - closes[:-1])))
             up_move = highs[1:] - highs[:-1]
             down_move = lows[:-1] - lows[1:]
@@ -17684,23 +17685,23 @@ class MultiAssetTradingBot:
             if isinstance(price_data, dict):
                 # Handle dict format (candles)
                 if 'close' in price_data:
-                    normalized.append(float(price_data['close']))
+                    normalized.append(safe_float(price_data['close']))
                 elif 'c' in price_data:
-                    normalized.append(float(price_data['c']))
+                    normalized.append(safe_float(price_data['c']))
                 elif 'high' in price_data and 'low' in price_data:
                     # Use average of high/low for dict format
-                    high = float(price_data['high'])
-                    low = float(price_data['low'])
+                    high = safe_float(price_data['high'])
+                    low = safe_float(price_data['low'])
                     normalized.append((high + low) / 2)
                 else:
                     # Try to find any numeric value
                     for key, value in price_data.items():
                         if isinstance(value, (int, float)):
-                            normalized.append(float(value))
+                            normalized.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                             break
             else:
                 # Handle direct float/int values
-                normalized.append(float(price_data))
+                normalized.append(safe_float(price_data))
         
         return normalized
 
@@ -17718,18 +17719,18 @@ class MultiAssetTradingBot:
             for p in prices[-max(lookback + atr_period + 5, atr_period + 10):]:
                 if isinstance(p, dict):
                     if 'close' in p:
-                        closes.append(float(p['close']))
+                        closes.append(safe_safe_safe_float(p['close']))
                     elif 'c' in p:
-                        closes.append(float(p['c']))
+                        closes.append(safe_safe_float(p['c']))
                     elif 'price' in p:
-                        closes.append(float(p['price']))
+                        closes.append(safe_float(p['price']))
                     else:
                         for v in p.values():
                             if isinstance(v, (int, float)):
-                                closes.append(float(v))
+                                closes.append(safe_safe_safe_float(v))
                                 break
                 else:
-                    closes.append(float(p))
+                    closes.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p))
 
             if len(closes) < max(atr_period + 5, 20):
                 return 0.0, 50.0
@@ -17768,14 +17769,14 @@ class MultiAssetTradingBot:
             for p in prices:
                 if isinstance(p, dict):
                     if 'close' in p:
-                        float_prices.append(float(p['close']))
+                        float_prices.append(safe_safe_safe_float(p['close']))
                     elif 'c' in p:
-                        float_prices.append(float(p['c']))
+                        float_prices.append(safe_safe_float(p['c']))
                 else:
-                    float_prices.append(float(p))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p))
             fast_ema = self._calculate_ema(float_prices, fast)
             slow_ema = self._calculate_ema(float_prices, slow)
-            spread = abs(float(fast_ema) - float(slow_ema))
+            spread = abs(safe_safe_float(fast_ema) - safe_safe_float(slow_ema))
             # Trending if EMA spread exceeds 0.6×ATR (heuristic)
             return bool(atr_value and spread >= 0.6 * atr_value)
         except Exception:
@@ -18897,7 +18898,7 @@ class MultiAssetTradingBot:
             if self.risk_engine:
                 try:
                     account_status = self.get_account_status()
-                    portfolio_value = float(account_status.get('freeCollateral', 0))
+                    portfolio_value = safe_safe_safe_safe_float(account_status.get('freeCollateral', 0))
                     position_size = self.calculate_position_size(portfolio_value, signal)
                     position_value = position_size * self.get_current_price()
                     
@@ -18956,7 +18957,7 @@ class MultiAssetTradingBot:
                 return False
             tp_price, sl_price, atr = tpsl_result
             account_status = self.get_account_status()
-            account_equity = float(account_status.get('freeCollateral', 0))
+            account_equity = safe_safe_safe_safe_float(account_status.get('freeCollateral', 0))
             risk_pct = self.risk_per_trade
             min_size = getattr(self, "asset_min_sz", self.min_xrp_exchange)
 
@@ -19061,10 +19062,10 @@ class MultiAssetTradingBot:
                 fake_candles = []
                 for price in recent_prices:
                     fake_candles.append({
-                        'open': float(price),
-                        'high': float(price) * 1.001,  # TODO: real highs if available
-                        'low': float(price) * 0.999,   # TODO: real lows if available
-                        'close': float(price),
+                        'open': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price),
+                        'high': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price) * 1.001,  # TODO: real highs if available
+                        'low': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price) * 0.999,   # TODO: real lows if available
+                        'close': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price),
                         'volume': 0,  # TODO: real volume if available
                         'fake_data': True  # Flag to indicate this is synthetic data
                     })
@@ -19081,7 +19082,7 @@ class MultiAssetTradingBot:
             account_data = self.get_account_status()
             if account_data and "assetPositions" in account_data:
                 for position in account_data["assetPositions"]:
-                    if position.get("coin") == "XRP" and abs(float(position.get("szi", 0))) > 0:
+                    if position.get("coin") == "XRP" and abs(safe_safe_float(position.get("szi", 0))) > 0:
                         return True
             return False
         except Exception as e:
@@ -19094,10 +19095,10 @@ class MultiAssetTradingBot:
             pos = self.get_current_position()
             if not pos:
                 return
-            size = abs(float(pos.get("size", 0)))
+            size = abs(safe_safe_safe_safe_float(pos.get("size", 0)))
             if size <= 0:
                 return
-            entry = float(pos.get("entry_price", 0))
+            entry = safe_safe_float(pos.get("entry_price", 0))
             is_long = bool(pos.get("is_long", False))
             # Compute ATR
             with self._price_history_lock:
@@ -19169,10 +19170,10 @@ class MultiAssetTradingBot:
                     if coin != symbol:
                         continue
                     szi_raw = core.get("szi", 0)
-                    szi = float(szi_raw) if szi_raw is not None else 0.0
+                    szi = safe_float(szi_raw) if szi_raw is not None else 0.0
                     if abs(szi) > 0:
                         entry_px_raw = core.get("entryPx", 0)
-                        entry_px = float(entry_px_raw) if entry_px_raw is not None else 0.0
+                        entry_px = safe_float(entry_px_raw) if entry_px_raw is not None else 0.0
                         return {
                             "size": szi,
                             "entry_price": entry_px,
@@ -19234,8 +19235,8 @@ class MultiAssetTradingBot:
 
                 # Compute realized PnL snapshot and log
                 try:
-                    entry_px = float(self.entry_price or position.get("entry_price", 0.0) or 0.0)
-                    exit_px = float(current_price)
+                    entry_px = safe_safe_float(self.entry_price or position.get("entry_price", 0.0) or 0.0)
+                    exit_px = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)
                     notional_entry = abs(size) * entry_px
                     notional_exit = abs(size) * exit_px
                     taker_fee = getattr(self, 'taker_fee', 0.0045)
@@ -19281,8 +19282,8 @@ class MultiAssetTradingBot:
                     self.logger.warning(f"⚠️ Failed to log realized PnL on close: {_e}")
                 # Update realized PnL and funding aggregates for adaptive risk
                 try:
-                    pnl_val = float(pnl_net)
-                    funding_since_open = float(position.get("cumFunding", {}).get("sinceOpen", 0.0) if isinstance(position.get("cumFunding"), dict) else 0.0)
+                    pnl_val = safe_safe_float(pnl_net)
+                    funding_since_open = safe_safe_float(position.get("cumFunding", {}).get("sinceOpen", 0.0) if isinstance(position.get("cumFunding"), dict) else 0.0)
                     self.realized_pnl_total = float(getattr(self, 'realized_pnl_total', 0.0) or 0.0) + pnl_val - funding_since_open
                     self.logger.info(f"📉 Realized PnL aggregate updated: {self.realized_pnl_total:.2f} (funding deduct {funding_since_open:.4f})")
                 except Exception:
@@ -19403,7 +19404,7 @@ class MultiAssetTradingBot:
             account_data = self.get_account_status()
 
             if current_price and account_data:
-                free_collateral = float(account_data.get("freeCollateral", 0))
+                free_collateral = safe_safe_safe_safe_float(account_data.get("freeCollateral", 0))
                 # FIXED: Use real signal confidence instead of hardcoded 0.8
                 confidence = signal_confidence if signal_confidence is not None else 0.8
 
@@ -19486,7 +19487,7 @@ class MultiAssetTradingBot:
                         if corrs and 'XRP' in corrs:
                             row = corrs['XRP']
                             # average absolute correlation to majors (exclude self)
-                            vals = [abs(float(v)) for k,v in row.items() if k != 'XRP' and v is not None]
+                            vals = [abs(safe_safe_safe_float(v)) for k,v in row.items() if k != 'XRP' and v is not None]
                             if vals:
                                 avg_corr = sum(vals) / len(vals)
                                 if avg_corr >= 0.7:
@@ -19727,9 +19728,9 @@ class MultiAssetTradingBot:
                 rets = rets[-window:] if rets.size > window else rets
             except Exception:
                 pass
-            q = 1.0 - float(alpha)
+            q = 1.0 - safe_safe_safe_float(alpha)
             cutoff = np.quantile(rets, q)
-            var = -float(cutoff)
+            var = -safe_safe_safe_float(cutoff)
             tail = rets[rets <= cutoff]
             es = -float(tail.mean()) if tail.size > 0 else var
             # Clamp to sane bounds
@@ -19758,9 +19759,9 @@ class MultiAssetTradingBot:
             R = np.stack([np.asarray(asset_to_returns[k][-min_len:], dtype=float) for k in keys], axis=1)
             # Portfolio returns path
             port = (R * W.reshape(1, -1)).sum(axis=1)
-            q = 1.0 - float(alpha)
+            q = 1.0 - safe_safe_safe_float(alpha)
             cutoff = np.quantile(port, q)
-            var = -float(cutoff)
+            var = -safe_safe_safe_float(cutoff)
             tail = port[port <= cutoff]
             es = -float(tail.mean()) if tail.size > 0 else var
             return max(0.0, min(0.5, var)), max(0.0, min(0.5, es))
@@ -20097,9 +20098,9 @@ class MultiAssetTradingBot:
             queue_depth = 0.0
             for px, qty in depth_side:
                 if (is_long and px <= limit_px) or ((not is_long) and px >= limit_px):
-                    queue_depth += float(qty)
-            queue_depth *= float(depth_scale)
-            depth_factor = min(1.0, float(queue_depth) / max(float(order_size), 1.0)) if order_size else 1.0
+                    queue_depth += safe_safe_safe_float(qty)
+            queue_depth *= safe_float(depth_scale)
+            depth_factor = min(1.0, safe_float(queue_depth) / max(safe_safe_float(order_size), 1.0)) if order_size else 1.0
             prob = float(np.exp(-k * x)) * (0.5 + 0.5 * depth_factor)
             return max(0.01, min(0.95, prob))
         except Exception:
@@ -20124,9 +20125,9 @@ class MultiAssetTradingBot:
                     r = rets - np.nanmean(rets)
                     am = arch_model(r * 100.0, vol='Garch', p=1, q=1, dist='normal', rescale=False)
                     res = am.fit(disp='off')
-                    omega = float(res.params.get('omega', 0.1))
-                    alpha1 = float(res.params.get('alpha[1]', 0.05))
-                    beta1 = float(res.params.get('beta[1]', 0.9))
+                    omega = safe_safe_float(res.params.get('omega', 0.1))
+                    alpha1 = safe_safe_float(res.params.get('alpha[1]', 0.05))
+                    beta1 = safe_safe_float(res.params.get('beta[1]', 0.9))
                     mu = float(np.nanmean(r))
                     # initialize variance with unconditional
                     var0 = omega / max(1e-9, (1.0 - alpha1 - beta1))
@@ -20136,14 +20137,14 @@ class MultiAssetTradingBot:
                         device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
                         P = int(paths)
                         H = int(horizon)
-                        var_t = torch.full((P,), float(var0), device=device)
-                        mu_t = torch.full((P,), float(mu), device=device)
+                        var_t = torch.full((P,), safe_float(var0), device=device)
+                        mu_t = torch.full((P,), safe_float(mu), device=device)
                         cum_t = torch.zeros((P,), device=device)
                         for _ in range(H):
                             eps = torch.randn(P, device=device)
                             ret = mu_t + eps * torch.sqrt(torch.clamp(var_t, min=1e-12))
                             cum_t = cum_t + ret
-                            var_t = float(omega) + float(alpha1) * (ret ** 2) + float(beta1) * var_t
+                            var_t = safe_float(omega) + safe_float(alpha1) * (ret ** 2) + safe_float(beta1) * var_t
                         sims_arr = (cum_t / 100.0).detach().cpu().numpy()
                         sims.extend(sims_arr.tolist())
                     else:
@@ -20164,9 +20165,9 @@ class MultiAssetTradingBot:
                     idx = np.random.randint(0, rets.size, size=horizon)
                     sims.append(float(np.sum(rets[idx])))
             sims_arr = np.asarray(sims, dtype=float)
-            q = 1.0 - float(alpha)
+            q = 1.0 - safe_safe_safe_float(alpha)
             cutoff = np.quantile(sims_arr, q)
-            var = -float(cutoff)
+            var = -safe_safe_safe_float(cutoff)
             tail = sims_arr[sims_arr <= cutoff]
             es = -float(tail.mean()) if tail.size > 0 else var
             # Optional quantum sim placeholder path (returns same values in this build)
@@ -20192,7 +20193,7 @@ class MultiAssetTradingBot:
             if rets.size < 30:
                 return True
             p5 = float(np.percentile(rets, 5))
-            return p5 >= float(threshold)
+            return p5 >= safe_float(threshold)
         except Exception:
             return True
 
@@ -20282,7 +20283,7 @@ class MultiAssetTradingBot:
                     if candles:
                         for candle in candles:
                             if isinstance(candle, dict) and 'c' in candle:
-                                close_prices.append(float(candle['c']))
+                                close_prices.append(safe_safe_safe_float(candle['c']))
                             elif isinstance(candle, list) and len(candle) >= 4:
                                 close_prices.append(float(candle[4]))
             except Exception:
@@ -20299,7 +20300,7 @@ class MultiAssetTradingBot:
                         if candles:
                             for candle in candles:
                                 if isinstance(candle, dict) and 'c' in candle:
-                                    close_prices.append(float(candle['c']))
+                                    close_prices.append(safe_safe_safe_float(candle['c']))
                                 elif isinstance(candle, list) and len(candle) >= 4:
                                     close_prices.append(float(candle[4]))
                 except Exception:
@@ -20310,7 +20311,7 @@ class MultiAssetTradingBot:
                 try:
                     current_price = self.get_current_price()
                     if current_price:
-                        close_prices = [float(current_price)] * 24  # Create 24 data points
+                        close_prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)] * 24  # Create 24 data points
                 except Exception:
                     pass
             
@@ -20725,16 +20726,16 @@ class MultiAssetTradingBot:
                 if pos_chk:
                     # Try different possible field names for position size
                     if 'szi' in pos_chk:
-                        position_size = float(pos_chk.get('szi', 0))
+                        position_size = safe_safe_float(pos_chk.get('szi', 0))
                     elif 'size' in pos_chk:
-                        position_size = float(pos_chk.get('size', 0))
+                        position_size = safe_safe_float(pos_chk.get('size', 0))
                     elif 'position' in pos_chk and isinstance(pos_chk['position'], dict):
                         # Nested position structure
                         nested_pos = pos_chk['position']
                         if 'szi' in nested_pos:
-                            position_size = float(nested_pos.get('szi', 0))
+                            position_size = safe_safe_safe_safe_safe_safe_float(nested_pos.get('szi', 0))
                         elif 'size' in nested_pos:
-                            position_size = float(nested_pos.get('size', 0))
+                            position_size = safe_safe_safe_safe_safe_safe_float(nested_pos.get('size', 0))
                 
                 if not pos_chk or abs(position_size) < 1e-9:
                     self.logger.info(f"⏹️ Position closed before guardian loop; stopping guardian (size: {position_size})")
@@ -20751,7 +20752,7 @@ class MultiAssetTradingBot:
                 notional_ok = False
                 if self.mirror_tp_as_limit and entry_price and position_size:
                     try:
-                        notional_ok = (entry_price * abs(float(position_size))) >= 10
+                        notional_ok = (entry_price * abs(safe_safe_safe_safe_safe_safe_safe_safe_float(position_size))) >= 10
                     except Exception:
                         notional_ok = False
                 if notional_ok:
@@ -20762,10 +20763,10 @@ class MultiAssetTradingBot:
                         trend_ok = False
                     # CRITICAL FIX: Disable mirrored TP limits to prevent order rejection errors
                     # tp1_for_mirror = tp1_px if trend_ok else None
-                    # await self._mirror_tp_limits(tp_px, tp1_for_mirror, abs(float(position_size)), is_long)
+                    # await self._mirror_tp_limits(tp_px, tp1_for_mirror, abs(safe_safe_safe_safe_safe_safe_safe_safe_float(position_size)), is_long)
                     # Keep refreshing mirrored orders so they remain visible
                     try:
-                        asyncio.create_task(self._maintain_mirrored_tp_limits(tp_px, tp1_px, abs(float(position_size)), is_long,
+                        asyncio.create_task(self._maintain_mirrored_tp_limits(tp_px, tp1_px, abs(safe_safe_safe_safe_safe_safe_safe_safe_float(position_size)), is_long,
                                                                               duration_s=240, interval_s=45))
                     except Exception:
                         pass
@@ -20787,13 +20788,13 @@ class MultiAssetTradingBot:
                     elif atr_pct > 0.020:
                         try:
                             # Compute probability-spaced tiers based on L2 heuristic and ML vol tiers if enabled
-                            if self.mirror_tp_as_limit and position_size and (entry_price * abs(float(position_size))) >= 10:
+                            if self.mirror_tp_as_limit and position_size and (entry_price * abs(safe_safe_safe_safe_safe_safe_safe_safe_float(position_size))) >= 10:
                                 tick = self.get_tick_size(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP')
                                 # Decide number of tiers: ML or default 3
                                 try:
                                     if bool(getattr(self, 'ml_vol_tiers', False)):
                                         # Simple feature: normalize atr_pct
-                                        norm_vol = min(1.0, max(0.0, float(atr_pct) / 0.05))
+                                        norm_vol = min(1.0, max(0.0, safe_float(atr_pct) / 0.05))
                                         # Map to 2–4 tiers
                                         tier_count = 2 if norm_vol < 0.3 else (3 if norm_vol < 0.7 else 4)
                                     else:
@@ -21156,16 +21157,16 @@ class MultiAssetTradingBot:
                     if position:
                         # Try different possible field names for position size
                         if 'szi' in position:
-                            position_size = float(position.get('szi', 0))
+                            position_size = safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('szi', 0))
                         elif 'size' in position:
-                            position_size = float(position.get('size', 0))
+                            position_size = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0))
                         elif 'position' in position and isinstance(position['position'], dict):
                             # Nested position structure
                             nested_pos = position['position']
                             if 'szi' in nested_pos:
-                                position_size = float(nested_pos.get('szi', 0))
+                                position_size = safe_safe_safe_safe_safe_safe_float(nested_pos.get('szi', 0))
                             elif 'size' in nested_pos:
-                                position_size = float(nested_pos.get('size', 0))
+                                position_size = safe_safe_safe_safe_safe_safe_float(nested_pos.get('size', 0))
                     
                     if not position or abs(position_size) < 1e-9:
                         self.logger.info(f"✅ Position already closed, stopping synthetic guardian (size: {position_size})")
@@ -21210,7 +21211,7 @@ class MultiAssetTradingBot:
                 return False
             
             # Extract actual position size
-            actual_size = abs(float(current_position.get('szi', position_size)))
+            actual_size = abs(safe_safe_float(current_position.get('szi', position_size)))
             if actual_size == 0:
                 self.logger.error("🚨 EMERGENCY EXIT: Position size is 0")
                 return False
@@ -21257,16 +21258,16 @@ class MultiAssetTradingBot:
                 if current_pos:
                     # Try different possible field names for position size
                     if 'szi' in current_pos:
-                        live_size = abs(float(current_pos.get('szi', 0)))
+                        live_size = abs(safe_safe_float(current_pos.get('szi', 0)))
                     elif 'size' in current_pos:
-                        live_size = abs(float(current_pos.get('size', 0)))
+                        live_size = abs(safe_safe_safe_safe_float(current_pos.get('size', 0)))
                     elif 'position' in current_pos and isinstance(current_pos['position'], dict):
                         # Nested position structure
                         nested_pos = current_pos['position']
                         if 'szi' in nested_pos:
-                            live_size = abs(float(nested_pos.get('szi', 0)))
+                            live_size = abs(safe_safe_safe_safe_safe_safe_float(nested_pos.get('szi', 0)))
                         elif 'size' in nested_pos:
-                            live_size = abs(float(nested_pos.get('size', 0)))
+                            live_size = abs(safe_safe_safe_safe_safe_safe_float(nested_pos.get('size', 0)))
                 
                 exit_size = int(live_size) if live_size > 0 else int(position_size)
             except Exception:
@@ -21310,7 +21311,7 @@ class MultiAssetTradingBot:
         try:
             price = await self.get_current_price_async("XRP")
             if isinstance(price, (int, float)):
-                return float(price)
+                return safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price)
             # Fallbacks if an unexpected structure is returned
             if isinstance(price, dict):
                 if "price" in price:
@@ -21376,13 +21377,13 @@ class MultiAssetTradingBot:
             clamp_slip_bps = float(getattr(self, 'market_slippage_guard_bps', 200) or 200)  # Increased to 200 bps (2%)
             slip_frac = max(0.002, clamp_slip_bps / 10000.0)  # Minimum 0.2% slippage
             try:
-                base_px = float(current_price)
+                base_px = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)
                 # For TP/SL, use very aggressive slippage to ensure fills
                 cross_px = base_px * (1.0 + slip_frac) if is_buy else base_px * (1.0 - slip_frac)
                 # Align to tick on the aggressive side
                 cross_px = float(self._align_price_to_tick(cross_px, tick, "up" if is_buy else "down"))
             except Exception:
-                cross_px = float(current_price)
+                cross_px = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)
             # Submit market order with IOC
             try:
                 # Prometheus: order submitted
@@ -21396,7 +21397,7 @@ class MultiAssetTradingBot:
                 result = self.resilient_exchange.order(
                     name=symbol,
                     is_buy=is_buy,
-                    sz=float(size),
+                    sz=safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size),
                     limit_px=cross_px,
                     order_type={'limit': {'tif': 'Ioc'}},
                     reduce_only=bool(reduce_only),
@@ -21407,7 +21408,7 @@ class MultiAssetTradingBot:
                 if "Order could not immediately match" in msg or "Too many cumulative requests" in msg:
                     try:
                         self.logger.warning(f"⚠️ First TP/SL order failed, trying with very aggressive slippage: {msg}")
-                        base_px = float(current_price)
+                        base_px = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price)
                         # Use extremely aggressive slippage for TP/SL execution
                         slip_frac2 = max(0.005, slip_frac * 10.0)  # At least 0.5% slippage, up to 20%
                         cross_px2 = base_px * (1.0 + slip_frac2) if is_buy else base_px * (1.0 - slip_frac2)
@@ -21415,7 +21416,7 @@ class MultiAssetTradingBot:
                         result = self.resilient_exchange.order(
                             name=symbol,
                             is_buy=is_buy,
-                            sz=float(size),
+                            sz=safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size),
                             limit_px=cross_px2,
                             order_type={'limit': {'tif': 'Ioc'}},
                             reduce_only=bool(reduce_only),
@@ -21445,9 +21446,9 @@ class MultiAssetTradingBot:
                     'ts': time.time(),
                     'symbol': symbol,
                     'side': side.upper(),
-                    'size': float(size) * (1 if side.upper()=="BUY" else -1),
+                    'size': safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size) * (1 if side.upper()=="BUY" else -1),
                     'reduce_only': bool(reduce_only),
-                    'price': float(current_price),
+                    'price': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                 })
                 if len(self.executed_trades) > 200:
                     self.executed_trades = self.executed_trades[-200:]
@@ -21529,8 +21530,8 @@ class MultiAssetTradingBot:
             aligned_price = self._align_price_to_tick(current_price, tick_size, "up" if signal_type == "BUY" else "down")
             
             # Convert Decimal to float for arithmetic operations
-            aligned_price_float = float(aligned_price)
-            tick_size_float = float(tick_size)
+            aligned_price_float = safe_safe_float(aligned_price)
+            tick_size_float = safe_safe_float(tick_size)
             
             # Double-check alignment for XRP
             if "XRP" in ["XRP"]:
@@ -21559,9 +21560,9 @@ class MultiAssetTradingBot:
                         'ts': time.time(),
                         'symbol': 'XRP',
                         'side': 'BUY' if is_buy else 'SELL',
-                        'size': float(position_size) * (1 if is_buy else -1),
+                        'size': safe_safe_safe_safe_safe_safe_safe_safe_float(position_size) * (1 if is_buy else -1),
                         'reduce_only': False,
-                        'price': float(current_price),
+                        'price': safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(current_price),
                     })
                     if len(self.executed_trades) > 200:
                         self.executed_trades = self.executed_trades[-200:]
@@ -21613,7 +21614,7 @@ class MultiAssetTradingBot:
                         data = await response.json()
                         for item in data.get("fundingRates", []):
                             if item.get("coin") == "XRP":
-                                rate = float(item.get("rate", 0.0))
+                                rate = safe_safe_safe_safe_safe_safe_float(item.get("rate", 0.0))
                                 self.funding_rate = rate
                                 
                                 # 🎯 FUNDING ARBITRAGE ANALYSIS: Check for opportunities
@@ -21641,7 +21642,7 @@ class MultiAssetTradingBot:
                 data = response.json()
                 for item in data.get("fundingRates", []):
                     if item.get("coin") == "XRP":
-                        rate = float(item.get("rate", 0.0))
+                        rate = safe_safe_safe_safe_safe_safe_float(item.get("rate", 0.0))
                         self.funding_rate = rate
                         
                         # 🎯 FUNDING ARBITRAGE ANALYSIS: Check for opportunities (sync version)
@@ -22140,19 +22141,19 @@ class MultiAssetTradingBot:
                 if isinstance(price, dict):
                     # Extract value from dict (common pattern)
                     if 'value' in price:
-                        float_prices.append(float(price['value']))
+                        float_prices.append(safe_safe_safe_safe_float(price['value']))
                     elif 'price' in price:
-                        float_prices.append(float(price['price']))
+                        float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['price']))
                     elif 'close' in price:
-                        float_prices.append(float(price['close']))
+                        float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price['close']))
                     else:
                         # Try to use the first numeric value
                         for key, value in price.items():
                             if isinstance(value, (int, float)):
-                                float_prices.append(float(value))
+                                float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(value))
                                 break
                 else:
-                    float_prices.append(float(price))
+                    float_prices.append(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price))
             
             if len(float_prices) < period:
                 # Return simple average if not enough float data
@@ -22280,7 +22281,7 @@ class MultiAssetTradingBot:
                 # Initialize capital tracking
                 account_data = self.get_account_status()
                 if account_data:
-                    self.initial_capital = float(account_data.get("freeCollateral", 0))
+                    self.initial_capital = safe_safe_safe_safe_float(account_data.get("freeCollateral", 0))
                     self.current_capital = self.initial_capital
 
             # Calculate compound factor based on performance
@@ -22725,7 +22726,7 @@ class MultiAssetTradingBot:
             # Basic spread/notional guard
             if size <= 0 or tp_px <= 0:
                 return
-            price = float(tp_px)
+            price = safe_float(tp_px)
             # Ensure positive integer quantity
             try:
                 qty_total = int(max(1, int(abs(size))))
@@ -22741,7 +22742,7 @@ class MultiAssetTradingBot:
                     try:
                         position = p.get('position') or {}
                         if position.get('coin') == 'XRP':
-                            pos_size = float(position.get('szi') or 0)
+                            pos_size = safe_safe_float(position.get('szi') or 0)
                             break
                     except Exception:
                         continue
@@ -22762,7 +22763,7 @@ class MultiAssetTradingBot:
             if tp1_px and qty_total >= 2:
                 tp1_qty = max(1, int(round(qty_total * 0.3)))
                 tp2_qty = max(1, qty_total - tp1_qty)
-                legs.append((float(tp1_px), tp1_qty))
+                legs.append((safe_float(tp1_px), tp1_qty))
                 legs.append((price, tp2_qty))
             else:
                 legs.append((price, qty_total))
@@ -22777,10 +22778,10 @@ class MultiAssetTradingBot:
                 except Exception:
                     mark_px = None
                 def min_qty_for(px: float) -> int:
-                    effective_px = float(px)
+                    effective_px = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px)
                     try:
                         if mark_px is not None:
-                            effective_px = min(float(px), float(mark_px))
+                            effective_px = min(safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px), safe_float(mark_px))
                     except Exception:
                         pass
                     return max(1, int(math.ceil(10.0 / max(effective_px, 1e-9))))
@@ -22817,7 +22818,7 @@ class MultiAssetTradingBot:
                     for p2 in pos_list2:
                         position2 = (p2.get('position') or {})
                         if position2.get('coin') == 'XRP':
-                            pos_size2 = float(position2.get('szi') or 0)
+                            pos_size2 = safe_safe_float(position2.get('szi') or 0)
                             break
                     remaining = int(max(0, abs(pos_size2)))
                     if remaining <= 0:
@@ -22832,9 +22833,9 @@ class MultiAssetTradingBot:
                 # Nudge 2 ticks further from market to reduce post-only rejections
                 try:
                     if is_long:
-                        px_aligned += (2 * float(tick))
+                        px_aligned += (2 * safe_safe_safe_safe_float(tick))
                     else:
-                        px_aligned -= (2 * float(tick))
+                        px_aligned -= (2 * safe_safe_safe_safe_float(tick))
                 except Exception:
                     pass
                 # Decide maker vs IOC fallback using L2 fill probability
@@ -22887,7 +22888,7 @@ class MultiAssetTradingBot:
                     # Fallback: adjust aggressiveness and try once
                     try:
                         # Nudge more towards market by 2 ticks to increase match odds
-                        px_more = px_aligned + (2 * float(tick) if (not is_long) else -(2 * float(tick)))
+                        px_more = px_aligned + (2 * safe_safe_safe_safe_float(tick) if (not is_long) else -(2 * safe_safe_safe_safe_float(tick)))
                         order_type_fallback = {"limit": {"tif": "Gtc"}} if maker_prefer else {"limit": {"tif": "Ioc"}}
                         try:
                             res2 = self.resilient_exchange.order(
@@ -23636,7 +23637,7 @@ class MultiAssetTradingBot:
                 return 'NEUTRAL', 0.5, 0.0, 0.0
             
             # Calculate key metrics
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # 1. Volatility calculation (ATR-based)
             atr = self.calculate_atr(prices, 14)
@@ -23918,7 +23919,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 50:
                 return {}
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Technical indicators as features
             features = {}
@@ -24043,7 +24044,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 30:
                 return False
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Find local maxima
             peaks = []
@@ -24078,7 +24079,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 30:
                 return False
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Find local minima
             troughs = []
@@ -24113,7 +24114,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 50:
                 return False
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Find peaks for head and shoulders
             peaks = []
@@ -24151,7 +24152,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 30:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Find peaks and troughs
             peaks = []
@@ -24242,7 +24243,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 50:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Calculate momentum indicators
             short_momentum = (prices[-1] - prices[-10]) / prices[-10] if prices[-10] > 0 else 0
@@ -24280,7 +24281,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 50:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Calculate current volatility
             returns = [(prices[i] - prices[i-1]) / prices[i-1] for i in range(1, len(prices))]
@@ -24319,7 +24320,7 @@ class MultiAssetTradingBot:
             if len(price_data) < 100:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Calculate trend indicators
             short_trend = (prices[-1] - prices[-20]) / prices[-20] if prices[-20] > 0 else 0
@@ -24380,8 +24381,8 @@ class MultiAssetTradingBot:
             impact_levels = []
             
             for level in levels[:10]:  # Analyze top 10 levels
-                level_price = float(level['px'])
-                level_size = float(level['sz'])
+                level_price = safe_safe_float(level['px'])
+                level_size = safe_safe_safe_safe_float(level['sz'])
                 cumulative_size += level_size
                 impact_levels.append((level_price, level_size, cumulative_size))
                 
@@ -24473,10 +24474,10 @@ class MultiAssetTradingBot:
                 return 0.001  # Conservative default
             
             if is_buy:
-                best_price = float(book['asks'][0]['px'])
+                best_price = safe_safe_float(book['asks'][0]['px'])
                 levels = book['asks']
             else:
-                best_price = float(book['bids'][0]['px'])
+                best_price = safe_safe_float(book['bids'][0]['px'])
                 levels = book['bids']
             
             # Calculate slippage from order book
@@ -24484,8 +24485,8 @@ class MultiAssetTradingBot:
             weighted_price = 0
             
             for level in levels[:5]:  # Top 5 levels
-                level_price = float(level['px'])
-                level_size = float(level['sz'])
+                level_price = safe_safe_float(level['px'])
+                level_size = safe_safe_safe_safe_float(level['sz'])
                 cumulative_size += level_size
                 weighted_price += level_price * level_size
                 
@@ -24540,13 +24541,13 @@ class MultiAssetTradingBot:
                 return 0.2  # Low liquidity default
             
             # Calculate bid-ask spread
-            best_bid = float(book['bids'][0]['px'])
-            best_ask = float(book['asks'][0]['px'])
+            best_bid = safe_safe_float(book['bids'][0]['px'])
+            best_ask = safe_safe_float(book['asks'][0]['px'])
             spread = (best_ask - best_bid) / best_bid
             
             # Calculate order book depth
-            bid_depth = sum(float(level['sz']) for level in book['bids'][:5])
-            ask_depth = sum(float(level['sz']) for level in book['asks'][:5])
+            bid_depth = sum(safe_safe_safe_safe_float(level['sz']) for level in book['bids'][:5])
+            ask_depth = sum(safe_safe_safe_safe_float(level['sz']) for level in book['asks'][:5])
             total_depth = bid_depth + ask_depth
             
             # Calculate liquidity score
@@ -24999,8 +25000,8 @@ class MultiAssetTradingBot:
                 return {'trading_allowed': False, 'reason': 'Cannot get account status'}
             
             # Extract account metrics
-            account_value = float(account_status.get('accountValue', 0))
-            margin_ratio = float(account_status.get('marginRatio', 0))
+            account_value = safe_safe_safe_safe_safe_safe_safe_safe_float(account_status.get('accountValue', 0))
+            margin_ratio = safe_safe_safe_safe_float(account_status.get('marginRatio', 0))
             
             # Calculate current drawdown
             if hasattr(self, 'peak_capital') and self.peak_capital > 0:
@@ -25073,8 +25074,8 @@ class MultiAssetTradingBot:
             # Account health score
             account_status = self.get_account_status()
             if account_status:
-                account_value = float(account_status.get('accountValue', 0))
-                margin_ratio = float(account_status.get('marginRatio', 0))
+                account_value = safe_safe_safe_safe_safe_safe_safe_safe_float(account_status.get('accountValue', 0))
+                margin_ratio = safe_safe_safe_safe_float(account_status.get('marginRatio', 0))
                 
                 # Calculate account health (0-1 scale)
                 health_factors = {
@@ -25129,7 +25130,7 @@ class MultiAssetTradingBot:
             
             # Get current account value
             account_status = self.get_account_status()
-            account_value = float(account_status.get('accountValue', 0)) if account_status else 0
+            account_value = safe_safe_safe_safe_safe_safe_safe_safe_float(account_status.get('accountValue', 0)) if account_status else 0
             
             stress_results = {}
             worst_case_loss = 0
@@ -26110,7 +26111,7 @@ class MultiAssetTradingBot:
                     position = pos_data['position']
                     if position.get('coin') == 'XRP':
                         # Calculate margin utilization
-                        margin_ratio = float(position.get('marginRatio', 0))
+                        margin_ratio = safe_safe_float(position.get('marginRatio', 0))
                         utilization = 1.0 - margin_ratio  # Higher utilization = closer to liquidation
                         
                         if utilization >= 0.70:  # 70% utilization threshold
@@ -27462,7 +27463,7 @@ class MultiAssetTradingBot:
                     return 0.5
                 
                 price_data = list(self.price_history)[-50:]
-                prices = [float(p) for p in price_data]
+                prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Calculate technical indicators
             momentum = (prices[-1] - prices[-10]) / prices[-10] if prices[-10] > 0 else 0
@@ -27699,7 +27700,7 @@ class MultiAssetTradingBot:
             # Quantum-enhanced double top detection
             # Uses quantum superposition to analyze multiple pattern states simultaneously
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             if len(prices) < 30:
                 return False
             
@@ -27738,7 +27739,7 @@ class MultiAssetTradingBot:
         """
         try:
             # Quantum-enhanced head and shoulders detection
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             if len(prices) < 50:
                 return False
             
@@ -27779,7 +27780,7 @@ class MultiAssetTradingBot:
         """
         try:
             # Quantum-enhanced triangle detection
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             if len(prices) < 30:
                 return None
             
@@ -27870,7 +27871,7 @@ class MultiAssetTradingBot:
             if not price_data or len(price_data) < 50:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Quantum-enhanced momentum calculation
             short_momentum = (prices[-1] - prices[-10]) / prices[-10] if prices[-10] > 0 else 0
@@ -27910,7 +27911,7 @@ class MultiAssetTradingBot:
             if not price_data or len(price_data) < 50:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Quantum-enhanced volatility calculation
             returns = [(prices[i] - prices[i-1]) / prices[i-1] for i in range(1, len(prices))]
@@ -27950,7 +27951,7 @@ class MultiAssetTradingBot:
             if not price_data or len(price_data) < 100:
                 return None
             
-            prices = [float(p) for p in price_data]
+            prices = [safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(p) for p in price_data]
             
             # Quantum-enhanced trend calculation
             short_trend = (prices[-1] - prices[-20]) / prices[-20] if prices[-20] > 0 else 0
@@ -29074,7 +29075,7 @@ def main():
         # Apply micro-live overrides from flags and live equity
         try:
             acct = bot.get_account_status() or {}
-            live_equity = float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
+            live_equity = safe_safe_safe_safe_safe_safe_float(acct.get('freeCollateral') or acct.get('withdrawable') or 0.0)
         except Exception:
             live_equity = 0.0
         bot.micro_live = bool(args.micro_live or (live_equity > 0 and live_equity < 50))
@@ -29469,7 +29470,7 @@ def main():
                 try:
                     if getattr(args, 'use_live_equity', False):
                         acct = bot.get_account_status() or {}
-                        live_equity = float(acct.get('withdrawable') or acct.get('freeCollateral') or 0.0)
+                        live_equity = safe_safe_float(acct.get('withdrawable') or acct.get('freeCollateral') or 0.0)
                         if live_equity > 0:
                             initial_capital = live_equity
                             logging.info(f"🧪 Backtest initial equity set from live withdrawable: ${initial_capital:.2f}")
@@ -29487,19 +29488,19 @@ def main():
                 # ===== Slippage Model (square-root impact) =====
                 class SlippageModel:
                     def __init__(self, daily_vol: float = 0.05, impact_factor: float = 0.7):
-                        self.daily_vol = float(daily_vol)
-                        self.impact_factor = float(impact_factor)
+                        self.daily_vol = safe_float(daily_vol)
+                        self.impact_factor = safe_float(impact_factor)
                     def simulate_fill(self, px: float, qty: float, daily_quote_volume: float) -> float:
                         try:
                             if qty == 0:
-                                return float(px)
-                            volume_frac = min(abs(float(qty)) / max(float(daily_quote_volume), 1e-9), 1.0)
+                                return safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px)
+                            volume_frac = min(abs(safe_safe_safe_float(qty)) / max(safe_float(daily_quote_volume), 1e-9), 1.0)
                             impact_frac = self.impact_factor * self.daily_vol * (volume_frac ** 0.5)
                             # Convert to price impact
-                            impacted = float(px) + float(np.sign(qty)) * float(px) * float(impact_frac)
-                            return float(impacted)
+                            impacted = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px) + float(np.sign(qty)) * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px) * safe_float(impact_frac)
+                            return safe_float(impacted)
                         except Exception:
-                            return float(px)
+                            return safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(px)
 
                 position = None  # dict with side, entry, sl, tp, size
                 fee = (float(getattr(args, 'bt_fee_bps', 4.5) or 4.5) / 10000.0)
@@ -29507,7 +29508,7 @@ def main():
                 slippage_model = SlippageModel(daily_vol=0.05, impact_factor=0.7)
                 trades = []
                 # Backtest drawdown tracking
-                peak_bt = float(equity)
+                peak_bt = safe_safe_safe_float(equity)
                 _last_logged_drawdown_bt = 0.0
 
                 window_prices = []
@@ -29565,7 +29566,7 @@ def main():
                                     return float(_np.asarray(series).astype(float)[-30:].std())
                                 tasks = []
                                 for _ in range(int(args.time_travel_sims)):
-                                    vol_30d_avg = float(df['vol_30d'].mean()) if 'vol_30d' in df.columns else 0.05
+                                    vol_30d_avg = safe_safe_float(df['vol_30d'].mean()) if 'vol_30d' in df.columns else 0.05
                                     noise_std = max(1e-6, 0.01 * vol_30d_avg)
                                     noisy = (df[close_col] + np.random.normal(0.0, df[close_col] * noise_std)).values
                                     tasks.append(noise_metric.remote(noisy))
@@ -29575,7 +29576,7 @@ def main():
                         if not results:
                             for _ in range(int(args.time_travel_sims)):
                                 noisy_df = df.copy()
-                                vol_30d_avg = float(df['vol_30d'].mean()) if 'vol_30d' in df.columns else 0.05
+                                vol_30d_avg = safe_safe_float(df['vol_30d'].mean()) if 'vol_30d' in df.columns else 0.05
                                 noise_std = max(1e-6, 0.01 * vol_30d_avg)
                                 noise = np.random.normal(0.0, noisy_df[close_col] * noise_std)
                                 noisy_df[close_col] = noisy_df[close_col] + noise
@@ -29602,7 +29603,7 @@ def main():
                     # Generate daily signal using analyzer (rules or ML)
                     analysis = bot.pattern_analyzer.analyze_xrp_patterns(window_prices)
                     pa_signal = analysis.get("signal", "HOLD")
-                    pa_conf = float(analysis.get("confidence", 0.0) or 0.0)
+                    pa_conf = safe_safe_float(analysis.get("confidence", 0.0) or 0.0)
 
                     # Simple TA companion for ensemble (MACD/EMA spread like live)
                     try:
@@ -29671,7 +29672,7 @@ def main():
                         if signal == 'SELL' and 'oi_delta' in df.columns:
                             oi_d = df.at[day, 'oi_delta']
                             reg = int(df.loc[day, 'regime']) if 'regime' in df.columns and not pd.isna(df.loc[day, 'regime']) else 1
-                            if reg == 0 and pd.notna(oi_d) and float(oi_d) > 0.10:
+                            if reg == 0 and pd.notna(oi_d) and safe_float(oi_d) > 0.10:
                                 # Large positive OI change → short squeeze risk
                                 signal = 'HOLD'
                                 logging.info("⛔ Skipping SELL: OI delta high in bear regime (short-squeeze risk)")
@@ -29683,11 +29684,11 @@ def main():
                         # Accrue funding (approx): long pays positive rate, short receives abs(rate)
                         try:
                             if 'fundingRate' in row and row['fundingRate'] is not None:
-                                rate = float(row['fundingRate'])
+                                rate = safe_float(row['fundingRate'])
                                 if position.get('side') == 'long':
-                                    equity -= float(position.get('size', 0)) * price * max(0.0, rate)
+                                    equity -= safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0)) * price * max(0.0, rate)
                                 else:
-                                    equity += float(position.get('size', 0)) * price * max(0.0, abs(rate))
+                                    equity += safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0)) * price * max(0.0, abs(rate))
                         except Exception:
                             pass
                         try:
@@ -29711,10 +29712,10 @@ def main():
                                                 partial_size = max(1, position["size"] - 1)
                                             if partial_size > 0:
                                                 try:
-                                                    daily_volume_quote = float(row.get('volume', 1e6)) * float(price)
+                                                    daily_volume_quote = safe_safe_safe_safe_safe_safe_safe_safe_float(row.get('volume', 1e6)) * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price)
                                                 except Exception:
-                                                    daily_volume_quote = float(1e6) * float(price)
-                                                exit_price_p = slippage_model.simulate_fill(price, -float(partial_size), daily_volume_quote)
+                                                    daily_volume_quote = float(1e6) * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price)
+                                                exit_price_p = slippage_model.simulate_fill(price, -safe_safe_float(partial_size), daily_volume_quote)
                                                 pnl_p = partial_size * (exit_price_p - position["entry"])  # notional per $1 move
                                                 cost_p = abs(partial_size) * position["entry"] * fee + abs(partial_size) * exit_price_p * fee
                                                 equity += pnl_p - cost_p
@@ -29741,10 +29742,10 @@ def main():
                                                 partial_size = max(1, position["size"] - 1)
                                             if partial_size > 0:
                                                 try:
-                                                    daily_volume_quote = float(row.get('volume', 1e6)) * float(price)
+                                                    daily_volume_quote = safe_safe_safe_safe_safe_safe_safe_safe_float(row.get('volume', 1e6)) * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price)
                                                 except Exception:
-                                                    daily_volume_quote = float(1e6) * float(price)
-                                                exit_price_p = slippage_model.simulate_fill(price, float(partial_size), daily_volume_quote)
+                                                    daily_volume_quote = float(1e6) * safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(price)
+                                                exit_price_p = slippage_model.simulate_fill(price, safe_safe_float(partial_size), daily_volume_quote)
                                                 pnl_p = partial_size * (position["entry"] - exit_price_p)
                                                 cost_p = abs(partial_size) * position["entry"] * fee + abs(partial_size) * exit_price_p * fee
                                                 equity += pnl_p - cost_p
@@ -29767,7 +29768,7 @@ def main():
                             steps_per_day = 24 if getattr(args, 'hourly', False) else 1
                             fund_bps_day = float(getattr(args, 'bt_funding_bps_per_day', 9.0) or 9.0)
                             funding_frac = (fund_bps_day / 10000.0) / max(1, steps_per_day)
-                            notional = float(position.get('size', 0)) * price
+                            notional = safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_safe_float(position.get('size', 0)) * price
                             equity -= funding_frac * abs(notional)
                         except Exception:
                             pass
@@ -29829,7 +29830,7 @@ def main():
                             # Use first hour after daily close time or first hour of day as entry reference
                             day_slice = hourly_df.loc[str(day.date())] if str(day.date()) in [str(d.date()) for d in hourly_df.index] else hourly_df[hourly_df.index.date == day.date()]
                             if not day_slice.empty:
-                                h_close = float(day_slice.iloc[0]['close'])
+                                h_close = safe_float(day_slice.iloc[0]['close'])
                             else:
                                 h_close = price
                             mid = h_close
@@ -29856,18 +29857,18 @@ def main():
                         if signal == "BUY":
                             # Apply square-root impact slippage for entry
                             try:
-                                daily_volume_quote = float(row.get('volume', 1e6)) * float(mid)
+                                daily_volume_quote = safe_safe_safe_safe_safe_safe_safe_safe_float(row.get('volume', 1e6)) * safe_safe_safe_safe_safe_float(mid)
                             except Exception:
-                                daily_volume_quote = float(1e6) * float(mid)
+                                daily_volume_quote = float(1e6) * safe_safe_safe_safe_safe_float(mid)
                             raw_entry = mid - tick
-                            entry = slippage_model.simulate_fill(raw_entry, float(size), daily_volume_quote)
+                            entry = slippage_model.simulate_fill(raw_entry, safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size), daily_volume_quote)
                         else:
                             try:
-                                daily_volume_quote = float(row.get('volume', 1e6)) * float(mid)
+                                daily_volume_quote = safe_safe_safe_safe_safe_safe_safe_safe_float(row.get('volume', 1e6)) * safe_safe_safe_safe_safe_float(mid)
                             except Exception:
-                                daily_volume_quote = float(1e6) * float(mid)
+                                daily_volume_quote = float(1e6) * safe_safe_safe_safe_safe_float(mid)
                             raw_entry = mid + tick
-                            entry = slippage_model.simulate_fill(raw_entry, -float(size), daily_volume_quote)
+                            entry = slippage_model.simulate_fill(raw_entry, -safe_safe_safe_safe_safe_safe_safe_safe_safe_float(size), daily_volume_quote)
                         # Enforce ≥ $5 notional and integer size; or skip if fees dominate
                         min_notional = 5.0
                         if size * entry < min_notional:
@@ -29917,11 +29918,11 @@ def main():
                             position = {"side": "short", "entry": entry, "sl": sl, "tp": tp, "size": size, "partial_taken": False}
                     # Update backtest drawdown metrics and optionally log
                     try:
-                        peak_bt = max(float(peak_bt), float(equity))
-                        if float(peak_bt) > 0:
-                            current_dd_bt = max(0.0, (float(peak_bt) - float(equity)) / float(peak_bt))
+                        peak_bt = max(safe_safe_safe_safe_safe_float(peak_bt), safe_safe_safe_float(equity))
+                        if safe_safe_safe_safe_safe_float(peak_bt) > 0:
+                            current_dd_bt = max(0.0, (safe_safe_safe_safe_safe_float(peak_bt) - safe_safe_safe_float(equity)) / safe_safe_safe_safe_safe_float(peak_bt))
                             if current_dd_bt > 0.01 and abs(current_dd_bt - _last_logged_drawdown_bt) > 0.005:
-                                logging.warning(f"📉 Draw-down: {current_dd_bt:.2%} from peak {float(peak_bt):.4f}")
+                                logging.warning(f"📉 Draw-down: {current_dd_bt:.2%} from peak {safe_safe_safe_safe_safe_float(peak_bt):.4f}")
                                 _last_logged_drawdown_bt = current_dd_bt
                     except Exception:
                         pass
