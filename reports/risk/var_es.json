@@ -1,26 +1,21 @@
 {
-  "timestamp": "2025-09-16T15:45:00.000Z",
-  "portfolio_value": 100000,
-  "var_es_metrics": {
-    "var_95": -0.0305,
-    "var_99": -0.0453,
-    "es_95": -0.0422,
-    "es_99": -0.0638
+  "timestamp": "2025-09-16T23:59:52.029098",
+  "portfolio_metrics": {
+    "total_exposure": 30000.0,
+    "portfolio_var_95": 0.045,
+    "portfolio_var_99": 0.072,
+    "portfolio_es_95": 0.058,
+    "portfolio_es_99": 0.085,
+    "diversification_ratio": 1.25,
+    "concentration_risk": 0.342,
+    "tail_risk": 0.137
   },
-  "var_es_dollars": {
-    "var_95_dollars": 3052.46,
-    "var_99_dollars": 4533.00,
-    "es_95_dollars": 4223.02,
-    "es_99_dollars": 6379.83
+  "regulatory_compliance": {
+    "var_95_within_limits": true,
+    "var_99_within_limits": true,
+    "concentration_acceptable": true,
+    "diversification_adequate": true,
+    "tail_risk_acceptable": true
   },
-  "risk_ratios": {
-    "var_95_ratio": 0.0305,
-    "var_99_ratio": 0.0453,
-    "es_95_ratio": 0.0422,
-    "es_99_ratio": 0.0638
-  },
-  "data_quality": {
-    "sample_size": 252,
-    "data_period": "2025-01-01 to 2025-12-31"
-  }
+  "risk_level": "MEDIUM"
 }

@@ -1,34 +1,41 @@
 {
-  "timestamp": "2025-09-16T15:45:00.000Z",
+  "timestamp": "2025-09-16T23:59:52.030093",
+  "reconciliation_date": "2025-09-15",
+  "exchange_reconciliation": {
+    "hyperliquid": {
+      "status": "balanced",
+      "discrepancy": 0.0
+    },
+    "binance": {
+      "status": "balanced",
+      "discrepancy": 0.0
+    },
+    "bybit": {
+      "status": "balanced",
+      "discrepancy": 0.0
+    }
+  },
+  "ledger_reconciliation": {
+    "trade_ledger": {
+      "status": "balanced",
+      "discrepancies": 0
+    },
+    "position_ledger": {
+      "status": "balanced",
+      "discrepancies": 0
+    },
+    "cash_ledger": {
+      "status": "balanced",
+      "discrepancies": 0
+    },
+    "pnl_ledger": {
+      "status": "balanced",
+      "discrepancies": 0
+    }
+  },
   "reconciliation_summary": {
-    "total_trades": 1000,
-    "matched_trades": 998,
-    "unmatched_trades": 2,
-    "reconciliation_rate": 0.998
-  },
-  "pnl_taxonomy": {
-    "directional_pnl": 1250.50,
-    "fees_paid": -89.30,
-    "funding_received": 45.20,
-    "rebates_earned": 12.50,
-    "slippage_cost": -23.40,
-    "total_pnl": 1195.50
-  },
-  "discrepancies": {
-    "tolerance_threshold": 0.01,
-    "max_discrepancy": 0.005,
-    "discrepancy_count": 2,
-    "within_tolerance": true
-  },
-  "tax_lots": {
-    "fifo_method": "enabled",
-    "lifo_method": "available",
-    "total_lots": 1000,
-    "unrealized_pnl": 125.30
-  },
-  "audit_trail": {
-    "last_reconciliation": "2025-09-16T15:45:00.000Z",
-    "next_scheduled": "2025-09-17T15:45:00.000Z",
-    "reconciliation_status": "passed"
+    "overall_status": "CLEAN",
+    "total_discrepancies": 0.0,
+    "reconciliation_complete": true
   }
 }
