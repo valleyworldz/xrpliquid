@@ -1,0 +1,5 @@
+{
+  "impact_model": "square_root",
+  "calibration_date": "2025-09-17",
+  "impact_coef": 0.0025
+}

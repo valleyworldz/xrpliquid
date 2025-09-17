@@ -1,0 +1,8 @@
+{
+  "total_funding_pnl": 124.5,
+  "scenarios": {
+    "base": 100.0,
+    "3x_shock": 320.0,
+    "latency_miss": 95.0
+  }
+}

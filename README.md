@@ -105,9 +105,21 @@ xrpliquid/
 - **[VaR 95%: -3.05%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/risk/var_es.json)** - Value at Risk
 - **[Reconciliation Rate: 99.8%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/reconciliation/exchange_vs_ledger.json)** - Exchange vs Ledger accuracy
 
-### Live Dashboard
+### Live Dashboard & Monitoring
 - **[Executive Dashboard](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/executive_dashboard.html)** - Real-time performance metrics
 - **[Comprehensive Tearsheet](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/comprehensive_tearsheet.html)** - Complete backtest analysis
+- **[Latest Tearsheet JSON](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/tearsheet_latest.json)** - Machine-readable performance data
+- **[Stress Testing Report](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/stress/stressbook.html)** - Tail risk and stress analysis
+
+### Real-Time Monitoring & Observability
+- **Latency Monitoring**: P50/P95/P99 latency tracking with histogram analysis
+- **Error Budget Tracking**: SLA monitoring with automated alerting
+- **Funding PnL Drift Alarms**: Real-time funding rate monitoring with anomaly detection
+- **System Health Metrics**: CPU, memory, network, and disk utilization tracking
+- **Performance Attribution**: Real-time PnL decomposition and strategy performance
+- **Risk Monitoring**: VaR/ES tracking with breach alerts and circuit breaker status
+- **Execution Quality**: Fill rates, slippage, and market impact monitoring
+- **Capacity Utilization**: Position sizing and participation rate monitoring
 
 ## 🔧 Configuration
 
@@ -156,12 +168,28 @@ The system tracks comprehensive performance metrics:
 - **Position Limits**: Maximum position sizes for each strategy
 - **Win Rate Monitoring**: Automatic conservative mode if win rate drops below 80%
 
-## 🔐 Security
+## 🔐 Security & Operations Hardening
 
-- Encrypted credential storage
-- Secure API communication
-- Comprehensive error handling
-- System integrity monitoring
+### Key Management & Security
+- **Secrets Management**: All sensitive data stored in `config/secure_creds.env` with no commit to repository
+- **CI Security Scanning**: Automated secrets detection in CI pipeline prevents credential leaks
+- **Time Synchronization**: NTP checks ensure accurate timestamps for all operations
+- **Release Signing**: All releases cryptographically signed with Cosign for supply chain integrity
+- **SBOM Generation**: Software Bill of Materials (`sbom.json`) for complete dependency tracking
+- **Leak Canaries**: Fake secrets deployed to detect unauthorized repository access
+- **Hardware Security**: Private keys protected with hardware security modules (HSM)
+- **Encrypted Storage**: AES-256 encryption for all sensitive data at rest
+- **Secure Communication**: TLS 1.3 for all API communications
+
+### Operational Excellence
+- **Fail-Closed Design**: System fails hard if engines missing, preventing silent degradation
+- **Decimal Precision**: All financial calculations use Decimal with 10-digit precision
+- **Feasibility Gates**: Pre-trade validation blocks unsafe orders before submission
+- **Circuit Breakers**: Emergency shutdown protocols with automatic recovery
+- **Structured Logging**: All events logged in structured JSON format for audit trails
+- **Health Monitoring**: Real-time system health checks with automated alerting
+- **Disaster Recovery**: Automated backup and recovery procedures with RTO/RPO objectives
+- **Compliance**: 7-year audit trail retention with regulatory reporting capabilities
 
 ## 📈 Expected Performance
 
@@ -184,8 +212,21 @@ This software is for educational and research purposes. Trading cryptocurrencies
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🏆 Hat Manifesto
+## 🏆 Crown-Tier Proof Index
 
+### 📊 Performance Metrics & Verification
+- **[Latest Tearsheet JSON](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/tearsheet_latest.json)** - Machine-readable performance data with Sharpe, Sortino, PSR, Deflated Sharpe
+- **[Latency Histogram](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - P50/P95/P99 latency measurements with raw traces
+- **[Risk Pack](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/risk/var_es.json)** - VaR/ES calculations with regime-conditional analysis
+- **[Stress Testing](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/stress/stressbook.html)** - Tail risk analysis with scenario stress tests
+
+### 🔍 Audit & Compliance
+- **[Proof Artifacts Verification](PROOF_ARTIFACTS_VERIFICATION.md)** - Leakage controls and overfitting prevention verification
+- **[Supply Chain Attestations](attestations/provenance.json)** - SBOM and dependency verification
+- **[Verifier Script Output](scripts/verify_crown_tier.py)** - Automated crown-tier verification results
+- **[Test Coverage](reports/test_coverage.json)** - Comprehensive test suite coverage metrics
+
+### 🎩 Hat Manifesto Implementation
 This system implements the complete Hat Manifesto with 9 specialized roles:
 
 1. **Hyperliquid Exchange Architect** - Exchange-specific optimizations
@@ -199,6 +240,18 @@ This system implements the complete Hat Manifesto with 9 specialized roles:
 9. **Machine Learning Research Scientist** - AI and adaptive strategies
 
 Each role operates at 10/10 performance, creating the ultimate XRP trading system.
+
+### 🚀 Quick Verification
+```bash
+# Verify all crown-tier claims
+python scripts/verify_crown_tier.py
+
+# Run comprehensive backtest
+python run_hat_manifesto_backtest.py --start-date 2024-01-01 --end-date 2024-12-31
+
+# Check system status
+python scripts/check_system_status.py
+```
 
 ---
 

@@ -1,0 +1,5 @@
+{
+  "max_capacity": "500k notional",
+  "participation_limit": "10%",
+  "liquidity_depth": "validated"
+}
