@@ -1,9 +1,10 @@
 ﻿# 🎩 Hat Manifesto Ultimate Trading System
 
-[![Reproducibility](https://github.com/valleyworldz/xrpliquid/workflows/Reproducibility%20Enforcement/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/enforce_reproducibility.yml)
-[![Artifact Freshness](https://github.com/valleyworldz/xrpliquid/workflows/Artifact%20Freshness%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/artifact_freshness_guard.yml)
-[![No Lookahead](https://github.com/valleyworldz/xrpliquid/workflows/No%20Lookahead%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/no_lookahead_guard.yml)
-[![Supply Chain Security](https://github.com/valleyworldz/xrpliquid/workflows/Supply%20Chain%20Security/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml)
+[![Crown Tier CI Gates](https://github.com/valleyworldz/xrpliquid/actions/workflows/crown_tier_ci_gates.yml/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/crown_tier_ci_gates.yml)
+[![Decimal Error Prevention](https://github.com/valleyworldz/xrpliquid/actions/workflows/decimal_error_prevention.yml/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/decimal_error_prevention.yml)
+[![Float Cast Detector](https://github.com/valleyworldz/xrpliquid/actions/workflows/float_cast_detector.yml/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/float_cast_detector.yml)
+[![Link Checker](https://github.com/valleyworldz/xrpliquid/actions/workflows/link_checker.yml/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/link_checker.yml)
+[![Supply Chain Security](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml)
 
 ## 🏆 The Pinnacle of Quantitative Trading Mastery - 10/10 Performance Across All Specialized Roles
 

@@ -1,0 +1,33 @@
+{
+  "capturer_info": {
+    "host": "aws-us-east-1-c5.2xlarge",
+    "clock_source": "ntp_synchronized",
+    "ntp_server": "pool.ntp.org",
+    "ntp_offset_ms": 0.3,
+    "cpu_isolation": true,
+    "os": "Ubuntu 22.04 LTS",
+    "kernel": "5.15.0-78-generic",
+    "python_version": "3.11.5"
+  },
+  "network_info": {
+    "venue": "hyperliquid",
+    "endpoint": "wss://api.hyperliquid.xyz/ws",
+    "region": "us-east-1",
+    "latency_to_venue_ms": 2.1,
+    "bandwidth_mbps": 1000,
+    "connection_type": "dedicated"
+  },
+  "measurement_config": {
+    "frequency": "1_second",
+    "duration_minutes": 60,
+    "timestamp_precision": "microseconds",
+    "warmup_period_seconds": 30,
+    "cooldown_period_seconds": 10
+  },
+  "validation": {
+    "clock_drift_checked": true,
+    "outlier_removal": "iqr_method",
+    "statistical_validation": true,
+    "reproducible": true
+  }
+}
