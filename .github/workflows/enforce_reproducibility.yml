@@ -1,0 +1,41 @@
+name: Enforce Reproducibility
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  enforce-reproducibility:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Verify Reproducibility
+      run: |
+        python scripts/verify_reproducibility.py
+    
+    - name: Upload verification logs
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: reproducibility-verification-logs
+        path: |
+          reports/hash_manifest.json
+          reports/tests/reproducibility_verification.json
+        retention-days: 30

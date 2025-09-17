@@ -1,0 +1,48 @@
+name: Lookahead Guard CI Test
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+
+jobs:
+  lookahead-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas numpy scipy matplotlib seaborn statsmodels
+    
+    - name: Run Lookahead Guard Test
+      run: |
+        python -c "
+        from src.core.validation.lookahead_guard import LookaheadGuard
+        guard = LookaheadGuard()
+        result = guard.run_ci_lookahead_test('.')
+        print(f'Test result: {result[\"test_result\"]}')
+        print(f'Total violations: {result[\"total_violations\"]}')
+        if result['test_result'] == 'failed':
+            print('❌ Lookahead violations detected!')
+            exit(1)
+        else:
+            print('✅ No lookahead violations detected')
+        "
+    
+    - name: Upload Lookahead Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lookahead-test-results
+        path: reports/validation/lookahead_test_*.json

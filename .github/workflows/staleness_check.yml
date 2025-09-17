@@ -1,0 +1,55 @@
+name: Artifact Staleness Check
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    - cron: '0 9 * * *'  # Daily at 9 AM UTC
+
+jobs:
+  staleness-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Check artifact staleness
+      run: |
+        python scripts/check_artifact_staleness.py
+    
+    - name: Regenerate stale artifacts
+      if: failure()
+      run: |
+        echo "Regenerating stale artifacts..."
+        python scripts/regenerate_artifacts.py
+    
+    - name: Verify artifact freshness
+      run: |
+        python scripts/verify_artifact_freshness.py
+    
+    - name: Comment on PR
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ **Artifact Staleness Check Failed**\n\nSome artifacts are stale and need to be regenerated. Please run the artifact regeneration script and commit the updated files.'
+          })

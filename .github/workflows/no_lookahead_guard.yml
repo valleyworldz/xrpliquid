@@ -1,0 +1,40 @@
+name: No-Lookahead Guard
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  check-no-lookahead:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Check No-Lookahead Bias
+      run: |
+        python scripts/check_no_lookahead.py
+    
+    - name: Upload no-lookahead check logs
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: no-lookahead-check-logs
+        path: |
+          reports/tests/no_lookahead_check.json
+        retention-days: 30
