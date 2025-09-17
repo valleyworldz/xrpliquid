@@ -1,0 +1,19 @@
+{
+  "date": "2025-09-15",
+  "starting_balance": 10000.0,
+  "ending_balance": 10181.617127490863,
+  "daily_return": 0.018161712749086265,
+  "cumulative_return": 0.11403944955321177,
+  "sharpe_ratio": 2.8601548462913757,
+  "max_drawdown": 0.030040467694281352,
+  "trades_count": 50,
+  "maker_trades": 44,
+  "taker_trades": 15,
+  "funding_earned": 5.5688665904953005,
+  "fees_paid": 11.267026230621871,
+  "rebates_earned": 6.955396862191071,
+  "slippage_cost": 4.445272301464681,
+  "hyperliquid_benchmark": 0.015,
+  "alpha_vs_benchmark": 0.003161712749086266,
+  "timestamp": "2025-09-17T11:00:39.099864"
+}

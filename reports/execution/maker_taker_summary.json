@@ -1,0 +1,73 @@
+{
+  "total_orders": 1500,
+  "maker_orders": 1050,
+  "taker_orders": 450,
+  "maker_ratio_by_count": 0.7,
+  "maker_ratio_by_notional": 0.68,
+  "total_notional": 2500000.0,
+  "maker_notional": 1700000.0,
+  "taker_notional": 800000.0,
+  "total_fees_paid": 850.0,
+  "total_rebates_earned": 340.0,
+  "net_fee_savings": -510.0,
+  "annualized_savings": 186150.0,
+  "average_maker_rebate": 0.0002,
+  "average_taker_fee": 0.0010625,
+  "fee_optimization_score": 85.0,
+  "venue_breakdown": {
+    "hyperliquid": {
+      "total_orders": 1500,
+      "maker_orders": 1050,
+      "taker_orders": 450,
+      "maker_ratio": 0.7,
+      "total_fees": 850.0,
+      "total_rebates": 340.0,
+      "net_savings": -510.0
+    }
+  },
+  "daily_savings_trend": [
+    {
+      "date": "2025-09-11",
+      "orders": 200,
+      "makers": 140,
+      "net_savings": -68.0
+    },
+    {
+      "date": "2025-09-12",
+      "orders": 220,
+      "makers": 154,
+      "net_savings": -74.8
+    },
+    {
+      "date": "2025-09-13",
+      "orders": 180,
+      "makers": 126,
+      "net_savings": -61.2
+    },
+    {
+      "date": "2025-09-14",
+      "orders": 250,
+      "makers": 175,
+      "net_savings": -85.0
+    },
+    {
+      "date": "2025-09-15",
+      "orders": 210,
+      "makers": 147,
+      "net_savings": -71.4
+    },
+    {
+      "date": "2025-09-16",
+      "orders": 240,
+      "makers": 168,
+      "net_savings": -81.6
+    },
+    {
+      "date": "2025-09-17",
+      "orders": 200,
+      "makers": 140,
+      "net_savings": -68.0
+    }
+  ],
+  "timestamp": "2025-09-17T11:00:39.103871"
+}

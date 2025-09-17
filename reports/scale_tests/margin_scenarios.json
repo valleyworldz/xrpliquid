@@ -1,0 +1,20 @@
+{
+  "normal_conditions": {
+    "volatility": 0.02,
+    "liquidity_multiplier": 1.0,
+    "margin_multiplier": 1.0,
+    "max_notional": 1000000
+  },
+  "high_volatility": {
+    "volatility": 0.08,
+    "liquidity_multiplier": 0.7,
+    "margin_multiplier": 1.5,
+    "max_notional": 500000
+  },
+  "low_liquidity": {
+    "volatility": 0.03,
+    "liquidity_multiplier": 0.3,
+    "margin_multiplier": 1.2,
+    "max_notional": 200000
+  }
+}

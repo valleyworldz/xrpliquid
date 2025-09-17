@@ -1,51 +1,70 @@
 {
-  "timestamp": "2025-09-16T19:27:13.383057",
-  "signer": "valleyworldz <valleyworldz@github.com>",
-  "code_commit": "0d118d118a29520c4697f6043f8bc8aac9eb216b",
-  "code_commit_timestamp": "2025-09-16 11:23:02 -0400",
-  "input_hashes": {
-    "config/": "d99264a426d0b34a5bb1cf6673f0d8b0a7ef2d0e221ab92ec82059b7d780333e",
-    "requirements.txt": "8ef678fa7c8db02243f7656a5858386b320b55698f4a3860c88c7496a49a2b36",
-    ".pre-commit-config.yaml": "f8f0859b8a1b4cf5f0bd51ced2ca26b775ea7f0e92dc3a3c4b6e5821e9c28bd6",
-    "data/market_data/": "8f3e6f034b96f200680732d8554f8480df6d267ee84c0aa7107327f4705f4242",
-    "data/ticks/": "c9a975f672d6eaec48f9696b9a806c0c322498adbd5dc525cd7c8a60b4c21c10",
-    "data/funding/": "734b4774ae12d296184588da17839a9736bb6e6b1a24fc05ea3fd3bc40a76e27"
-  },
-  "output_hashes": {
-    "reports/ledgers/": "4cea0d7ba05e144fe07298edb28313629183b0a5f5841eedb5049f64ba93bf0c",
-    "reports/tearsheets/": "26eb5f03813a6a8488cbfa3c8112de040f2d3bb4022f450755ed3474162241c6",
-    "reports/risk_events/": "4df40d859131f5891b097e3a2cc9e70bcf4559f9a61094f39d316dcd9ba05d96",
-    "reports/latency/": "d35fa1d51a28757aa2efadf39d95bc44de2474e4325a14425f68518e8e1b3038",
-    "reports/regime/": "a1512aeb68e4a38e72ac0706924a5a973def401eee58f2016c5a6a18282b452d",
-    "reports/maker_taker/": "a92fd522516cab6a85bde162b2136988d8544861ad94728be5a145c09ae01704",
-    "reports/microstructure/": "3ef0a55f012b7a018916b640b13ef4ca64ca59dd6c80063ebb004803b5f89d52",
-    "reports/reconciliation/": "e731a7def32e519ed12169bd4ca8592d13d20d7050d3729e72f593b3884ecc0d",
-    "reports/equity_curve.csv": "768df66a6f8cb0b5d76c0865d2e7c9c1e5191d780a06b1e3b6e59d983119d6f7",
-    "reports/drawdown_curve.csv": "d5187d160b51f781498f56c035562d18b9c63d6ad6cc66643ae2c91853de35c1",
-    "reports/backtest_results.json": "2fc5d01bfb30ac95007f9c774a215150eb25d005b01e9a6c5f959e793e2b0c45",
-    "reports/executive_dashboard.html": "22f5fa3e833faef0d4cfd5d357068c118edfdcc93bf22b3bd7db913144befe3d",
-    "reports/audit/xrpliquid_audit_pack_20250916_192751.zip": "8488e883b13e72788b879846249c206cb87ca67c44317bdf8786789faeebb1d4"
-  },
-  "environment_hash": "873ba207ebd71c51e617159741d44b71e9282cd90fedbf9b46017c6d843e7c0c",
-  "verification_instructions": {
-    "step_1": "Verify code commit matches: git rev-parse HEAD",
-    "step_2": "Recalculate input hashes and compare",
-    "step_3": "Recalculate output hashes and compare",
-    "step_4": "Recalculate environment hash and compare",
-    "step_5": "Run CI verification: python scripts/verify_reproducibility.py"
-  },
-  "ci_verification": {
-    "enabled": true,
-    "script": "scripts/verify_reproducibility.py",
-    "expected_exit_code": 0
-  },
-  "total_manifest_hash": "9a9e03e6c58cc8d08f9f080efbad4dde3fafb6da32936b13c86836e740bae39b",
-  "signatures": {
-    "reports\\releases\\xrpliquid-v1.0.0.tar.gz": {
-      "signature": "mock_signature_a24b53063b65531f",
-      "signer_identity": "xrpliquid-release-signer",
-      "signature_timestamp": "2025-09-16T19:27:13.381066",
-      "signature_algorithm": "sha256"
+  "created_at": "2025-09-17T11:00:39.217871",
+  "artifacts": {
+    "reports/tearsheets/daily/2025-09-11.html": {
+      "sha256": "17d68771983c0d7e7fee0505878089d12730ed33ac75872cc232cdd051795966",
+      "size_bytes": 1437,
+      "created_at": "2025-09-17T11:00:10.489121"
+    },
+    "reports/tearsheets/daily/2025-09-12.html": {
+      "sha256": "dc78be8024ef2205d1b8b8b7dc8e5208fc924d06f619f7d269a63a3f070e683c",
+      "size_bytes": 1438,
+      "created_at": "2025-09-17T11:00:10.492124"
+    },
+    "reports/tearsheets/daily/2025-09-13.html": {
+      "sha256": "d156be70b33fafc2b20d66ad7a2d1436759c3803d44cd2dac0111759b5dde520",
+      "size_bytes": 1437,
+      "created_at": "2025-09-17T11:00:10.495116"
+    },
+    "reports/tearsheets/daily/2025-09-14.html": {
+      "sha256": "dcf0507318510fa9775f94f764e50da2f28c29fd69e1cf85cee3f3d896e41ae8",
+      "size_bytes": 1438,
+      "created_at": "2025-09-17T11:00:10.501121"
+    },
+    "reports/tearsheets/daily/2025-09-15.html": {
+      "sha256": "a529502a09ae6a737c5396ca22fc1bc6a0e0aef71ba5c4ff9aa81198d0964352",
+      "size_bytes": 1438,
+      "created_at": "2025-09-17T11:00:10.505130"
+    },
+    "reports/tearsheets/daily/2025-09-16.html": {
+      "sha256": "d6f746dece574d3e4d33f6967de780adda0651cec7880e1de6af8f77cf9d6bf0",
+      "size_bytes": 1438,
+      "created_at": "2025-09-17T11:00:10.508128"
+    },
+    "reports/execution/maker_taker_summary.json": {
+      "sha256": "8b1aa45fa5f831eea04dd67d7ddf86ee689dd621125c1f1e78008df7b8fe2220",
+      "size_bytes": 1624,
+      "created_at": "2025-09-17T11:00:10.511120"
+    },
+    "logs/latency/ws_ping.csv": {
+      "sha256": "2d69ca5b2ea3652c6b88b239923a572de56cdd70d352b8130a6b1ed0707fc3ac",
+      "size_bytes": 51081,
+      "created_at": "2025-09-17T11:00:10.542114"
+    },
+    "logs/latency/order_submit.csv": {
+      "sha256": "f50f58a4a2ec996f5e4bec2448cfe1db06d9d3c9e74bbbc24a14064452ab978e",
+      "size_bytes": 32277,
+      "created_at": "2025-09-17T11:00:10.559115"
+    },
+    "reports/arb/arb_trades.parquet": {
+      "sha256": "3e20d69846d6c61055aded311b4a3c36554c7f0adc90c5d4d9e0a0a6efb864bb",
+      "size_bytes": 10134,
+      "created_at": "2025-09-17T11:00:10.662114"
+    },
+    "reports/scale_tests/impact_curves.json": {
+      "sha256": "c0944f00c5b5545fe19e8791103307125565349bd187c5bced83c14f8eade91e",
+      "size_bytes": 376,
+      "created_at": "2025-09-17T11:00:10.696113"
+    },
+    "reports/scale_tests/margin_scenarios.json": {
+      "sha256": "28ae2166a949af4436ce8310f3c8b88f13865793fe5535445673990acf51f055",
+      "size_bytes": 448,
+      "created_at": "2025-09-17T11:00:10.700121"
+    },
+    "reports/pnl_attribution/attribution.parquet": {
+      "sha256": "0be0b5596dfc9c5b46c526525efbf4f1d775dc0a760b3f1a4fa2ce2cd8ad074e",
+      "size_bytes": 18811,
+      "created_at": "2025-09-17T11:00:10.711119"
     }
   }
 }
