@@ -16,6 +16,7 @@ import logging
 from hyperliquid_sdk.utils.signing import OrderType
 from src.core.utils.config_manager import ConfigManager
 from src.core.utils.emergency_handler import EmergencyHandler
+from src.core.utils.decimal_normalizer import decimal_safe
 import math
 
 class HyperliquidAPI:
@@ -370,6 +371,7 @@ class HyperliquidAPI:
                 'px_decimals': 2
             }
 
+    @decimal_safe
     def validate_and_round_order(self, asset_id: int, quantity: float, price: float):
         asset = self.get_asset_metadata(asset_id)
         tick = asset["tick_size"]
@@ -509,6 +511,7 @@ class HyperliquidAPI:
         
         return rounded_qty, rounded_price
 
+    @decimal_safe
     def place_order(self, symbol, side, quantity, price, order_type='limit', time_in_force='Gtc', reduce_only=False):
         """Place an order with smart fallback and error handling"""
         try:

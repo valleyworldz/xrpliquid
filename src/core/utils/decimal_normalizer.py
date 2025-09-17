@@ -18,6 +18,10 @@ getcontext().rounding = ROUND_HALF_EVEN
 # Clear traps to prevent exceptions
 getcontext().clear_traps()
 
+# Log decimal normalizer activation
+import logging
+logging.getLogger(__name__).info("🔢 DECIMAL_NORMALIZER_ACTIVE: context=ROUND_HALF_EVEN, precision=10")
+
 class DecimalNormalizer:
     """
     Comprehensive decimal normalization system to eliminate float/Decimal type errors
