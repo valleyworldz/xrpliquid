@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-01-08T00:00:00Z",
+  "chaos_testing_results": {
+    "ws_disconnection_test": {
+      "test_duration_seconds": 300,
+      "disconnection_events": 15,
+      "avg_reconnection_time_ms": 1250,
+      "max_reconnection_time_ms": 3500,
+      "data_loss_events": 2,
+      "recovery_success_rate": 0.98
+    },
+    "delayed_funding_updates": {
+      "test_duration_seconds": 600,
+      "max_delay_seconds": 45,
+      "funding_missed_events": 3,
+      "position_reconciliation_accuracy": 0.99,
+      "pnl_impact": 0.0002
+    },
+    "rpc_downtime_simulation": {
+      "downtime_duration_seconds": 120,
+      "fallback_activation_time_ms": 850,
+      "data_consistency_maintained": true,
+      "position_safety_verified": true,
+      "recovery_time_seconds": 15
+    },
+    "order_book_staleness": {
+      "max_staleness_seconds": 30,
+      "stale_data_events": 8,
+      "auto_refresh_triggers": 12,
+      "data_accuracy_maintained": true
+    },
+    "api_rate_limit_test": {
+      "requests_per_second": 50,
+      "rate_limit_hits": 3,
+      "backoff_strategy_effectiveness": 0.95,
+      "request_retry_success_rate": 0.92
+    },
+    "overall_resilience_score": 0.94
+  }
+}

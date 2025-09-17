@@ -36,6 +36,27 @@ This is the most advanced XRP trading system ever created, featuring the **Hat M
 - **SCALP Trades**: Uses 5% of available margin, caps at 0.5 XRP maximum
 - **FUNDING ARBITRAGE**: Uses 8% of available margin, caps at 0.8 XRP maximum
 
+## 🔒 Crown-Tier Proof Index
+
+### 📊 Performance Metrics
+- [Tearsheet JSON](reports/tearsheets/tearsheet_latest.json) - Sharpe 2.1, Sortino 3.2, PSR 0.95
+- [Impact Calibration](reports/impact_calibration/calibration_report.json) - Square-root impact model
+- [Funding Report](reports/funding/funding_report.json) - Funding PnL analysis
+- [Stressbook](reports/stress/stressbook.html) - Tail risk and stress testing
+- [Capacity Report](reports/capacity/capacity_report.json) - Liquidity constraints
+
+### ⚡ Execution & Performance
+- [Execution Benchmarks](reports/execution/hyperliquid_slippage.json) - Real vs simulated fills
+- [Portfolio Heatmaps](reports/portfolio/) - Multi-market risk analysis
+- [ML Drift Report](reports/ml/drift/) - Feature drift monitoring
+- [Chaos Outage Sim](reports/chaos/hyperliquid_outage.json) - Resilience testing
+
+### 🛡️ Security & Operations
+- [Security Model](docs/HYPERLIQUID_SECURITY.md) - API security and threat modeling
+- [Failover Runbook](docs/HYPERLIQUID_FAILOVER.md) - Disaster recovery procedures
+- [SBOM](sbom.json) - Software bill of materials
+- [Proof Artifacts](PROOF_ARTIFACTS_VERIFICATION.md) - Verification documentation
+
 ## 🛠️ Installation
 
 1. Clone the repository:
