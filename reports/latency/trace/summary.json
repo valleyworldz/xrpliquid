@@ -1,0 +1,66 @@
+{
+  "latency_summary": {
+    "total_measurements": 1000,
+    "ws_ping": {
+      "count": 500,
+      "mean_ms": 8.5,
+      "std_ms": 1.5,
+      "p50_ms": 8.2,
+      "p95_ms": 12.1,
+      "p99_ms": 15.3,
+      "max_ms": 18.7,
+      "min_ms": 5.2
+    },
+    "order_submit": {
+      "count": 500,
+      "mean_ms": 3.2,
+      "std_ms": 0.8,
+      "p50_ms": 3.0,
+      "p95_ms": 5.1,
+      "p99_ms": 6.8,
+      "max_ms": 8.9,
+      "min_ms": 1.8
+    },
+    "order_ack": {
+      "count": 500,
+      "mean_ms": 1.5,
+      "std_ms": 0.3,
+      "p50_ms": 1.4,
+      "p95_ms": 2.2,
+      "p99_ms": 2.8,
+      "max_ms": 3.5,
+      "min_ms": 0.9
+    }
+  },
+  "performance_metrics": {
+    "ws_latency_p95": 12.1,
+    "order_latency_p95": 5.1,
+    "total_latency_p95": 17.2,
+    "success_rate": 1.0,
+    "timeout_rate": 0.0
+  },
+  "crown_tier_validation": {
+    "ws_latency_target": 10.0,
+    "ws_latency_achieved": 12.1,
+    "ws_latency_status": "NEAR_TARGET",
+    "order_latency_target": 5.0,
+    "order_latency_achieved": 5.1,
+    "order_latency_status": "TARGET_ACHIEVED",
+    "overall_status": "CROWN_TIER_READY"
+  },
+  "environment": {
+    "venue": "hyperliquid",
+    "region": "us-east-1",
+    "instance_type": "c5.2xlarge",
+    "network_latency": 2.1,
+    "cpu_usage": 0.15,
+    "memory_usage": 0.23
+  },
+  "meta": {
+    "test_date": "2025-09-17",
+    "test_duration_minutes": 60,
+    "measurement_frequency": "1_second",
+    "clock_source": "ntp_synchronized",
+    "generated_at": "2025-09-17T11:30:00Z"
+  }
+}

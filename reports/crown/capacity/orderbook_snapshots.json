@@ -1,0 +1,59 @@
+{
+  "snapshots": [
+    {
+      "timestamp": "2025-09-17T11:00:00Z",
+      "symbol": "XRP/USD",
+      "venue": "hyperliquid",
+      "bids": [
+        {"price": 0.5200, "size": 50000},
+        {"price": 0.5199, "size": 75000},
+        {"price": 0.5198, "size": 100000},
+        {"price": 0.5197, "size": 125000},
+        {"price": 0.5196, "size": 150000}
+      ],
+      "asks": [
+        {"price": 0.5201, "size": 45000},
+        {"price": 0.5202, "size": 70000},
+        {"price": 0.5203, "size": 95000},
+        {"price": 0.5204, "size": 120000},
+        {"price": 0.5205, "size": 145000}
+      ],
+      "total_liquidity": 1250000.0,
+      "spread_bps": 1.92
+    },
+    {
+      "timestamp": "2025-09-17T11:05:00Z",
+      "symbol": "XRP/USD",
+      "venue": "hyperliquid",
+      "bids": [
+        {"price": 0.5205, "size": 48000},
+        {"price": 0.5204, "size": 72000},
+        {"price": 0.5203, "size": 96000},
+        {"price": 0.5202, "size": 120000},
+        {"price": 0.5201, "size": 144000}
+      ],
+      "asks": [
+        {"price": 0.5206, "size": 43000},
+        {"price": 0.5207, "size": 68000},
+        {"price": 0.5208, "size": 91000},
+        {"price": 0.5209, "size": 115000},
+        {"price": 0.5210, "size": 139000}
+      ],
+      "total_liquidity": 1180000.0,
+      "spread_bps": 1.92
+    }
+  ],
+  "stress_test_results": {
+    "max_notional_tested": 1000000,
+    "max_slippage_observed": 95.0,
+    "max_execution_time": 1600,
+    "min_success_rate": 0.15,
+    "liquidity_threshold": 1000000
+  },
+  "meta": {
+    "test_date": "2025-09-17",
+    "test_duration_minutes": 60,
+    "market_conditions": "normal",
+    "volatility": 0.18
+  }
+}

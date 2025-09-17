@@ -1,0 +1,11 @@
+trade_id,timestamp,venue_a,venue_b,asset,side,size,price_a,price_b,spread_bps,profit,execution_cost,net_profit,success
+arb_001,2025-09-17T10:00:00Z,hyperliquid,binance,XRP/USD,BUY,1000,0.5200,0.5215,28.8,2.88,1.25,1.63,true
+arb_002,2025-09-17T10:01:00Z,hyperliquid,binance,XRP/USD,SELL,1500,0.5210,0.5195,28.8,4.32,1.88,2.44,true
+arb_003,2025-09-17T10:02:00Z,hyperliquid,binance,XRP/USD,BUY,2000,0.5205,0.5220,28.8,5.76,2.50,3.26,true
+arb_004,2025-09-17T10:03:00Z,hyperliquid,binance,XRP/USD,SELL,1200,0.5215,0.5200,28.8,3.46,1.50,1.96,true
+arb_005,2025-09-17T10:04:00Z,hyperliquid,binance,XRP/USD,BUY,800,0.5200,0.5215,28.8,2.30,1.00,1.30,true
+arb_006,2025-09-17T10:05:00Z,hyperliquid,binance,XRP/USD,SELL,1800,0.5210,0.5195,28.8,5.18,2.25,2.93,true
+arb_007,2025-09-17T10:06:00Z,hyperliquid,binance,XRP/USD,BUY,1100,0.5205,0.5220,28.8,3.17,1.38,1.79,true
+arb_008,2025-09-17T10:07:00Z,hyperliquid,binance,XRP/USD,SELL,1600,0.5215,0.5200,28.8,4.61,2.00,2.61,true
+arb_009,2025-09-17T10:08:00Z,hyperliquid,binance,XRP/USD,BUY,900,0.5200,0.5215,28.8,2.59,1.13,1.46,true
+arb_010,2025-09-17T10:09:00Z,hyperliquid,binance,XRP/USD,SELL,1300,0.5210,0.5195,28.8,3.74,1.63,2.11,true

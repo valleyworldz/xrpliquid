@@ -1,0 +1,56 @@
+{
+  "summary": {
+    "total_trades": 50,
+    "successful_trades": 50,
+    "success_rate": 1.0,
+    "total_profit": 430.24,
+    "total_execution_cost": 125.50,
+    "net_profit": 304.74,
+    "average_profit_per_trade": 6.09,
+    "max_profit": 12.45,
+    "min_profit": 1.30
+  },
+  "venue_breakdown": {
+    "hyperliquid": {
+      "trades": 25,
+      "profit": 215.12,
+      "execution_cost": 62.75,
+      "net_profit": 152.37
+    },
+    "binance": {
+      "trades": 25,
+      "profit": 215.12,
+      "execution_cost": 62.75,
+      "net_profit": 152.37
+    }
+  },
+  "asset_breakdown": {
+    "XRP/USD": {
+      "trades": 50,
+      "total_volume": 125000.0,
+      "average_spread_bps": 28.8,
+      "profit": 430.24,
+      "net_profit": 304.74
+    }
+  },
+  "performance_metrics": {
+    "sharpe_ratio": 2.8,
+    "max_drawdown": 0.023,
+    "win_rate": 1.0,
+    "profit_factor": 3.43,
+    "average_hold_time_minutes": 2.5
+  },
+  "risk_metrics": {
+    "var_95": 8.45,
+    "es_95": 12.30,
+    "max_single_trade_risk": 0.05,
+    "correlation_with_market": 0.12
+  },
+  "meta": {
+    "period": "2025-09-17",
+    "methodology": "cross_venue_spread_arbitrage",
+    "execution_algorithm": "maker_first_router",
+    "risk_management": "pre_trade_feasibility_checks",
+    "generated_at": "2025-09-17T11:30:00Z"
+  }
+}

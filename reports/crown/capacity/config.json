@@ -1,0 +1,27 @@
+{
+  "stress_test_config": {
+    "max_notional": 1000000,
+    "increment_size": 100000,
+    "test_duration_minutes": 60,
+    "market_conditions": ["normal", "high_volatility", "low_liquidity"],
+    "execution_strategy": "twap_vwap_hybrid"
+  },
+  "risk_limits": {
+    "max_slippage_bps": 100,
+    "max_execution_time_ms": 2000,
+    "min_success_rate": 0.1,
+    "max_market_impact_bps": 100
+  },
+  "monitoring": {
+    "real_time_alerts": true,
+    "position_tracking": true,
+    "slippage_monitoring": true,
+    "execution_quality": true
+  },
+  "data_collection": {
+    "orderbook_snapshots": true,
+    "trade_execution_logs": true,
+    "slippage_measurements": true,
+    "market_impact_calculation": true
+  }
+}

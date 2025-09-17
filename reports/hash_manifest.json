@@ -65,6 +65,83 @@
       "sha256": "0be0b5596dfc9c5b46c526525efbf4f1d775dc0a760b3f1a4fa2ce2cd8ad074e",
       "size_bytes": 18811,
       "created_at": "2025-09-17T11:00:10.711119"
+    },
+    "reports/risk/var_es.json": {
+      "sha256": "cd2db8720067b072a5bf7ddd2132c7ab75e563055c9f2c56b900d448e7b29f3e",
+      "size_bytes": 1488,
+      "created_at": "2025-09-16T09:36:18.333062"
+    },
+    "reports/reconciliation/exchange_vs_ledger.json": {
+      "sha256": "db89ff74ef7acdc62ea768a27173b21d81bd2aa03574c17a41d85e3a465f65db",
+      "size_bytes": 1815,
+      "created_at": "2025-09-16T09:35:37.297623"
+    },
+    "reports/crown/arbitrage/trades.csv": {
+      "sha256": "07c037867b28035bacf99a772bc823e89bae3831f6f1d803726c0b98c6804af9",
+      "size_bytes": 1183,
+      "created_at": "2025-09-17T11:47:43.924653"
+    },
+    "reports/crown/arbitrage/pnl_summary.json": {
+      "sha256": "63d8a3067dd6e45cc3df12ce5d2c95d721853edd15e97cc92c072f0c8a7fe8a8",
+      "size_bytes": 1352,
+      "created_at": "2025-09-17T11:48:02.846417"
+    },
+    "reports/crown/arbitrage/methodology.md": {
+      "sha256": "f1ba43c5a463a0828a06777c880a09ad1429ea537d5ee2c6abe3d38c6dd968ba",
+      "size_bytes": 1792,
+      "created_at": "2025-09-17T11:48:22.481318"
+    },
+    "reports/crown/capacity/slippage_curves.csv": {
+      "sha256": "ade2a95cafbc26cc4736078dd1161be168ffb23413aeca505c78b289ee1fd913",
+      "size_bytes": 283,
+      "created_at": "2025-09-17T11:48:41.750751"
+    },
+    "reports/crown/capacity/orderbook_snapshots.json": {
+      "sha256": "2c2b9555947588c5e0f6183cd9ca3cd6e53a363f3b4492a592c4addd7d57af75",
+      "size_bytes": 1715,
+      "created_at": "2025-09-17T11:48:59.885886"
+    },
+    "reports/crown/capacity/config.json": {
+      "sha256": "5037d32ccb1d709a030affc96143023b075e681d86c6fec04a890ba63defc0d6",
+      "size_bytes": 736,
+      "created_at": "2025-09-17T11:49:23.236490"
+    },
+    "reports/crown/audits/quant_fund_auditor_report.html": {
+      "sha256": "9c1053aff264d2728817d8f02638c1164d7a15b24fd1ab420f447c3707a1855e",
+      "size_bytes": 4656,
+      "created_at": "2025-09-17T11:49:47.214295"
+    },
+    "reports/crown/attribution/per_trade_ledger.csv": {
+      "sha256": "bb05d87ada4e3010a6a2a8aee807ec8239c29290460ac23ce0f58ee03159a333",
+      "size_bytes": 1134,
+      "created_at": "2025-09-17T11:50:18.519207"
+    },
+    "reports/crown/attribution/six_component_breakdown.json": {
+      "sha256": "4301dd79008d190b792abc3b521b389237f28a78573e255c43a49af584f1e1ed",
+      "size_bytes": 2148,
+      "created_at": "2025-09-17T11:50:43.919543"
+    },
+    "reports/crown/attribution/reconciliation_proof.py": {
+      "sha256": "e24ea6199707266f997bca9371306270032f9ec0ecc4606bba19b97cf4684f16",
+      "size_bytes": 2788,
+      "created_at": "2025-09-17T11:51:09.818702"
+    },
+    "reports/latency/trace/raw_traces.csv": {
+      "sha256": "b203f550b1df57e877835123598966f6cad21014cccb338c22099911d73ace7a",
+      "size_bytes": 1021,
+      "created_at": "2025-09-17T11:51:41.032221"
+    },
+    "reports/latency/trace/summary.json": {
+      "sha256": "2d92ab34f8de8276997411dd6e727611a2306d03fe0bdf9142ee495b553f59d4",
+      "size_bytes": 1570,
+      "created_at": "2025-09-17T11:52:10.160893"
+    },
+    "reports/tests/decimal_discipline_proof.txt": {
+      "sha256": "dcef57775253b11afdeeabe49009ead3ca92cffd326239bb39a2f08431558d9b",
+      "size_bytes": 1924,
+      "created_at": "2025-09-17T11:52:34.388530"
     }
-  }
+  },
+  "last_updated": "2025-09-17T11:53:34.016534",
+  "total_artifacts": 28
 }

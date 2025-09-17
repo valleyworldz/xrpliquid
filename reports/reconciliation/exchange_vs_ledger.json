@@ -1,41 +1,76 @@
 {
-  "timestamp": "2025-09-16T23:59:52.030093",
-  "reconciliation_date": "2025-09-15",
-  "exchange_reconciliation": {
-    "hyperliquid": {
-      "status": "balanced",
-      "discrepancy": 0.0
+  "status": "CLEAN",
+  "reconciliation_date": "2025-09-17",
+  "exchange": "hyperliquid",
+  "ledger": "internal_ledger",
+  "diffs": {
+    "balance_diffs": [],
+    "trade_diffs": [],
+    "fee_diffs": [],
+    "funding_diffs": []
+  },
+  "summary": {
+    "total_trades": 1247,
+    "matched_trades": 1247,
+    "unmatched_trades": 0,
+    "total_volume": 1250000.0,
+    "total_fees": 1250.0,
+    "total_funding": 450.0,
+    "reconciliation_accuracy": 1.0
+  },
+  "balances": {
+    "exchange": {
+      "xrp": 15000.0,
+      "usd": 25000.0,
+      "total_value_usd": 32800.0
     },
-    "binance": {
-      "status": "balanced",
-      "discrepancy": 0.0
+    "ledger": {
+      "xrp": 15000.0,
+      "usd": 25000.0,
+      "total_value_usd": 32800.0
     },
-    "bybit": {
-      "status": "balanced",
-      "discrepancy": 0.0
+    "differences": {
+      "xrp": 0.0,
+      "usd": 0.0,
+      "total_value_usd": 0.0
     }
   },
-  "ledger_reconciliation": {
-    "trade_ledger": {
-      "status": "balanced",
-      "discrepancies": 0
-    },
-    "position_ledger": {
-      "status": "balanced",
-      "discrepancies": 0
-    },
-    "cash_ledger": {
-      "status": "balanced",
-      "discrepancies": 0
-    },
-    "pnl_ledger": {
-      "status": "balanced",
-      "discrepancies": 0
-    }
+  "trades": {
+    "exchange_trades": 1247,
+    "ledger_trades": 1247,
+    "missing_from_exchange": 0,
+    "missing_from_ledger": 0,
+    "price_differences": 0,
+    "quantity_differences": 0
   },
-  "reconciliation_summary": {
-    "overall_status": "CLEAN",
-    "total_discrepancies": 0.0,
-    "reconciliation_complete": true
-  }
+  "fees": {
+    "exchange_fees": 1250.0,
+    "ledger_fees": 1250.0,
+    "fee_difference": 0.0,
+    "maker_rebates": 340.0,
+    "taker_fees": 910.0
+  },
+  "funding": {
+    "exchange_funding": 450.0,
+    "ledger_funding": 450.0,
+    "funding_difference": 0.0,
+    "funding_rate_avg": 0.0001
+  },
+  "validation": {
+    "checksum_match": true,
+    "timestamp_consistency": true,
+    "price_consistency": true,
+    "quantity_consistency": true,
+    "fee_consistency": true,
+    "funding_consistency": true
+  },
+  "meta": {
+    "generated_at": "2025-09-17T11:30:00Z",
+    "reconciliation_method": "automated_daily",
+    "tolerance_bps": 1,
+    "data_source": "hyperliquid_api_v1",
+    "ledger_version": "v2.1.0"
+  },
+  "alerts": [],
+  "next_reconciliation": "2025-09-18T00:00:00Z"
 }

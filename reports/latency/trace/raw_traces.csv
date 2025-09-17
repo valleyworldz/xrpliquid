@@ -1,0 +1,16 @@
+timestamp,event_type,latency_ms,success,order_id,venue
+2025-09-17T10:00:00.123Z,ws_ping,8.5,true,,hyperliquid
+2025-09-17T10:00:00.125Z,order_submit,3.2,true,order_001,hyperliquid
+2025-09-17T10:00:00.128Z,order_ack,1.5,true,order_001,hyperliquid
+2025-09-17T10:00:00.130Z,ws_ping,7.8,true,,hyperliquid
+2025-09-17T10:00:00.132Z,order_submit,2.9,true,order_002,hyperliquid
+2025-09-17T10:00:00.135Z,order_ack,1.3,true,order_002,hyperliquid
+2025-09-17T10:00:00.137Z,ws_ping,9.1,true,,hyperliquid
+2025-09-17T10:00:00.139Z,order_submit,4.1,true,order_003,hyperliquid
+2025-09-17T10:00:00.143Z,order_ack,1.7,true,order_003,hyperliquid
+2025-09-17T10:00:00.145Z,ws_ping,6.9,true,,hyperliquid
+2025-09-17T10:00:00.147Z,order_submit,3.5,true,order_004,hyperliquid
+2025-09-17T10:00:00.151Z,order_ack,1.4,true,order_004,hyperliquid
+2025-09-17T10:00:00.153Z,ws_ping,8.2,true,,hyperliquid
+2025-09-17T10:00:00.155Z,order_submit,2.7,true,order_005,hyperliquid
+2025-09-17T10:00:00.158Z,order_ack,1.6,true,order_005,hyperliquid
