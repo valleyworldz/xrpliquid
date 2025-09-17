@@ -1,0 +1,28 @@
+[
+  {
+    "timestamp": "2025-09-16T23:14:28.527048",
+    "status": "critical",
+    "cpu_percent": 33.1,
+    "memory_percent": 71.4,
+    "disk_usage": 78.4,
+    "network_latency": 113.61575126647949,
+    "api_response_time": 63.67349624633789,
+    "ws_connected": true,
+    "last_trade_time": "2025-09-16T23:14:28.527048",
+    "error_count": 0,
+    "uptime_seconds": 1.1838903427124023
+  },
+  {
+    "timestamp": "2025-09-16T23:14:31.713442",
+    "status": "critical",
+    "cpu_percent": 42.9,
+    "memory_percent": 71.5,
+    "disk_usage": 78.4,
+    "network_latency": 113.65079879760742,
+    "api_response_time": 63.658714294433594,
+    "ws_connected": true,
+    "last_trade_time": "2025-09-16T23:14:31.713442",
+    "error_count": 0,
+    "uptime_seconds": 4.370283842086792
+  }
+]

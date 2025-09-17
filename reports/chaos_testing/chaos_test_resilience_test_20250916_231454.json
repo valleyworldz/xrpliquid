@@ -1,0 +1,61 @@
+{
+  "test_name": "resilience_test",
+  "start_time": "2025-09-16T23:14:39.136206",
+  "end_time": "2025-09-16T23:14:54.206668",
+  "events": [
+    {
+      "event_type": "api_downtime",
+      "duration": 5.0,
+      "intensity": 0.8,
+      "timestamp": "2025-09-16T23:14:39.136206",
+      "description": "Simulate API downtime for 5 seconds",
+      "recovery_time": 0.1,
+      "success": true
+    },
+    {
+      "event_type": "latency_spike",
+      "duration": 3.0,
+      "intensity": 0.6,
+      "timestamp": "2025-09-16T23:14:39.136206",
+      "description": "Simulate latency spike for 3 seconds",
+      "recovery_time": 0.05,
+      "success": true
+    },
+    {
+      "event_type": "memory_pressure",
+      "duration": 2.0,
+      "intensity": 0.4,
+      "timestamp": "2025-09-16T23:14:39.136206",
+      "description": "Simulate memory pressure for 2 seconds",
+      "recovery_time": 0.1,
+      "success": true
+    }
+  ],
+  "total_events": 3,
+  "successful_recoveries": 3,
+  "failed_recoveries": 0,
+  "average_recovery_time": 0.08333333333333333,
+  "system_health_before": {
+    "timestamp": "2025-09-16T23:14:39.136206",
+    "cpu_percent": 0.0,
+    "memory_percent": 71.4,
+    "disk_percent": 78.4,
+    "load_average": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "system_health_after": {
+    "timestamp": "2025-09-16T23:14:54.206668",
+    "cpu_percent": 11.4,
+    "memory_percent": 70.2,
+    "disk_percent": 78.4,
+    "load_average": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "passed": true
+}

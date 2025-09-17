@@ -1,0 +1,183 @@
+{
+  "bandit_stats": {
+    "counts": [
+      19.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "values": [
+      99.63426557431738,
+      12.030925483985534,
+      0.0,
+      0.0
+    ],
+    "best_arm": 0,
+    "exploration_rate": 0.1
+  },
+  "performance_history": [
+    {
+      "pnl": 77.87080385080132,
+      "risk_adjusted_return": 672.3547017194387,
+      "drawdown_penalty": -0.15667851806692443,
+      "consistency_bonus": 0.0,
+      "total_reward": 67.85749969238496,
+      "timestamp": "2025-09-16T23:21:01.014634"
+    },
+    {
+      "pnl": 93.72090999676263,
+      "risk_adjusted_return": 901.1503591698597,
+      "drawdown_penalty": -0.19576432041498343,
+      "consistency_bonus": 0.0,
+      "total_reward": 90.85648069653863,
+      "timestamp": "2025-09-16T23:21:01.016678"
+    },
+    {
+      "pnl": 120.2514205636599,
+      "risk_adjusted_return": 1552.5848961236395,
+      "drawdown_penalty": -0.06573548038825688,
+      "consistency_bonus": 0.0,
+      "total_reward": 156.3952683376123,
+      "timestamp": "2025-09-16T23:21:01.017689"
+    },
+    {
+      "pnl": 102.42119944255876,
+      "risk_adjusted_return": 1193.9192964675926,
+      "drawdown_penalty": -0.10688680132950729,
+      "consistency_bonus": 0.0,
+      "total_reward": 120.30925483985534,
+      "timestamp": "2025-09-16T23:21:01.018674"
+    },
+    {
+      "pnl": 18.86446331160927,
+      "risk_adjusted_return": 937.479518583717,
+      "drawdown_penalty": -0.1525004474904504,
+      "consistency_bonus": 0.0,
+      "total_reward": 93.78409604399735,
+      "timestamp": "2025-09-16T23:21:01.019683"
+    },
+    {
+      "pnl": 82.94247295271214,
+      "risk_adjusted_return": 1152.9164936656439,
+      "drawdown_penalty": -0.05347135418262345,
+      "consistency_bonus": 0.0,
+      "total_reward": 116.0676027419089,
+      "timestamp": "2025-09-16T23:21:01.020673"
+    },
+    {
+      "pnl": 122.69710840582962,
+      "risk_adjusted_return": 6871.688848094691,
+      "drawdown_penalty": -0.13515990695026692,
+      "consistency_bonus": 0.0,
+      "total_reward": 688.260695986577,
+      "timestamp": "2025-09-16T23:21:01.021633"
+    },
+    {
+      "pnl": 27.350737992366874,
+      "risk_adjusted_return": 731.8369469136273,
+      "drawdown_penalty": -0.18760498969418993,
+      "consistency_bonus": 0.0,
+      "total_reward": 73.26959708159221,
+      "timestamp": "2025-09-16T23:21:01.023635"
+    },
+    {
+      "pnl": 28.203924992873056,
+      "risk_adjusted_return": 659.6434138087538,
+      "drawdown_penalty": -0.0646742742007241,
+      "consistency_bonus": 0.0,
+      "total_reward": 66.18170635660339,
+      "timestamp": "2025-09-16T23:21:01.024633"
+    },
+    {
+      "pnl": 122.62199021522252,
+      "risk_adjusted_return": 4661.5061143115,
+      "drawdown_penalty": -0.15082894077438025,
+      "consistency_bonus": 0.0,
+      "total_reward": 467.2260023925279,
+      "timestamp": "2025-09-16T23:21:01.025633"
+    },
+    {
+      "pnl": 130.70873263533116,
+      "risk_adjusted_return": 1550.7508064626995,
+      "drawdown_penalty": -0.12857380281195183,
+      "consistency_bonus": 0.0,
+      "total_reward": 156.25359416981132,
+      "timestamp": "2025-09-16T23:21:01.069608"
+    },
+    {
+      "pnl": -44.61166882454188,
+      "risk_adjusted_return": -688.2710419297305,
+      "drawdown_penalty": -0.04077172884932323,
+      "consistency_bonus": 0.05081259278703046,
+      "total_reward": -69.26318001728077,
+      "timestamp": "2025-09-16T23:21:01.071577"
+    },
+    {
+      "pnl": 87.60032150453006,
+      "risk_adjusted_return": 3674.483493166038,
+      "drawdown_penalty": -0.10267378892764155,
+      "consistency_bonus": 0.02905047143835803,
+      "total_reward": 368.25072921415983,
+      "timestamp": "2025-09-16T23:21:01.072578"
+    },
+    {
+      "pnl": 34.68794799328485,
+      "risk_adjusted_return": 1247.8133124497078,
+      "drawdown_penalty": -0.11381813943376,
+      "consistency_bonus": 0.028655769504277853,
+      "total_reward": 125.04304835497416,
+      "timestamp": "2025-09-16T23:21:01.072578"
+    },
+    {
+      "pnl": 52.84122527589521,
+      "risk_adjusted_return": 582.2836792585251,
+      "drawdown_penalty": -0.08163543705327328,
+      "consistency_bonus": 0.022476227355629198,
+      "total_reward": 58.69762096891383,
+      "timestamp": "2025-09-16T23:21:01.073578"
+    },
+    {
+      "pnl": 128.71644349557943,
+      "risk_adjusted_return": 1451.3826984462064,
+      "drawdown_penalty": -0.11475664841582427,
+      "consistency_bonus": 0.028396479673202014,
+      "total_reward": 146.33907411083382,
+      "timestamp": "2025-09-16T23:21:01.074577"
+    },
+    {
+      "pnl": 4.045327543738743,
+      "risk_adjusted_return": 34.08895881216871,
+      "drawdown_penalty": -0.195936170131227,
+      "consistency_bonus": 0.028374254568813095,
+      "total_reward": 3.2817872410918447,
+      "timestamp": "2025-09-16T23:21:01.075617"
+    },
+    {
+      "pnl": -1.7348085077978368,
+      "risk_adjusted_return": -27.617321927643424,
+      "drawdown_penalty": -0.14934679508174886,
+      "consistency_bonus": 0.015598012315838928,
+      "total_reward": -2.912829060608231,
+      "timestamp": "2025-09-16T23:21:01.077578"
+    },
+    {
+      "pnl": 45.608180054623745,
+      "risk_adjusted_return": 817.5626652313591,
+      "drawdown_penalty": -0.17103134560126443,
+      "consistency_bonus": 0.008746579033985735,
+      "total_reward": 82.05006355711488,
+      "timestamp": "2025-09-16T23:21:01.078579"
+    },
+    {
+      "pnl": 20.46379086117244,
+      "risk_adjusted_return": 389.63620618893094,
+      "drawdown_penalty": -0.1954890485442221,
+      "consistency_bonus": 0.012020638651970384,
+      "total_reward": 38.98479011761256,
+      "timestamp": "2025-09-16T23:21:01.080619"
+    }
+  ],
+  "total_trades": 20,
+  "winning_trades": 18,
+  "timestamp": "2025-09-16T23:21:01.091580"
+}
