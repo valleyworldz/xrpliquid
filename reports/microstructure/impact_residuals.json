@@ -1,55 +1,74 @@
 {
-  "timestamp": "2025-09-16T18:30:00.000Z",
+  "timestamp": "2025-09-16T20:45:00.000Z",
   "impact_model": {
-    "model_type": "power_law_impact",
-    "parameters": {
-      "alpha": 0.5,
-      "beta": 0.75,
-      "gamma": 0.25
-    },
-    "calibration_period": "2025-08-01 to 2025-09-16",
-    "sample_size": 10000
-  },
-  "impact_analysis": {
-    "participation_rate_bps": [1, 5, 10, 20, 50, 100],
-    "expected_impact_bps": [0.1, 0.3, 0.6, 1.2, 2.5, 4.8],
-    "actual_impact_bps": [0.12, 0.28, 0.58, 1.15, 2.3, 4.6],
-    "residuals_bps": [0.02, -0.02, -0.02, -0.05, -0.2, -0.2],
-    "rmse_bps": 0.15,
-    "r_squared": 0.92
-  },
-  "depth_analysis": {
-    "depth_levels": [1, 2, 5, 10, 20],
-    "liquidity_available": [1000, 2500, 5000, 10000, 20000],
-    "impact_vs_depth": {
-      "1_level": 0.8,
-      "2_levels": 0.6,
-      "5_levels": 0.4,
-      "10_levels": 0.25,
-      "20_levels": 0.15
+    "model_type": "empirical_depth_based",
+    "calibration_period": "2025-01-01 to 2025-09-16",
+    "sample_size": 1250,
+    "r_squared": 0.847,
+    "model_parameters": {
+      "base_impact_bps": 0.8,
+      "depth_sensitivity": 0.15,
+      "participation_rate_coefficient": 0.25,
+      "volatility_adjustment": 0.12
     }
   },
-  "regime_analysis": {
-    "high_volatility": {
-      "impact_multiplier": 1.5,
-      "sample_size": 2500,
-      "rmse_bps": 0.22
+  "residuals_analysis": {
+    "mean_residual": 0.002,
+    "std_residual": 0.18,
+    "skewness": -0.12,
+    "kurtosis": 2.8,
+    "residual_percentiles": {
+      "p5": -0.28,
+      "p25": -0.12,
+      "p50": 0.001,
+      "p75": 0.13,
+      "p95": 0.31
+    }
+  },
+  "impact_by_size": {
+    "small_orders_0_1k": {
+      "avg_impact_bps": 0.6,
+      "residual_std": 0.15,
+      "sample_count": 450
     },
+    "medium_orders_1k_10k": {
+      "avg_impact_bps": 1.2,
+      "residual_std": 0.22,
+      "sample_count": 520
+    },
+    "large_orders_10k_plus": {
+      "avg_impact_bps": 2.8,
+      "residual_std": 0.35,
+      "sample_count": 280
+    }
+  },
+  "impact_by_regime": {
     "low_volatility": {
-      "impact_multiplier": 0.8,
-      "sample_size": 2500,
-      "rmse_bps": 0.12
+      "avg_impact_bps": 0.7,
+      "residual_std": 0.14,
+      "sample_count": 380
     },
     "normal_volatility": {
-      "impact_multiplier": 1.0,
-      "sample_size": 5000,
-      "rmse_bps": 0.15
+      "avg_impact_bps": 1.1,
+      "residual_std": 0.19,
+      "sample_count": 620
+    },
+    "high_volatility": {
+      "avg_impact_bps": 2.1,
+      "residual_std": 0.28,
+      "sample_count": 250
     }
   },
-  "validation_metrics": {
-    "out_of_sample_period": "2025-09-01 to 2025-09-16",
-    "oos_rmse_bps": 0.18,
-    "oos_r_squared": 0.89,
-    "model_stability": "stable"
+  "model_validation": {
+    "out_of_sample_r2": 0.823,
+    "mape": 0.156,
+    "last_calibration": "2025-09-16T15:30:00.000Z",
+    "next_recalibration": "2025-09-23T15:30:00.000Z"
+  },
+  "execution_quality_metrics": {
+    "avg_implementation_shortfall": 0.89,
+    "avg_slippage_vs_mid": 0.45,
+    "price_improvement_rate": 0.23,
+    "adverse_selection_cost": 0.12
   }
 }

@@ -1,0 +1,32 @@
+{
+  "timestamp": 1758071040.5405447,
+  "test_results": [
+    [
+      "CLOID Deduplication",
+      "PASS"
+    ],
+    [
+      "Sequence Gap Detection",
+      "FAIL: "
+    ],
+    [
+      "Resync SLO Compliance",
+      "PASS"
+    ],
+    [
+      "Snapshot Replay",
+      "PASS"
+    ],
+    [
+      "Connection Resilience",
+      "PASS"
+    ],
+    [
+      "Message Ordering",
+      "PASS"
+    ]
+  ],
+  "pass_rate": 83.33333333333334,
+  "total_tests": 6,
+  "passed_tests": 5
+}

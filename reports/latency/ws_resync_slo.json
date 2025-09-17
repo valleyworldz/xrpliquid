@@ -1,0 +1,7 @@
+{
+  "avg_resync_time_ms": 1.644134521484375,
+  "max_resync_time_ms": 1.7285346984863281,
+  "p95_resync_time_ms": 1.7285346984863281,
+  "slo_compliance": true,
+  "sample_count": 10
+}

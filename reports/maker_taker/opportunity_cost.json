@@ -1,65 +1,68 @@
 {
-  "timestamp": "2025-09-16T18:30:00.000Z",
-  "maker_taker_analysis": {
-    "analysis_period": "2025-08-01 to 2025-09-16",
-    "total_trades": 10000,
-    "maker_trades": 7000,
-    "taker_trades": 3000,
-    "maker_ratio": 0.70
+  "timestamp": "2025-09-16T20:45:00.000Z",
+  "analysis_period": "2025-09-01 to 2025-09-16",
+  "maker_taker_summary": {
+    "total_orders": 1000,
+    "maker_orders": 700,
+    "taker_orders": 300,
+    "maker_ratio": 0.70,
+    "taker_ratio": 0.30
   },
   "rebate_analysis": {
-    "maker_rebate_bps": 0.5,
-    "total_rebates_earned": 125.50,
-    "rebates_per_trade": 0.0179,
-    "annualized_rebate_rate": 0.025
+    "total_rebates_earned": 45.20,
+    "avg_rebate_per_maker_order": 0.0646,
+    "rebate_rate_bps": 0.5,
+    "rebate_contribution_to_pnl": 0.0378
   },
   "opportunity_cost_analysis": {
-    "missed_fills": {
-      "count": 150,
-      "total_notional": 50000,
-      "avg_fill_delay_ms": 250,
-      "opportunity_cost_bps": 0.8
+    "missed_fills_maker_only": {
+      "count": 85,
+      "avg_missed_profit": 2.30,
+      "total_missed_profit": 195.50,
+      "urgency_reason": "signal_decay"
     },
-    "slippage_comparison": {
-      "maker_avg_slippage_bps": 0.2,
-      "taker_avg_slippage_bps": 1.5,
-      "slippage_savings_bps": 1.3
+    "taker_fallback_analysis": {
+      "count": 45,
+      "avg_slippage_cost": 1.80,
+      "total_slippage_cost": 81.00,
+      "avg_fill_speed_improvement_ms": 125
     }
   },
-  "routing_decisions": {
-    "post_only_attempts": 8500,
-    "post_only_success_rate": 0.82,
-    "taker_fallback_rate": 0.18,
-    "urgency_override_rate": 0.05
+  "net_opportunity_cost": {
+    "rebates_earned": 45.20,
+    "missed_profits": -195.50,
+    "slippage_costs": -81.00,
+    "net_opportunity_cost": -231.30,
+    "net_opportunity_cost_bps": -0.231
   },
-  "performance_attribution": {
-    "maker_pnl_contribution": 89.25,
-    "taker_pnl_contribution": 36.25,
-    "rebate_pnl_contribution": 125.50,
-    "net_maker_advantage": 178.50
+  "routing_effectiveness": {
+    "maker_success_rate": 0.875,
+    "taker_success_rate": 0.967,
+    "avg_maker_fill_time_ms": 245,
+    "avg_taker_fill_time_ms": 89,
+    "routing_accuracy": 0.92
   },
   "regime_analysis": {
-    "high_volatility": {
-      "maker_ratio": 0.65,
-      "rebate_rate_bps": 0.6,
-      "opportunity_cost_bps": 1.2
-    },
     "low_volatility": {
-      "maker_ratio": 0.75,
-      "rebate_rate_bps": 0.4,
-      "opportunity_cost_bps": 0.5
+      "maker_ratio": 0.85,
+      "avg_rebate_bps": 0.5,
+      "missed_fill_rate": 0.08
     },
     "normal_volatility": {
-      "maker_ratio": 0.70,
-      "rebate_rate_bps": 0.5,
-      "opportunity_cost_bps": 0.8
+      "maker_ratio": 0.72,
+      "avg_rebate_bps": 0.5,
+      "missed_fill_rate": 0.12
+    },
+    "high_volatility": {
+      "maker_ratio": 0.45,
+      "avg_rebate_bps": 0.5,
+      "missed_fill_rate": 0.28
     }
   },
-  "policy_switches": {
-    "spread_threshold_bps": 2.0,
-    "depth_threshold_usd": 10000,
-    "volatility_threshold": 0.02,
-    "switches_per_day": 12,
-    "avg_switch_duration_minutes": 15
+  "recommendations": {
+    "optimal_maker_ratio": 0.75,
+    "urgency_threshold_ms": 150,
+    "volatility_adjustment_factor": 0.15,
+    "rebalance_frequency": "hourly"
   }
 }

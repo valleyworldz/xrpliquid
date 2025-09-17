@@ -1,0 +1,69 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Walk-Forward Analysis Summary</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                          color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+                .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+                               gap: 15px; margin-bottom: 20px; }
+                .metric-card { background: white; padding: 15px; border-radius: 8px; 
+                              box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+                .metric-value { font-size: 24px; font-weight: bold; color: #2E8B57; }
+                .metric-label { font-size: 12px; color: #666; margin-top: 5px; }
+                .section { background: white; margin: 20px 0; padding: 20px; border-radius: 10px; 
+                           box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .positive { color: #2E8B57; }
+                .negative { color: #DC143C; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>📊 Walk-Forward Analysis Summary</h1>
+                <p>Advanced Statistical Analysis with Deflated Sharpe & PSR</p>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value positive">-0.581</div>
+                    <div class="metric-label">Deflated Sharpe Ratio</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">100.0%</div>
+                    <div class="metric-label">PSR Confidence</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">0.984</div>
+                    <div class="metric-label">Sharpe Stability</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value positive">
+                        5.2%
+                    </div>
+                    <div class="metric-label">Sharpe Degradation</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>📈 Statistical Analysis</h3>
+                <p><strong>Average Test Sharpe:</strong> 1.705</p>
+                <p><strong>Sharpe Standard Deviation:</strong> 0.027</p>
+                <p><strong>Sharpe Range:</strong> 1.660 to 1.750</p>
+                <p><strong>Total Folds:</strong> 12</p>
+            </div>
+            
+            <div class="section">
+                <h3>🔬 Advanced Metrics</h3>
+                <p><strong>Deflated Sharpe:</strong> -0.581 (accounts for 12 trials)</p>
+                <p><strong>PSR Confidence:</strong> 100.0% (probability of positive Sharpe)</p>
+                <p><strong>Bias Term:</strong> 2.229</p>
+                <p><strong>Deflation Factor:</strong> 130.8%</p>
+            </div>
+        </body>
+        </html>
+        

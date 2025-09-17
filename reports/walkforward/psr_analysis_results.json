@@ -1,0 +1,32 @@
+{
+  "deflated_sharpe_analysis": {
+    "average_sharpe": 1.7049999999999998,
+    "deflated_sharpe": -0.5810510385561861,
+    "bias_term": 2.2293078072747154,
+    "n_trials": 12,
+    "standard_error": 0.00777281587757402,
+    "deflation_factor": 1.3075119104250532
+  },
+  "probabilistic_sharpe_analysis": {
+    "probabilistic_sharpe_ratio": 1.0,
+    "benchmark_sharpe": 0.0,
+    "z_score": 35.27405870756601,
+    "n_observations": 719,
+    "skewness": 1.2342863628771904e-14,
+    "kurtosis": 1.9322235434007133,
+    "confidence_level": 100.0
+  },
+  "stability_metrics": {
+    "sharpe_stability": 0.9842077278383152,
+    "return_stability": 0.9700690356590266,
+    "sharpe_degradation": 0.05233904585456234
+  },
+  "fold_statistics": {
+    "total_folds": 12,
+    "avg_train_sharpe": 1.7991666666666666,
+    "avg_test_sharpe": 1.7049999999999998,
+    "sharpe_std": 0.026925824035672546,
+    "min_test_sharpe": 1.66,
+    "max_test_sharpe": 1.75
+  }
+}
