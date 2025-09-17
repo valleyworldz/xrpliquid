@@ -5,6 +5,8 @@ Utility Functions
 Common utility functions for price normalization, tick alignment, and calculations.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import List, Optional, Tuple, Dict, Any
 from decimal import Decimal, ROUND_HALF_UP, ROUND_CEILING, ROUND_FLOOR
@@ -33,19 +35,19 @@ def align_price_to_tick(price: float, tick_size: float, direction: str = "neutra
             return price
         
         # Use Decimal for precise tick alignment
-        p = Decimal(str(price))
-        t = Decimal(str(tick_size))
+        p = safe_decimal(str(price))
+        t = safe_decimal(str(tick_size))
         
         # Explicit rounding based on direction
         if direction in ("up", "tp", "buy"):
             # For buys/TP orders, round up to ensure we don't get a worse price
-            return float((p/t).to_integral_value(rounding=ROUND_CEILING) * t)
+            return safe_float((p/t).to_integral_value(rounding=ROUND_CEILING) * t)
         elif direction in ("down", "sl", "sell"):
             # For sells/SL orders, round down to ensure we don't get a worse price
-            return float((p/t).to_integral_value(rounding=ROUND_FLOOR) * t)
+            return safe_float((p/t).to_integral_value(rounding=ROUND_FLOOR) * t)
         else:
             # For neutral, use bankers' rounding (default)
-            return float((p/t).to_integral_value() * t)
+            return safe_float((p/t).to_integral_value() * t)
             
     except Exception:
         return round(price, 4)
@@ -207,15 +209,15 @@ def normalize_l2_snapshot(raw_data: Dict[str, Any], depth: int = 0) -> List[Tupl
             if "bids" in level:
                 for bid in level["bids"]:
                     if len(bid) >= 2:
-                        price = float(bid[0])
-                        size = float(bid[1])
+                        price = safe_float(bid[0])
+                        size = safe_float(bid[1])
                         bids.append((price, size))
             
             if "asks" in level:
                 for ask in level["asks"]:
                     if len(ask) >= 2:
-                        price = float(ask[0])
-                        size = float(ask[1])
+                        price = safe_float(ask[0])
+                        size = safe_float(ask[1])
                         asks.append((price, size))
         
         # Sort bids (descending) and asks (ascending)

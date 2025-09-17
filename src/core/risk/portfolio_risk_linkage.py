@@ -2,6 +2,7 @@
 Portfolio Risk Linkage - Pre-trade portfolio risk assessment
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 import logging
 import json
 from typing import Dict, Any, List, Tuple
@@ -36,14 +37,14 @@ class PortfolioRiskLinkage:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         
-        self.max_portfolio_var_95 = Decimal('0.05')
-        self.max_concentration = Decimal('0.30')
-        self.max_leverage = Decimal('3.0')
+        self.max_portfolio_var_95 = safe_decimal('0.05')
+        self.max_concentration = safe_decimal('0.30')
+        self.max_leverage = safe_decimal('3.0')
         
         self.asset_limits = {
-            'XRP': Decimal('0.25'),
-            'BTC': Decimal('0.20'),
-            'ETH': Decimal('0.20')
+            'XRP': safe_decimal('0.25'),
+            'BTC': safe_decimal('0.20'),
+            'ETH': safe_decimal('0.20')
         }
         
         self.blocked_trades = 0
@@ -53,23 +54,23 @@ class PortfolioRiskLinkage:
                                market_data: Dict[str, Any], 
                                account_value: Decimal) -> PortfolioRiskMetrics:
         try:
-            total_exposure = Decimal('0')
+            total_exposure = safe_decimal('0')
             for position in positions:
-                size = Decimal(str(position.get('size', 0)))
-                mark_price = Decimal(str(market_data.get('mark_price', 0)))
+                size = safe_decimal(str(position.get('size', 0)))
+                mark_price = safe_decimal(str(market_data.get('mark_price', 0)))
                 total_exposure += abs(size * mark_price)
             
-            portfolio_var_95 = total_exposure / account_value * Decimal('0.15') if account_value > 0 else Decimal('0')
+            portfolio_var_95 = total_exposure / account_value * safe_decimal('0.15') if account_value > 0 else safe_decimal('0')
             
-            max_position_value = Decimal('0')
+            max_position_value = safe_decimal('0')
             for position in positions:
-                size = Decimal(str(position.get('size', 0)))
-                mark_price = Decimal(str(market_data.get('mark_price', 0)))
+                size = safe_decimal(str(position.get('size', 0)))
+                mark_price = safe_decimal(str(market_data.get('mark_price', 0)))
                 position_value = abs(size * mark_price)
                 max_position_value = max(max_position_value, position_value)
             
-            concentration_risk = max_position_value / total_exposure if total_exposure > 0 else Decimal('0')
-            leverage_ratio = total_exposure / account_value if account_value > 0 else Decimal('0')
+            concentration_risk = max_position_value / total_exposure if total_exposure > 0 else safe_decimal('0')
+            leverage_ratio = total_exposure / account_value if account_value > 0 else safe_decimal('0')
             
             risk_level = self._determine_risk_level(portfolio_var_95, concentration_risk, leverage_ratio)
             
@@ -84,10 +85,10 @@ class PortfolioRiskLinkage:
         except Exception as e:
             self.logger.error(f"❌ Error calculating portfolio risk: {e}")
             return PortfolioRiskMetrics(
-                total_exposure=Decimal('0'),
-                portfolio_var_95=Decimal('0'),
-                concentration_risk=Decimal('0'),
-                leverage_ratio=Decimal('0'),
+                total_exposure=safe_decimal('0'),
+                portfolio_var_95=safe_decimal('0'),
+                concentration_risk=safe_decimal('0'),
+                leverage_ratio=safe_decimal('0'),
                 risk_level=RiskLevel.CRITICAL
             )
     
@@ -96,13 +97,13 @@ class PortfolioRiskLinkage:
             concentration > self.max_concentration or 
             leverage > self.max_leverage):
             return RiskLevel.CRITICAL
-        elif (portfolio_var > self.max_portfolio_var_95 * Decimal('0.8') or 
-              concentration > self.max_concentration * Decimal('0.8') or 
-              leverage > self.max_leverage * Decimal('0.8')):
+        elif (portfolio_var > self.max_portfolio_var_95 * safe_decimal('0.8') or 
+              concentration > self.max_concentration * safe_decimal('0.8') or 
+              leverage > self.max_leverage * safe_decimal('0.8')):
             return RiskLevel.HIGH
-        elif (portfolio_var > self.max_portfolio_var_95 * Decimal('0.6') or 
-              concentration > self.max_concentration * Decimal('0.6') or 
-              leverage > self.max_leverage * Decimal('0.6')):
+        elif (portfolio_var > self.max_portfolio_var_95 * safe_decimal('0.6') or 
+              concentration > self.max_concentration * safe_decimal('0.6') or 
+              leverage > self.max_leverage * safe_decimal('0.6')):
             return RiskLevel.MEDIUM
         else:
             return RiskLevel.LOW
@@ -115,8 +116,8 @@ class PortfolioRiskLinkage:
             # Simulate new position
             new_position = {
                 'asset': new_order.get('asset', 'XRP'),
-                'size': Decimal(str(new_order.get('size', 0))),
-                'entry_price': Decimal(str(new_order.get('price', 0))),
+                'size': safe_decimal(str(new_order.get('size', 0))),
+                'entry_price': safe_decimal(str(new_order.get('price', 0))),
                 'side': new_order.get('side', 'BUY')
             }
             
@@ -195,7 +196,7 @@ def demo_portfolio_risk_linkage():
     ]
     
     market_data = {'mark_price': 0.52}
-    account_value = Decimal('10000')
+    account_value = safe_decimal('10000')
     
     new_order = {
         'asset': 'XRP',

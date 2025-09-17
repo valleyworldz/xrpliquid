@@ -2,6 +2,8 @@
 Float to Decimal Converter - Critical fix for decimal/float mixing risk
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 from decimal import Decimal, getcontext
 from typing import Any, Union, Dict, List
@@ -9,7 +11,7 @@ import re
 
 class FloatToDecimalConverter:
     """
-    Converts all float() casts to Decimal() in trade math paths
+    Converts all safe_float() casts to safe_decimal() in trade math paths
     """
     
     def __init__(self):
@@ -24,16 +26,16 @@ class FloatToDecimalConverter:
             if isinstance(value, Decimal):
                 return value
             elif isinstance(value, (int, str)):
-                return Decimal(str(value))
+                return safe_decimal(str(value))
             elif isinstance(value, float):
                 # Convert float to Decimal with proper precision
-                return Decimal(str(value))
+                return safe_decimal(str(value))
             else:
                 # Try to convert to string first, then to Decimal
-                return Decimal(str(value))
+                return safe_decimal(str(value))
         except Exception as e:
             self.logger.error(f"❌ Error converting {value} to Decimal: {e}")
-            return Decimal('0')
+            return safe_decimal('0')
     
     def safe_float_operation(self, operation: str, a: Any, b: Any = None) -> Decimal:
         """
@@ -52,16 +54,16 @@ class FloatToDecimalConverter:
                 elif operation == '*':
                     return decimal_a * decimal_b
                 elif operation == '/':
-                    return decimal_a / decimal_b if decimal_b != 0 else Decimal('0')
+                    return decimal_a / decimal_b if decimal_b != 0 else safe_decimal('0')
                 elif operation == '//':
-                    return decimal_a // decimal_b if decimal_b != 0 else Decimal('0')
+                    return decimal_a // decimal_b if decimal_b != 0 else safe_decimal('0')
                 elif operation == '%':
-                    return decimal_a % decimal_b if decimal_b != 0 else Decimal('0')
+                    return decimal_a % decimal_b if decimal_b != 0 else safe_decimal('0')
                 elif operation == '**':
                     return decimal_a ** decimal_b
                 else:
                     self.logger.error(f"❌ Unknown operation: {operation}")
-                    return Decimal('0')
+                    return safe_decimal('0')
             else:
                 # Unary operations
                 if operation == 'abs':
@@ -74,7 +76,7 @@ class FloatToDecimalConverter:
                     
         except Exception as e:
             self.logger.error(f"❌ Error in safe_float_operation: {e}")
-            return Decimal('0')
+            return safe_decimal('0')
     
     def convert_price_data(self, price_data: Any) -> Decimal:
         """
@@ -92,12 +94,12 @@ class FloatToDecimalConverter:
                 # Handle list/tuple of prices
                 if len(price_data) > 0:
                     return self.convert_float_to_decimal(price_data[0])
-                return Decimal('0')
+                return safe_decimal('0')
             else:
                 return self.convert_float_to_decimal(price_data)
         except Exception as e:
             self.logger.error(f"❌ Error converting price data: {e}")
-            return Decimal('0')
+            return safe_decimal('0')
     
     def convert_position_data(self, position_data: Dict[str, Any]) -> Dict[str, Decimal]:
         """
@@ -142,7 +144,7 @@ _converter = FloatToDecimalConverter()
 
 def safe_float(value: Any) -> Decimal:
     """
-    Safe replacement for float() that returns Decimal
+    Safe replacement for safe_float() that returns Decimal
     """
     return _converter.convert_float_to_decimal(value)
 

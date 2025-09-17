@@ -13,6 +13,7 @@ This system implements the pinnacle of risk management with:
 - Correlation risk management
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -216,21 +217,21 @@ class HatManifestoRiskManagement:
             
             # Extract account metrics
             margin_summary = user_state.get("marginSummary", {})
-            account_value = float(margin_summary.get("accountValue", 0))
-            total_margin_used = float(margin_summary.get("totalMarginUsed", 0))
+            account_value = safe_float(margin_summary.get("accountValue", 0))
+            total_margin_used = safe_float(margin_summary.get("totalMarginUsed", 0))
             available_margin = account_value - total_margin_used
             margin_ratio = (total_margin_used / account_value) if account_value > 0 else 0
             
             # Get position data
             positions = user_state.get("assetPositions", [])
             total_positions = len(positions)
-            total_exposure_usd = sum(float(pos.get("position", {}).get("szi", 0)) * 
-                                   float(pos.get("position", {}).get("entryPx", 0)) 
+            total_exposure_usd = sum(safe_float(pos.get("position", {}).get("szi", 0)) * 
+                                   safe_float(pos.get("position", {}).get("entryPx", 0)) 
                                    for pos in positions)
             
             # Calculate position size metrics
-            position_sizes = [float(pos.get("position", {}).get("szi", 0)) * 
-                            float(pos.get("position", {}).get("entryPx", 0)) 
+            position_sizes = [safe_float(pos.get("position", {}).get("szi", 0)) * 
+                            safe_float(pos.get("position", {}).get("entryPx", 0)) 
                             for pos in positions]
             max_position_size_usd = max(position_sizes) if position_sizes else 0
             avg_position_size_usd = np.mean(position_sizes) if position_sizes else 0
@@ -586,7 +587,7 @@ class HatManifestoRiskManagement:
             
             for position in positions:
                 symbol = position.get("coin", "")
-                position_size = float(position.get("position", {}).get("szi", 0))
+                position_size = safe_float(position.get("position", {}).get("szi", 0))
                 
                 if abs(position_size) > 0:
                     # Close position
@@ -624,7 +625,7 @@ class HatManifestoRiskManagement:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == symbol:
-                        return float(asset_data.get('mid', 0))
+                        return safe_float(asset_data.get('mid', 0))
             return 0.52  # Fallback for XRP
         except:
             return 0.52  # Fallback for XRP

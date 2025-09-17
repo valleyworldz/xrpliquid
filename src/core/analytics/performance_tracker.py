@@ -21,7 +21,7 @@ class PerformanceTracker:
 
         gross_profit = sum(t.get("pnl", 0) for t in trades if t.get("pnl", 0) > 0)
         gross_loss = sum(t.get("pnl", 0) for t in trades if t.get("pnl", 0) < 0) # Sum of negative PnL
-        profit_factor = abs(gross_profit / gross_loss) if gross_loss != 0 else float("inf")
+        profit_factor = abs(gross_profit / gross_loss) if gross_loss != 0 else safe_float("inf")
 
         return {
             "win_rate": win_rate,

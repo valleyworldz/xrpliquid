@@ -3,6 +3,7 @@ Data Provenance Tracker
 Maintains lineage and provenance of all data sources and transformations.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import pandas as pd
 from datetime import datetime, timezone
@@ -268,10 +269,10 @@ class DataProvenance:
             # Financial data checks
             if 'price' in df.columns:
                 validation_result["checks"]["price_stats"] = {
-                    "min": float(df['price'].min()),
-                    "max": float(df['price'].max()),
-                    "mean": float(df['price'].mean()),
-                    "std": float(df['price'].std())
+                    "min": safe_float(df['price'].min()),
+                    "max": safe_float(df['price'].max()),
+                    "mean": safe_float(df['price'].mean()),
+                    "std": safe_float(df['price'].std())
                 }
                 validation_result["checks"]["negative_prices"] = (df['price'] < 0).sum()
             
@@ -295,7 +296,7 @@ class DataProvenance:
         
         return {
             "total_gaps": len(gaps),
-            "largest_gap_minutes": float(gaps.max().total_seconds() / 60) if len(gaps) > 0 else 0,
+            "largest_gap_minutes": safe_float(gaps.max().total_seconds() / 60) if len(gaps) > 0 else 0,
             "gap_locations": gaps.index.tolist()[:10]  # First 10 gaps
         }
 

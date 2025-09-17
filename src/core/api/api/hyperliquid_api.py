@@ -1,3 +1,4 @@
+from src.core.utils.decimal_boundary_guard import safe_float
 import requests
 import json
 import time
@@ -167,7 +168,7 @@ class HyperliquidAPI:
             
             # Check if normalized symbol exists in mids
             if normalized_symbol in mids:
-                price = float(mids[normalized_symbol])
+                price = safe_float(mids[normalized_symbol])
                 if price > 0:
                     self.logger.info(f"Retrieved price for {normalized_symbol}: ${price}")
                     return {
@@ -219,7 +220,7 @@ class HyperliquidAPI:
         try:
             asset_info = self._get_asset_info(asset_id)
             if asset_info and "tickSize" in asset_info:
-                tick_size = float(asset_info["tickSize"])
+                tick_size = safe_float(asset_info["tickSize"])
                 # Round to nearest tick size
                 rounded_price = round(price / tick_size) * tick_size
                 return rounded_price
@@ -233,7 +234,7 @@ class HyperliquidAPI:
         try:
             asset_info = self._get_asset_info(asset_id)
             if asset_info and "lotSize" in asset_info:
-                lot_size = float(asset_info["lotSize"])
+                lot_size = safe_float(asset_info["lotSize"])
                 # Round to nearest lot size
                 rounded_quantity = round(quantity / lot_size) * lot_size
                 # Ensure minimum lot size
@@ -380,8 +381,8 @@ class HyperliquidAPI:
             user_state = self.get_user_state()
             if user_state and "marginSummary" in user_state:
                 margin_summary = user_state["marginSummary"]
-                account_value = float(margin_summary.get("accountValue", "0"))
-                total_margin_used = float(margin_summary.get("totalMarginUsed", "0"))
+                account_value = safe_float(margin_summary.get("accountValue", "0"))
+                total_margin_used = safe_float(margin_summary.get("totalMarginUsed", "0"))
                 available_margin = account_value - total_margin_used
                 
                 # Adjust minimum order value based on available margin
@@ -471,8 +472,8 @@ class HyperliquidAPI:
             user_state = self.get_user_state()
             if user_state and "marginSummary" in user_state:
                 margin_summary = user_state["marginSummary"]
-                account_value = float(margin_summary.get("accountValue", "0"))
-                total_margin_used = float(margin_summary.get("totalMarginUsed", "0"))
+                account_value = safe_float(margin_summary.get("accountValue", "0"))
+                total_margin_used = safe_float(margin_summary.get("totalMarginUsed", "0"))
                 available_margin = account_value - total_margin_used
                 
                 # Ensure order doesn't exceed 80% of available margin
@@ -662,8 +663,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[ORDER FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'resting' in status:
@@ -749,8 +750,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[MARKET ORDER FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'error' in status:
@@ -806,8 +807,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[ROUNDED PRICE FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'error' in status:
@@ -866,8 +867,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[LIQUIDITY FIX FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'error' in status:
@@ -899,7 +900,7 @@ class HyperliquidAPI:
             # Try to get price from market data
             market_data = self.get_market_data(coin_name)
             if market_data and 'price' in market_data:
-                return float(market_data['price'])
+                return safe_float(market_data['price'])
             
             # Fallback: try to get from user state if we have positions
             user_state = self.get_user_state()
@@ -908,7 +909,7 @@ class HyperliquidAPI:
                     if position.get('position', {}).get('coin') == coin_name:
                         mark_px = position['position'].get('markPx')
                         if mark_px:
-                            return float(mark_px)
+                            return safe_float(mark_px)
             
             return None
             
@@ -933,7 +934,7 @@ class HyperliquidAPI:
                     try:
                         market_data = self.get_market_data(symbol)
                         if market_data and 'price' in market_data:
-                            symbol_prices[symbol] = float(market_data['price'])
+                            symbol_prices[symbol] = safe_float(market_data['price'])
                     except:
                         continue
             
@@ -1120,13 +1121,13 @@ class HyperliquidAPI:
             if user_state and "assetPositions" in user_state:
                 positions = []
                 for position in user_state["assetPositions"]:
-                    size = float(position.get("szi", "0"))
+                    size = safe_float(position.get("szi", "0"))
                     if size != 0:  # Only include non-zero positions
                         positions.append({
                             "coin": position.get("coin", "Unknown"),
                             "size": size,
-                            "entry_price": float(position.get("entryPx", "0")),
-                            "unrealized_pnl": float(position.get("unrealizedPnl", "0"))
+                            "entry_price": safe_float(position.get("entryPx", "0")),
+                            "unrealized_pnl": safe_float(position.get("unrealizedPnl", "0"))
                         })
                 return positions
             return []
@@ -1143,16 +1144,16 @@ class HyperliquidAPI:
                 for asset_position in user_state["assetPositions"]:
                     if "position" in asset_position:
                         position = asset_position["position"]
-                        size = float(position.get("szi", "0"))
+                        size = safe_float(position.get("szi", "0"))
                         if size != 0:  # Only include non-zero positions
                             coin = position.get("coin", "Unknown")
                             positions[coin] = {
                                 "coin": coin,
                                 "szi": position.get("szi", "0"),
                                 "size": size,
-                                "entry_price": float(position.get("entryPx", "0")),
+                                "entry_price": safe_float(position.get("entryPx", "0")),
                                 "entryPx": position.get("entryPx", "0"),
-                                "unrealized_pnl": float(position.get("unrealizedPnl", "0")),
+                                "unrealized_pnl": safe_float(position.get("unrealizedPnl", "0")),
                                 "unrealizedPnl": position.get("unrealizedPnl", "0"),
                                 "leverage": position.get("leverage", {}),
                                 "marginUsed": position.get("marginUsed", "0"),
@@ -1172,16 +1173,16 @@ class HyperliquidAPI:
             user_state = self.get_user_state()
             if user_state and "marginSummary" in user_state:
                 margin_summary = user_state["marginSummary"]
-                account_value = float(margin_summary.get("accountValue", "0"))
-                total_margin_used = float(margin_summary.get("totalMarginUsed", "0"))
+                account_value = safe_float(margin_summary.get("accountValue", "0"))
+                total_margin_used = safe_float(margin_summary.get("totalMarginUsed", "0"))
                 available_margin = account_value - total_margin_used
                 
                 return {
                     "account_value": account_value,
                     "total_margin_used": total_margin_used,
                     "available": available_margin,  # Add available margin field
-                    "total_ntl_pos": float(margin_summary.get("totalNtlPos", "0")),
-                    "total_raw_usd": float(margin_summary.get("totalRawUsd", "0"))
+                    "total_ntl_pos": safe_float(margin_summary.get("totalNtlPos", "0")),
+                    "total_raw_usd": safe_float(margin_summary.get("totalRawUsd", "0"))
                 }
             return None
         except Exception as e:
@@ -1214,7 +1215,7 @@ class HyperliquidAPI:
         """Extract price from response with multiple fallback keys"""
         try:
             price = self._extract(resp, "price", "avgPx", "avg_price", "filled_price")
-            return float(price) if price is not None else None
+            return safe_float(price) if price is not None else None
         except (RuntimeError, ValueError, TypeError):
             self.logger.warning(f"Could not extract price from response: {resp}")
             return None
@@ -1223,7 +1224,7 @@ class HyperliquidAPI:
         """Extract quantity from response with multiple fallback keys"""
         try:
             qty = self._extract(resp, "quantity", "totalSz", "total_size", "filled_size")
-            return float(qty) if qty is not None else None
+            return safe_float(qty) if qty is not None else None
         except (RuntimeError, ValueError, TypeError):
             self.logger.warning(f"Could not extract quantity from response: {resp}")
             return None
@@ -1332,8 +1333,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[LARGER SIZE FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'error' in status:
@@ -1401,8 +1402,8 @@ class HyperliquidAPI:
                     if 'filled' in status:
                         fill_data = status['filled']
                         order_id = self._extract_order_id(fill_data) or fill_data.get('oid')
-                        filled_quantity = self._extract_quantity(fill_data) or float(fill_data.get('totalSz', 0))
-                        avg_price = self._extract_price(fill_data) or float(fill_data.get('avgPx', 0))
+                        filled_quantity = self._extract_quantity(fill_data) or safe_float(fill_data.get('totalSz', 0))
+                        avg_price = self._extract_price(fill_data) or safe_float(fill_data.get('avgPx', 0))
                         self.logger.info(f"[ADJUSTED SIZE FILLED] Order ID: {order_id} - Filled: {filled_quantity} {symbol} @ ${avg_price}")
                         return {'success': True, 'order_id': order_id, 'status': 'filled', 'quantity': filled_quantity, 'price': avg_price, 'filled_immediately': True}
                     elif 'error' in status:
@@ -1428,7 +1429,7 @@ class HyperliquidAPI:
         try:
             market_data = self.get_market_data(symbol)
             if market_data and 'price' in market_data:
-                return float(market_data['price'])
+                return safe_float(market_data['price'])
             return None
         except Exception as e:
             self.logger.error(f"Error getting price for {symbol}: {e}")

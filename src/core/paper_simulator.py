@@ -13,6 +13,7 @@ Features:
 - Parameter validation for HPO
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, Tuple, List, Optional
@@ -149,9 +150,9 @@ class PaperSimulator:
                 trades.append(pnl)
             
             # Calculate metrics
-            total_pnl = float(balance - self.initial_balance)
-            volatility = float(np.std(trades) if trades else 0.0)
-            sharpe = float(total_pnl / volatility if volatility > 0 else 0.0)
+            total_pnl = safe_float(balance - self.initial_balance)
+            volatility = safe_float(np.std(trades) if trades else 0.0)
+            sharpe = safe_float(total_pnl / volatility if volatility > 0 else 0.0)
             
             return total_pnl, volatility, sharpe
             
@@ -213,9 +214,9 @@ class PaperSimulator:
                                 trades.append(pnl)
             
             # Calculate metrics
-            total_pnl = float(balance - self.initial_balance)
-            volatility = float(np.std(trades) if trades else 0.0)
-            sharpe = float(total_pnl / volatility if volatility > 0 else 0.0)
+            total_pnl = safe_float(balance - self.initial_balance)
+            volatility = safe_float(np.std(trades) if trades else 0.0)
+            sharpe = safe_float(total_pnl / volatility if volatility > 0 else 0.0)
             
             return total_pnl, volatility, sharpe
             
@@ -300,9 +301,9 @@ class PaperSimulator:
                 trades.append(pnl)
             
             # Calculate metrics
-            total_pnl = float(balance - self.initial_balance)
-            volatility = float(np.std(trades) if trades else 0.0)
-            sharpe = float(total_pnl / volatility if volatility > 0 else 0.0)
+            total_pnl = safe_float(balance - self.initial_balance)
+            volatility = safe_float(np.std(trades) if trades else 0.0)
+            sharpe = safe_float(total_pnl / volatility if volatility > 0 else 0.0)
             
             return total_pnl, volatility, sharpe
             

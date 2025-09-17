@@ -3,6 +3,7 @@
 Comprehensive backtesting system with deterministic results and detailed tear sheets
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -382,7 +383,7 @@ class DeterministicBacktestEngine:
                 total_profit = sum(t.get('profit_loss', 0) for t in winning_trades)
                 total_loss = abs(sum(t.get('profit_loss', 0) for t in losing_trades))
                 
-                self.profit_factor = total_profit / total_loss if total_loss > 0 else float('inf')
+                self.profit_factor = total_profit / total_loss if total_loss > 0 else safe_float('inf')
             
             metrics = {
                 'total_return': self.total_return,

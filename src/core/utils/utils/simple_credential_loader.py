@@ -5,6 +5,7 @@ Loads credentials directly from environment variables
 No encryption, no complex handling - just simple .env support
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import os
 from typing import Optional, Dict
 from dotenv import load_dotenv
@@ -86,9 +87,9 @@ class SimpleCredentialLoader:
     def get_trading_config(self) -> Dict[str, float]:
         """Get trading configuration from environment"""
         return {
-            'min_position_size': float(os.environ.get('MIN_POSITION_SIZE', '500')),
-            'max_positions': float(os.environ.get('MAX_POSITIONS', '2')),
-            'risk_percentage': float(os.environ.get('RISK_PERCENTAGE', '2.0'))
+            'min_position_size': safe_float(os.environ.get('MIN_POSITION_SIZE', '500')),
+            'max_positions': safe_float(os.environ.get('MAX_POSITIONS', '2')),
+            'risk_percentage': safe_float(os.environ.get('RISK_PERCENTAGE', '2.0'))
         }
 
 def load_credentials() -> Optional[Dict[str, str]]:

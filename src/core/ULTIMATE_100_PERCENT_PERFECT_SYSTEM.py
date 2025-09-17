@@ -6,6 +6,7 @@ Complete autonomous, perfected, profitable trading system
 All critical issues fixed and optimized for 100% success
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import sys
 import os
 import time
@@ -244,16 +245,16 @@ class Ultimate100PercentPerfectSystemFixed:
             
             # Convert to float if string
             if isinstance(account_value, str):
-                account_value = float(account_value.replace(',', ''))
+                account_value = safe_float(account_value.replace(',', ''))
             
             # Calculate total margin used
             total_margin_used = 0.0
             if 'totalMarginUsed' in margin_summary:
                 margin_used = margin_summary['totalMarginUsed']
                 if isinstance(margin_used, str):
-                    total_margin_used = float(margin_used.replace(',', ''))
+                    total_margin_used = safe_float(margin_used.replace(',', ''))
                 else:
-                    total_margin_used = float(margin_used)
+                    total_margin_used = safe_float(margin_used)
             
             # Calculate available balance with safety buffer
             available = account_value - total_margin_used
@@ -479,8 +480,8 @@ class Ultimate100PercentPerfectSystemFixed:
             
             for position in positions:
                 symbol = position.get('coin', '')
-                position_size = float(position.get('szi', 0))
-                entry_price = float(position.get('entryPx', 0))
+                position_size = safe_float(position.get('szi', 0))
+                entry_price = safe_float(position.get('entryPx', 0))
                 
                 if position_size == 0:
                     continue
@@ -846,7 +847,7 @@ class Ultimate100PercentPerfectSystemFixed:
             positions = self.get_user_positions_safe()
             for position in positions:
                 symbol = position.get('coin', '')
-                position_size = float(position.get('szi', 0))
+                position_size = safe_float(position.get('szi', 0))
                 
                 if position_size != 0:
                     self.close_position_safe(symbol, position_size, "emergency_stop")

@@ -67,27 +67,28 @@ class EngineAvailabilityGuard:
         """
         availability = self.check_engine_availability()
         
-        # In production with ENGINE_ENABLED=true, engines are required
-        if self.environment == 'production' and self.engine_enabled:
+        # CROWN TIER: Fail-closed behavior - if ENGINE_ENABLED=true, engines are required in ALL environments
+        if self.engine_enabled:
             if not availability['available']:
-                error_msg = f"❌ ENGINE_HARD_FAIL: Required engines missing in production: {availability['missing']}"
-                self.logger.error(error_msg)
+                error_msg = f"❌ ENGINE_HARD_FAIL: ENGINE_ENABLED=true but required engines missing: {availability['missing']}"
+                self.logger.critical(error_msg)
                 print(error_msg)
+                print(f"🔒 CROWN TIER FAIL-CLOSED: System cannot operate without required engines")
                 sys.exit(1)
             else:
-                self.logger.info(f"✅ ENGINE_AVAILABILITY_PASS: All engines available in production")
-                print(f"✅ ENGINE_AVAILABILITY_PASS: All engines available in production")
+                self.logger.info(f"✅ ENGINE_AVAILABILITY_PASS: All engines available (ENGINE_ENABLED=true)")
+                print(f"✅ ENGINE_AVAILABILITY_PASS: All engines available (ENGINE_ENABLED=true)")
                 return True
         
-        # In non-production or with ENGINE_ENABLED=false, soft fallback
+        # Only allow soft fallback if ENGINE_ENABLED=false
         elif not availability['available']:
-            self.logger.warning(f"⚠️ ENGINE_SOFT_FALLBACK: Engines not available in {self.environment}, using legacy components")
-            print(f"⚠️ ENGINE_SOFT_FALLBACK: Engines not available in {self.environment}, using legacy components")
+            self.logger.warning(f"⚠️ ENGINE_SOFT_FALLBACK: ENGINE_ENABLED=false, engines not available in {self.environment}, using legacy components")
+            print(f"⚠️ ENGINE_SOFT_FALLBACK: ENGINE_ENABLED=false, engines not available in {self.environment}, using legacy components")
             return False
         
         else:
-            self.logger.info(f"✅ ENGINE_AVAILABILITY_PASS: All engines available in {self.environment}")
-            print(f"✅ ENGINE_AVAILABILITY_PASS: All engines available in {self.environment}")
+            self.logger.info(f"✅ ENGINE_AVAILABILITY_PASS: All engines available (ENGINE_ENABLED=false)")
+            print(f"✅ ENGINE_AVAILABILITY_PASS: All engines available (ENGINE_ENABLED=false)")
             return True
     
     def get_engine_status(self) -> Dict[str, Any]:
@@ -103,7 +104,7 @@ class EngineAvailabilityGuard:
             'engines_available': availability['available'],
             'available_engines': availability['engines'],
             'missing_engines': availability['missing'],
-            'status': 'HARD_FAIL' if (self.environment == 'production' and self.engine_enabled and not availability['available']) else 'OK'
+            'status': 'HARD_FAIL' if (self.engine_enabled and not availability['available']) else 'OK'
         }
 
 # Global guard instance

@@ -1,5 +1,6 @@
 
 # Enhanced Position Management System
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 from typing import Dict, List, Optional
@@ -26,12 +27,12 @@ class EnhancedPositionManager:
             
             for pos in asset_positions:
                 symbol = pos.get("position", {}).get("coin", "")
-                size = float(pos.get("position", {}).get("szi", "0"))
+                size = safe_float(pos.get("position", {}).get("szi", "0"))
                 
                 if abs(size) > self.min_position_size:
                     positions[symbol] = {
                         'size': size,
-                        'entry_price': float(pos.get("position", {}).get("entryPx", "0")),
+                        'entry_price': safe_float(pos.get("position", {}).get("entryPx", "0")),
                         'timestamp': time.time()
                     }
             

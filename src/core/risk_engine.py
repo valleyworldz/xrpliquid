@@ -7,6 +7,7 @@ This module centralizes all risk checks and returns typed RiskDecision enums.
 The trading loop just pattern-matches on the results.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import logging
 from enum import Enum
@@ -102,7 +103,7 @@ class RiskEngine:
             metadata={
                 'risk_reward_ratio': abs(tp_price - entry_price) / abs(sl_price - entry_price),
                 'position_value': position_size * entry_price,
-                'margin_ratio': (free_collateral * entry_price) / (position_size * entry_price) if position_size > 0 else float('inf')
+                'margin_ratio': (free_collateral * entry_price) / (position_size * entry_price) if position_size > 0 else safe_float('inf')
             }
         )
         
@@ -161,7 +162,7 @@ class RiskEngine:
                                   current_price: float) -> RiskAssessment:
         """Check margin requirements"""
         position_value = position_size * current_price
-        margin_ratio = free_collateral / position_value if position_value > 0 else float('inf')
+        margin_ratio = free_collateral / position_value if position_value > 0 else safe_float('inf')
         min_margin_ratio = 2.0  # 2:1 margin ratio minimum
         
         if margin_ratio < min_margin_ratio:

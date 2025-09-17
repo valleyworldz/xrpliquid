@@ -5,6 +5,7 @@ Standalone funding arbitrage component with mathematical EV proof
 and optimized execution scheduling for maximum profitability.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -499,8 +500,8 @@ class FundingArbitrageStrategy:
             available_margin = 0.0
             
             if user_state and "marginSummary" in user_state:
-                account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                 available_margin = account_value - total_margin_used
             
             # Check each symbol for opportunities

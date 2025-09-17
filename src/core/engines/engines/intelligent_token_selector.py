@@ -17,6 +17,7 @@ Features:
 - Correlation analysis
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import os
 import sys
 import json
@@ -208,12 +209,12 @@ class IntelligentTokenSelector:
                             continue
                         
                         # Check volume requirement
-                        volume_24h = float(market_data.get('volume24h', 0))
+                        volume_24h = safe_float(market_data.get('volume24h', 0))
                         if volume_24h < self.min_volume_24h:
                             continue
                         
                         # Check if token is tradeable
-                        price = float(market_data.get('price', 0))
+                        price = safe_float(market_data.get('price', 0))
                         if price <= 0:
                             continue
                     
@@ -253,8 +254,8 @@ class IntelligentTokenSelector:
             # Determine overall trend
             overall_trend = "bullish"
             if btc_data and eth_data:
-                btc_change = float(btc_data.get('change24h', 0))
-                eth_change = float(eth_data.get('change24h', 0))
+                btc_change = safe_float(btc_data.get('change24h', 0))
+                eth_change = safe_float(eth_data.get('change24h', 0))
                 
                 if btc_change > 2 and eth_change > 2:
                     overall_trend = "strongly_bullish"
@@ -269,9 +270,9 @@ class IntelligentTokenSelector:
             
             # Analyze volatility
             volatility_level = "medium"
-            if abs(float(btc_data.get('change24h', 0))) > 5:
+            if abs(safe_float(btc_data.get('change24h', 0))) > 5:
                 volatility_level = "high"
-            elif abs(float(btc_data.get('change24h', 0))) < 1:
+            elif abs(safe_float(btc_data.get('change24h', 0))) < 1:
                 volatility_level = "low"
             
             # Determine recommended strategy
@@ -315,9 +316,9 @@ class IntelligentTokenSelector:
             if self.api:
                 market_data = self.api.get_market_data(token)
                 if market_data:
-                    price = float(market_data.get('price', 100.0))
-                    volume_24h = float(market_data.get('volume24h', 10000000))
-                    change_24h = float(market_data.get('change24h', 2.0))
+                    price = safe_float(market_data.get('price', 100.0))
+                    volume_24h = safe_float(market_data.get('volume24h', 10000000))
+                    change_24h = safe_float(market_data.get('change24h', 2.0))
             else:
                 # Mock data for different tokens
                 mock_data = {
@@ -423,9 +424,9 @@ class IntelligentTokenSelector:
     def _calculate_technical_score(self, token: str, market_data: Dict) -> float:
         """Calculate technical analysis score"""
         try:
-            price = float(market_data.get('price', 0))
-            change_24h = float(market_data.get('change24h', 0))
-            volume = float(market_data.get('volume24h', 0))
+            price = safe_float(market_data.get('price', 0))
+            change_24h = safe_float(market_data.get('change24h', 0))
+            volume = safe_float(market_data.get('volume24h', 0))
             
             score = 0.5  # Base score
             

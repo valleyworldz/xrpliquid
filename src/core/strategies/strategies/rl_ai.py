@@ -11,6 +11,7 @@ Reinforcement Learning AI strategy with:
 - Performance-based learning simulation
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
@@ -69,7 +70,7 @@ class RL_AI_Strategy(TradingStrategy):
     def extract_features(self, market_data: Dict[str, Any]) -> np.ndarray:
         """Extract features for RL model input"""
         try:
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             price_history = market_data.get("price_history", [current_price])
             volume_history = market_data.get("volume_history", [1.0])
             
@@ -137,8 +138,8 @@ class RL_AI_Strategy(TradingStrategy):
             features.extend([
                 np.sin(2 * np.pi * current_hour / 24),  # Hour cyclical
                 np.cos(2 * np.pi * current_hour / 24),
-                float(datetime.now().weekday()) / 6.0,  # Day of week
-                float(current_price > np.mean(price_history[-10:]) if len(price_history) >= 10 else True)  # Above short MA
+                safe_float(datetime.now().weekday()) / 6.0,  # Day of week
+                safe_float(current_price > np.mean(price_history[-10:]) if len(price_history) >= 10 else True)  # Above short MA
             ])
             
             return np.array(features, dtype=float)
@@ -177,7 +178,7 @@ class RL_AI_Strategy(TradingStrategy):
             action_names = ["buy", "sell", "hold"]
             best_action_idx = np.argmax(probabilities)
             best_action = action_names[best_action_idx]
-            confidence = float(probabilities[best_action_idx])
+            confidence = safe_float(probabilities[best_action_idx])
             
             # Add exploration (epsilon-greedy)
             if np.random.random() < self.exploration_rate:
@@ -185,9 +186,9 @@ class RL_AI_Strategy(TradingStrategy):
                 confidence *= 0.5  # Lower confidence for random actions
             
             action_values = {
-                "buy": float(probabilities[0]),
-                "sell": float(probabilities[1]),
-                "hold": float(probabilities[2])
+                "buy": safe_float(probabilities[0]),
+                "sell": safe_float(probabilities[1]),
+                "hold": safe_float(probabilities[2])
             }
             
             return {
@@ -247,7 +248,7 @@ class RL_AI_Strategy(TradingStrategy):
             if prediction["confidence"] < self.model_confidence_threshold:
                 return {}
             
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             symbol = market_data.get("symbol", "UNKNOWN")
             
             # Create signal

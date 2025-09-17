@@ -2,6 +2,8 @@
 Funding/Oracle Divergence Guard - Halt new risk during funding spikes or oracle divergence
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import statistics
@@ -44,10 +46,10 @@ class FundingOracleDivergenceGuard:
         self.logger = logging.getLogger(__name__)
         
         # Thresholds (configurable via environment)
-        self.funding_spike_threshold = Decimal('0.001')  # 0.1% funding rate
-        self.funding_spike_sigma = Decimal('3.0')  # 3 sigma threshold
-        self.oracle_divergence_threshold = Decimal('50')  # 50 bps divergence
-        self.low_liquidity_threshold = Decimal('0.3')  # 30% of normal liquidity
+        self.funding_spike_threshold = safe_decimal('0.001')  # 0.1% funding rate
+        self.funding_spike_sigma = safe_decimal('3.0')  # 3 sigma threshold
+        self.oracle_divergence_threshold = safe_decimal('50')  # 50 bps divergence
+        self.low_liquidity_threshold = safe_decimal('0.3')  # 30% of normal liquidity
         self.funding_history_window = 24  # 24 hours of funding history
         self.oracle_history_window = 60  # 60 minutes of oracle history
         
@@ -83,7 +85,7 @@ class FundingOracleDivergenceGuard:
             timestamp = datetime.now()
         
         if mark_price > 0:
-            divergence_bps = abs(oracle_price - mark_price) / mark_price * Decimal('10000')
+            divergence_bps = abs(oracle_price - mark_price) / mark_price * safe_decimal('10000')
             self.oracle_history.append({
                 'divergence_bps': divergence_bps,
                 'oracle_price': oracle_price,
@@ -108,25 +110,25 @@ class FundingOracleDivergenceGuard:
                 severity='low',
                 current_value=current_funding,
                 threshold=self.funding_spike_threshold,
-                deviation_sigma=Decimal('0'),
+                deviation_sigma=safe_decimal('0'),
                 should_halt=False,
                 reason="Insufficient funding history"
             )
         
         # Calculate historical statistics
         historical_rates = [entry['rate'] for entry in self.funding_history]
-        mean_rate = Decimal(str(statistics.mean([float(rate) for rate in historical_rates])))
-        std_rate = Decimal(str(statistics.stdev([float(rate) for rate in historical_rates]))) if len(historical_rates) > 1 else Decimal('0.0001')
+        mean_rate = safe_decimal(str(statistics.mean([safe_float(rate) for rate in historical_rates])))
+        std_rate = safe_decimal(str(statistics.stdev([safe_float(rate) for rate in historical_rates]))) if len(historical_rates) > 1 else safe_decimal('0.0001')
         
         # Calculate deviation in sigma
         if std_rate > 0:
             deviation_sigma = abs(current_funding - mean_rate) / std_rate
         else:
-            deviation_sigma = Decimal('0')
+            deviation_sigma = safe_decimal('0')
         
         # Determine severity and halt decision
         if deviation_sigma > self.funding_spike_sigma:
-            severity = 'critical' if deviation_sigma > Decimal('5.0') else 'high'
+            severity = 'critical' if deviation_sigma > safe_decimal('5.0') else 'high'
             should_halt = True
             reason = f"Funding spike detected: {current_funding:.4f} ({deviation_sigma:.1f}σ above mean {mean_rate:.4f})"
         elif abs(current_funding) > self.funding_spike_threshold:
@@ -156,14 +158,14 @@ class FundingOracleDivergenceGuard:
             return DivergenceAlert(
                 type=DivergenceType.ORACLE_DIVERGENCE,
                 severity='medium',
-                current_value=Decimal('0'),
+                current_value=safe_decimal('0'),
                 threshold=self.oracle_divergence_threshold,
-                deviation_sigma=Decimal('0'),
+                deviation_sigma=safe_decimal('0'),
                 should_halt=True,
                 reason="Invalid mark price"
             )
         
-        divergence_bps = abs(oracle_price - mark_price) / mark_price * Decimal('10000')
+        divergence_bps = abs(oracle_price - mark_price) / mark_price * safe_decimal('10000')
         
         if len(self.oracle_history) < 5:  # Need some history
             should_halt = divergence_bps > self.oracle_divergence_threshold
@@ -172,21 +174,21 @@ class FundingOracleDivergenceGuard:
         else:
             # Calculate historical statistics
             historical_divergences = [entry['divergence_bps'] for entry in self.oracle_history]
-            mean_divergence = Decimal(str(statistics.mean([float(d) for d in historical_divergences])))
-            std_divergence = Decimal(str(statistics.stdev([float(d) for d in historical_divergences]))) if len(historical_divergences) > 1 else Decimal('10')
+            mean_divergence = safe_decimal(str(statistics.mean([safe_float(d) for d in historical_divergences])))
+            std_divergence = safe_decimal(str(statistics.stdev([safe_float(d) for d in historical_divergences]))) if len(historical_divergences) > 1 else safe_decimal('10')
             
             # Calculate deviation in sigma
             if std_divergence > 0:
                 deviation_sigma = abs(divergence_bps - mean_divergence) / std_divergence
             else:
-                deviation_sigma = Decimal('0')
+                deviation_sigma = safe_decimal('0')
             
             # Determine severity and halt decision
             if divergence_bps > self.oracle_divergence_threshold:
-                severity = 'critical' if deviation_sigma > Decimal('3.0') else 'high'
+                severity = 'critical' if deviation_sigma > safe_decimal('3.0') else 'high'
                 should_halt = True
                 reason = f"Oracle divergence exceeds threshold: {divergence_bps:.1f} bps > {self.oracle_divergence_threshold} bps"
-            elif deviation_sigma > Decimal('2.0'):
+            elif deviation_sigma > safe_decimal('2.0'):
                 severity = 'medium'
                 should_halt = True
                 reason = f"Oracle divergence spike: {divergence_bps:.1f} bps ({deviation_sigma:.1f}σ above mean {mean_divergence:.1f} bps)"
@@ -215,7 +217,7 @@ class FundingOracleDivergenceGuard:
                 severity='medium',
                 current_value=current_liquidity,
                 threshold=self.low_liquidity_threshold,
-                deviation_sigma=Decimal('0'),
+                deviation_sigma=safe_decimal('0'),
                 should_halt=True,
                 reason="Invalid normal liquidity reference"
             )
@@ -223,7 +225,7 @@ class FundingOracleDivergenceGuard:
         liquidity_ratio = current_liquidity / normal_liquidity
         
         if liquidity_ratio < self.low_liquidity_threshold:
-            severity = 'high' if liquidity_ratio < Decimal('0.1') else 'medium'
+            severity = 'high' if liquidity_ratio < safe_decimal('0.1') else 'medium'
             should_halt = True
             reason = f"Low liquidity detected: {liquidity_ratio:.1%} of normal ({current_liquidity} / {normal_liquidity})"
         else:
@@ -236,7 +238,7 @@ class FundingOracleDivergenceGuard:
             severity=severity,
             current_value=liquidity_ratio,
             threshold=self.low_liquidity_threshold,
-            deviation_sigma=Decimal('0'),
+            deviation_sigma=safe_decimal('0'),
             should_halt=should_halt,
             reason=reason
         )
@@ -300,11 +302,11 @@ class FundingOracleDivergenceGuard:
         """
         try:
             # Extract market data
-            funding_rate = Decimal(str(market_data.get('funding_rate', 0)))
-            oracle_price = Decimal(str(market_data.get('oracle_price', 0)))
-            mark_price = Decimal(str(market_data.get('mark_price', 0)))
-            current_liquidity = Decimal(str(market_data.get('current_liquidity', 1000000)))
-            normal_liquidity = Decimal(str(market_data.get('normal_liquidity', 1000000)))
+            funding_rate = safe_decimal(str(market_data.get('funding_rate', 0)))
+            oracle_price = safe_decimal(str(market_data.get('oracle_price', 0)))
+            mark_price = safe_decimal(str(market_data.get('mark_price', 0)))
+            current_liquidity = safe_decimal(str(market_data.get('current_liquidity', 1000000)))
+            normal_liquidity = safe_decimal(str(market_data.get('normal_liquidity', 1000000)))
             
             # Check divergence conditions
             divergence_result = self.check_divergence_conditions(
@@ -442,7 +444,7 @@ def demo_funding_oracle_divergence_guard():
     print(f"\n🔍 Test 2: Funding spike")
     # Add some normal funding history
     for i in range(20):
-        guard.update_funding_history(Decimal('0.0001'))
+        guard.update_funding_history(safe_decimal('0.0001'))
     
     spike_market_data = market_data.copy()
     spike_market_data['funding_rate'] = 0.005  # 0.5% funding spike

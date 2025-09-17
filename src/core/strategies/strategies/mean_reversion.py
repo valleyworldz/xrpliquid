@@ -11,6 +11,7 @@ Advanced mean reversion strategy with:
 - Risk management integration
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import Dict, Any, List, Optional
 from datetime import datetime
@@ -78,10 +79,10 @@ class MeanReversion(TradingStrategy):
             bandwidth = (upper_band - lower_band) / moving_average if moving_average > 0 else 0.0
             
             return {
-                "upper": float(upper_band),
-                "middle": float(moving_average),
-                "lower": float(lower_band),
-                "bandwidth": float(bandwidth)
+                "upper": safe_float(upper_band),
+                "middle": safe_float(moving_average),
+                "lower": safe_float(lower_band),
+                "bandwidth": safe_float(bandwidth)
             }
             
         except Exception as e:
@@ -105,7 +106,7 @@ class MeanReversion(TradingStrategy):
                 return 0.0
             
             z_score = (current_price - mean_price) / std_price
-            return float(z_score)
+            return safe_float(z_score)
             
         except Exception as e:
             self.logger.error(f"[MEAN_REVERSION] Error calculating Z-score: {e}")
@@ -153,7 +154,7 @@ class MeanReversion(TradingStrategy):
             if not self.validate_data(market_data):
                 return {}
             
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             symbol = market_data.get("symbol", "UNKNOWN")
             
             # Get price history

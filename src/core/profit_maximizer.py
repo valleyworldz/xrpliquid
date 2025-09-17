@@ -12,6 +12,7 @@ Master-level profit optimization system that automatically:
 - Optimizes timing for entries and exits
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Optional, Tuple
@@ -67,7 +68,7 @@ class ProfitMaximizer:
                                        strategy_confidence: float) -> Tuple[float, float]:
         """Calculate optimal profit target and stop loss for maximum profitability"""
         try:
-            current_price = float(market_data.get("price", 0))
+            current_price = safe_float(market_data.get("price", 0))
             if current_price <= 0:
                 return 0.0, 0.0
             
@@ -81,7 +82,7 @@ class ProfitMaximizer:
                 volatility = 0.025  # Default 2.5% (increased for more aggressive targets)
             
             # Base profit target adjusted for volatility and confidence
-            volatility_multiplier = min(max(float(volatility * 60), 0.6), 3.5)  # Scale 0.6x to 3.5x
+            volatility_multiplier = min(max(safe_float(volatility * 60), 0.6), 3.5)  # Scale 0.6x to 3.5x
             confidence_multiplier = 0.6 + (strategy_confidence * 1.8)    # Scale 0.6x to 2.4x
             
             profit_target_pct = self.profit_target_base * volatility_multiplier * confidence_multiplier
@@ -150,8 +151,8 @@ class ProfitMaximizer:
             
             # Calculate price momentum
             prices = np.array(price_history[-8:])
-            short_ma = float(np.mean(prices[-2:]))
-            long_ma = float(np.mean(prices[-5:]))
+            short_ma = safe_float(np.mean(prices[-2:]))
+            long_ma = safe_float(np.mean(prices[-5:]))
             price_momentum = abs(short_ma - long_ma) / long_ma
             
             # Calculate volume momentum
@@ -266,7 +267,7 @@ class ProfitMaximizer:
             # Advanced metrics
             sharpe_ratio = avg_profit / np.std(profits) if np.std(profits) > 0 else 0
             max_drawdown = self._calculate_max_drawdown(profits)
-            profit_factor = abs(np.sum(profits[profits > 0]) / np.sum(profits[profits < 0])) if np.sum(profits[profits < 0]) != 0 else float('inf')
+            profit_factor = abs(np.sum(profits[profits > 0]) / np.sum(profits[profits < 0])) if np.sum(profits[profits < 0]) != 0 else safe_float('inf')
             
             # Recent performance (last 10 trades)
             recent_profits = profits[-10:] if len(profits) >= 10 else profits

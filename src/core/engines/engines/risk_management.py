@@ -1,3 +1,4 @@
+from src.core.utils.decimal_boundary_guard import safe_float
 from core.api.hyperliquid_api import HyperliquidAPI
 from core.utils.logger import Logger
 from core.utils.emergency_handler import EmergencyHandler
@@ -42,7 +43,7 @@ class RiskManagement:
         try:
             user_state = self.hyperliquid_api.get_user_state()
             if user_state and "marginSummary" in user_state and "equity" in user_state["marginSummary"]:
-                total_equity = float(user_state["marginSummary"]["equity"])
+                total_equity = safe_float(user_state["marginSummary"]["equity"])
                 self.logger.info(f"Current equity: {total_equity}")
                 return total_equity
             else:
@@ -85,7 +86,7 @@ class RiskManagement:
             
             self.logger.info(f"[RISK] {token} - Volatility: {volatility:.4f}, Leverage: {leverage:.2f}")
             
-            return float(leverage)
+            return safe_float(leverage)
             
         except Exception as e:
             self.logger.error(f"[RISK] Error computing dynamic leverage for {token}: {e}")
@@ -150,7 +151,7 @@ class RiskManagement:
             
             for position in positions:
                 if position.get("coin") == token:
-                    size = float(position.get("sz", "0"))
+                    size = safe_float(position.get("sz", "0"))
                     price = self._get_token_price(token)
                     current_value = size * price
                     break
@@ -293,7 +294,7 @@ class RiskManagement:
             
             for position in positions:
                 token = position.get("coin", "")
-                size = float(position.get("sz", "0"))
+                size = safe_float(position.get("sz", "0"))
                 price = self._get_token_price(token)
                 value = abs(size * price)
                 
@@ -453,7 +454,7 @@ class RiskManagement:
         try:
             positions = self.hyperliquid_api.get_positions()
             for position in positions:
-                if float(position["szi"]) != 0: # Check if there's an open position
+                if safe_float(position["szi"]) != 0: # Check if there's an open position
                     symbol = position["coin"]
                     current_price_data = self.hyperliquid_api.get_market_data(symbol)
                     if not current_price_data or "price" not in current_price_data:
@@ -461,8 +462,8 @@ class RiskManagement:
                         continue
 
                     current_price = current_price_data["price"]
-                    side = "sell" if float(position["szi"]) > 0 else "buy" # Opposite side to close
-                    quantity = abs(float(position["szi"]))
+                    side = "sell" if safe_float(position["szi"]) > 0 else "buy" # Opposite side to close
+                    quantity = abs(safe_float(position["szi"]))
 
                     order_details = {
                         "symbol": symbol,

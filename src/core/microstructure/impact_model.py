@@ -2,6 +2,7 @@
 Market Impact Model - Empirical Impact Calibration
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import numpy as np
 import pandas as pd
@@ -71,9 +72,9 @@ class MarketImpactModel:
             "model_r_squared": impact_model.r_squared,
             "model_rmse": impact_model.rmse,
             "residual_statistics": {
-                "mean_residual": float(residuals_df['residuals'].mean()),
-                "std_residual": float(residuals_df['residuals'].std()),
-                "mean_abs_residual": float(residuals_df['abs_residuals'].mean())
+                "mean_residual": safe_float(residuals_df['residuals'].mean()),
+                "std_residual": safe_float(residuals_df['residuals'].std()),
+                "mean_abs_residual": safe_float(residuals_df['abs_residuals'].mean())
             }
         }
         

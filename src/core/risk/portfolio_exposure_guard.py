@@ -2,6 +2,7 @@
 Portfolio Exposure Guard - Pre-trade portfolio caps enforcement
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 import logging
 import json
 from typing import Dict, Any, List, Tuple, Optional
@@ -44,21 +45,21 @@ class PortfolioExposureGuard:
         
         # Exposure limits (configurable via environment)
         self.per_asset_limits = {
-            'XRP': Decimal('0.30'),  # 30% max per asset
-            'BTC': Decimal('0.25'),
-            'ETH': Decimal('0.25'),
-            'SOL': Decimal('0.20')
+            'XRP': safe_decimal('0.30'),  # 30% max per asset
+            'BTC': safe_decimal('0.25'),
+            'ETH': safe_decimal('0.25'),
+            'SOL': safe_decimal('0.20')
         }
         
         self.per_factor_limits = {
-            'momentum': Decimal('0.40'),  # 40% max momentum exposure
-            'mean_reversion': Decimal('0.30'),
-            'volatility': Decimal('0.25'),
-            'funding': Decimal('0.20')
+            'momentum': safe_decimal('0.40'),  # 40% max momentum exposure
+            'mean_reversion': safe_decimal('0.30'),
+            'volatility': safe_decimal('0.25'),
+            'funding': safe_decimal('0.20')
         }
         
-        self.portfolio_var_limit = Decimal('0.05')  # 5% portfolio VaR limit
-        self.concentration_limit = Decimal('0.60')  # 60% max concentration
+        self.portfolio_var_limit = safe_decimal('0.05')  # 5% portfolio VaR limit
+        self.concentration_limit = safe_decimal('0.60')  # 60% max concentration
         
         self.blocked_orders = 0
         self.allowed_orders = 0
@@ -70,39 +71,39 @@ class PortfolioExposureGuard:
         exposures = {
             'per_asset': {},
             'per_factor': {},
-            'total_exposure': Decimal('0'),
-            'portfolio_var_95': Decimal('0')
+            'total_exposure': safe_decimal('0'),
+            'portfolio_var_95': safe_decimal('0')
         }
         
         try:
             # Calculate per-asset exposures
             for asset, position in positions.items():
                 if isinstance(position, dict) and 'size' in position:
-                    position_value = abs(Decimal(str(position['size'])) * Decimal(str(position.get('mark_price', 0))))
-                    exposures['per_asset'][asset] = position_value / account_value if account_value > 0 else Decimal('0')
+                    position_value = abs(safe_decimal(str(position['size'])) * safe_decimal(str(position.get('mark_price', 0))))
+                    exposures['per_asset'][asset] = position_value / account_value if account_value > 0 else safe_decimal('0')
                     exposures['total_exposure'] += position_value
             
             # Calculate per-factor exposures (simplified)
             # In practice, this would use factor models
             for factor in self.per_factor_limits.keys():
                 # Simplified factor exposure calculation
-                factor_exposure = Decimal('0')
+                factor_exposure = safe_decimal('0')
                 for asset, position in positions.items():
                     if isinstance(position, dict) and 'size' in position:
                         # Assign factors based on asset characteristics
                         if asset == 'XRP':
-                            factor_exposure += exposures['per_asset'].get(asset, Decimal('0')) * Decimal('0.3')
+                            factor_exposure += exposures['per_asset'].get(asset, safe_decimal('0')) * safe_decimal('0.3')
                         elif asset == 'BTC':
-                            factor_exposure += exposures['per_asset'].get(asset, Decimal('0')) * Decimal('0.4')
+                            factor_exposure += exposures['per_asset'].get(asset, safe_decimal('0')) * safe_decimal('0.4')
                         elif asset == 'ETH':
-                            factor_exposure += exposures['per_asset'].get(asset, Decimal('0')) * Decimal('0.3')
+                            factor_exposure += exposures['per_asset'].get(asset, safe_decimal('0')) * safe_decimal('0.3')
                 
                 exposures['per_factor'][factor] = factor_exposure
             
             # Calculate portfolio VaR (simplified)
             # In practice, this would use historical simulation or parametric methods
-            total_exposure_pct = exposures['total_exposure'] / account_value if account_value > 0 else Decimal('0')
-            exposures['portfolio_var_95'] = total_exposure_pct * Decimal('0.15')  # Simplified 15% volatility assumption
+            total_exposure_pct = exposures['total_exposure'] / account_value if account_value > 0 else safe_decimal('0')
+            exposures['portfolio_var_95'] = total_exposure_pct * safe_decimal('0.15')  # Simplified 15% volatility assumption
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating exposures: {e}")
@@ -120,23 +121,23 @@ class PortfolioExposureGuard:
             # Extract order details
             asset = new_order.get('asset', 'XRP')
             side = new_order.get('side', 'BUY')
-            size = Decimal(str(new_order.get('size', 0)))
-            price = Decimal(str(new_order.get('price', 0)))
+            size = safe_decimal(str(new_order.get('size', 0)))
+            price = safe_decimal(str(new_order.get('price', 0)))
             
             # Calculate new position value
             order_value = size * price
-            order_exposure_pct = order_value / account_value if account_value > 0 else Decimal('0')
+            order_exposure_pct = order_value / account_value if account_value > 0 else safe_decimal('0')
             
             # Check per-asset limits
-            current_asset_exposure = current_exposures['per_asset'].get(asset, Decimal('0'))
+            current_asset_exposure = current_exposures['per_asset'].get(asset, safe_decimal('0'))
             new_asset_exposure = current_asset_exposure + order_exposure_pct
-            asset_limit = self.per_asset_limits.get(asset, Decimal('0.30'))
+            asset_limit = self.per_asset_limits.get(asset, safe_decimal('0.30'))
             
             asset_check = ExposureCheck(
                 limit_type=ExposureLimit.PER_ASSET,
                 current_exposure=new_asset_exposure,
                 limit=asset_limit,
-                utilization_pct=(new_asset_exposure / asset_limit * 100) if asset_limit > 0 else Decimal('0'),
+                utilization_pct=(new_asset_exposure / asset_limit * 100) if asset_limit > 0 else safe_decimal('0'),
                 breached=new_asset_exposure > asset_limit,
                 asset=asset
             )
@@ -147,16 +148,16 @@ class PortfolioExposureGuard:
             
             # Check per-factor limits
             for factor, factor_limit in self.per_factor_limits.items():
-                current_factor_exposure = current_exposures['per_factor'].get(factor, Decimal('0'))
+                current_factor_exposure = current_exposures['per_factor'].get(factor, safe_decimal('0'))
                 # Simplified factor impact calculation
-                factor_impact = order_exposure_pct * Decimal('0.3')  # Assume 30% factor loading
+                factor_impact = order_exposure_pct * safe_decimal('0.3')  # Assume 30% factor loading
                 new_factor_exposure = current_factor_exposure + factor_impact
                 
                 factor_check = ExposureCheck(
                     limit_type=ExposureLimit.PER_FACTOR,
                     current_exposure=new_factor_exposure,
                     limit=factor_limit,
-                    utilization_pct=(new_factor_exposure / factor_limit * 100) if factor_limit > 0 else Decimal('0'),
+                    utilization_pct=(new_factor_exposure / factor_limit * 100) if factor_limit > 0 else safe_decimal('0'),
                     breached=new_factor_exposure > factor_limit,
                     factor=factor
                 )
@@ -167,13 +168,13 @@ class PortfolioExposureGuard:
             
             # Check portfolio VaR limit
             current_portfolio_var = current_exposures['portfolio_var_95']
-            new_portfolio_var = current_portfolio_var + (order_exposure_pct * Decimal('0.15'))  # Simplified VaR impact
+            new_portfolio_var = current_portfolio_var + (order_exposure_pct * safe_decimal('0.15'))  # Simplified VaR impact
             
             var_check = ExposureCheck(
                 limit_type=ExposureLimit.PORTFOLIO_VAR,
                 current_exposure=new_portfolio_var,
                 limit=self.portfolio_var_limit,
-                utilization_pct=(new_portfolio_var / self.portfolio_var_limit * 100) if self.portfolio_var_limit > 0 else Decimal('0'),
+                utilization_pct=(new_portfolio_var / self.portfolio_var_limit * 100) if self.portfolio_var_limit > 0 else safe_decimal('0'),
                 breached=new_portfolio_var > self.portfolio_var_limit
             )
             checks.append(var_check)
@@ -183,13 +184,13 @@ class PortfolioExposureGuard:
             
             # Check concentration limit
             total_exposure = current_exposures['total_exposure'] + order_value
-            concentration_pct = total_exposure / account_value if account_value > 0 else Decimal('0')
+            concentration_pct = total_exposure / account_value if account_value > 0 else safe_decimal('0')
             
             concentration_check = ExposureCheck(
                 limit_type=ExposureLimit.CONCENTRATION,
                 current_exposure=concentration_pct,
                 limit=self.concentration_limit,
-                utilization_pct=(concentration_pct / self.concentration_limit * 100) if self.concentration_limit > 0 else Decimal('0'),
+                utilization_pct=(concentration_pct / self.concentration_limit * 100) if self.concentration_limit > 0 else safe_decimal('0'),
                 breached=concentration_pct > self.concentration_limit
             )
             checks.append(concentration_check)
@@ -213,8 +214,8 @@ class PortfolioExposureGuard:
             return PortfolioExposureResult(
                 overall_breach=True,
                 checks=[],
-                total_exposure=Decimal('0'),
-                portfolio_var_95=Decimal('0'),
+                total_exposure=safe_decimal('0'),
+                portfolio_var_95=safe_decimal('0'),
                 recommendations=[f"Error checking limits: {e}"]
             )
     
@@ -335,7 +336,7 @@ def demo_portfolio_exposure_guard():
         'XRP': {'size': 100, 'mark_price': 0.52},
         'BTC': {'size': 0.1, 'mark_price': 50000}
     }
-    account_value = Decimal('10000')
+    account_value = safe_decimal('10000')
     
     new_order = {
         'asset': 'XRP',

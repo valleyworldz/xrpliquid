@@ -3,6 +3,8 @@ Type Coercion Layer for Decimal vs Float
 Ensures reliable order placement by handling type mismatches.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import decimal
 from typing import Union, Any, Dict, List
 import logging
@@ -53,14 +55,14 @@ class TypeCoercionLayer:
                 else:
                     value_str = str(value)
                 
-                return Decimal(value_str)
+                return safe_decimal(value_str)
             
             except (InvalidOperation, ValueError) as e:
                 raise TypeCoercionError(f"Failed to coerce {value} to Decimal: {e}")
         
         if isinstance(value, str):
             try:
-                return Decimal(value)
+                return safe_decimal(value)
             except (InvalidOperation, ValueError) as e:
                 raise TypeCoercionError(f"Failed to coerce string '{value}' to Decimal: {e}")
         
@@ -76,13 +78,13 @@ class TypeCoercionLayer:
         
         if isinstance(value, Decimal):
             try:
-                return float(value)
+                return safe_float(value)
             except (OverflowError, ValueError) as e:
                 raise TypeCoercionError(f"Failed to coerce Decimal {value} to float: {e}")
         
         if isinstance(value, (int, str)):
             try:
-                return float(value)
+                return safe_float(value)
             except (ValueError, OverflowError) as e:
                 raise TypeCoercionError(f"Failed to coerce {value} to float: {e}")
         
@@ -127,7 +129,7 @@ class TypeCoercionLayer:
         if precision is None:
             precision = self.precision
         
-        return value.quantize(Decimal('0.1') ** precision)
+        return value.quantize(safe_decimal('0.1') ** precision)
     
     def safe_decimal_operation(self, operation: str, a: Union[Decimal, float], 
                              b: Union[Decimal, float]) -> Decimal:
@@ -287,7 +289,7 @@ def main():
     test_values = [
         (123.456789, 'price'),
         ('0.00012345', 'quantity'),
-        (Decimal('0.001'), 'fee'),
+        (safe_decimal('0.001'), 'fee'),
         (np.float64(0.5), 'ratio')
     ]
     

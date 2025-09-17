@@ -13,6 +13,7 @@ This module implements the pinnacle of Hyperliquid exchange architecture mastery
 - Liquidation engine edge detection
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -235,7 +236,7 @@ class HyperliquidArchitectOptimizations:
             if not funding_data or len(funding_data) == 0:
                 return []
             
-            current_funding = float(funding_data[0].get('funding', 0))
+            current_funding = safe_float(funding_data[0].get('funding', 0))
             current_time = time.time()
             
             # Store funding rate history
@@ -590,7 +591,7 @@ class HyperliquidArchitectOptimizations:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == symbol:
-                        return float(asset_data.get('mid', 0))
+                        return safe_float(asset_data.get('mid', 0))
             return 0.52  # Fallback for XRP
         except:
             return 0.52  # Fallback for XRP

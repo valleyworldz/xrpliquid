@@ -3,6 +3,7 @@ Research Validity Analytics - Deflated Sharpe, PSR, Parameter Stability
 Provides research-grade metrics to prevent p-hacking and ensure statistical validity.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -292,7 +293,7 @@ class ResearchValidityAnalyzer:
             if isinstance(obj, np.integer):
                 return int(obj)
             elif isinstance(obj, np.floating):
-                return float(obj)
+                return safe_float(obj)
             elif isinstance(obj, np.ndarray):
                 return obj.tolist()
             elif isinstance(obj, dict):

@@ -2,6 +2,8 @@
 Cross-Venue Arbitrage Prover - Proof of profitable cross-venue strategies (funding capture, oracle divergence, hyperps vs perps)
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import asyncio
@@ -66,32 +68,32 @@ class CrossVenueArbitrageProver:
         # Venue configurations
         self.venues = {
             'hyperliquid': {
-                'funding_rate': Decimal('0.0001'),  # 0.01% per 8h
-                'maker_fee': Decimal('0.0001'),
-                'taker_fee': Decimal('0.0002'),
-                'min_size': Decimal('1'),
-                'max_size': Decimal('1000000')
+                'funding_rate': safe_decimal('0.0001'),  # 0.01% per 8h
+                'maker_fee': safe_decimal('0.0001'),
+                'taker_fee': safe_decimal('0.0002'),
+                'min_size': safe_decimal('1'),
+                'max_size': safe_decimal('1000000')
             },
             'binance': {
-                'funding_rate': Decimal('0.0001'),
-                'maker_fee': Decimal('0.0001'),
-                'taker_fee': Decimal('0.001'),
-                'min_size': Decimal('10'),
-                'max_size': Decimal('10000000')
+                'funding_rate': safe_decimal('0.0001'),
+                'maker_fee': safe_decimal('0.0001'),
+                'taker_fee': safe_decimal('0.001'),
+                'min_size': safe_decimal('10'),
+                'max_size': safe_decimal('10000000')
             },
             'bybit': {
-                'funding_rate': Decimal('0.0001'),
-                'maker_fee': Decimal('0.0001'),
-                'taker_fee': Decimal('0.0006'),
-                'min_size': Decimal('5'),
-                'max_size': Decimal('5000000')
+                'funding_rate': safe_decimal('0.0001'),
+                'maker_fee': safe_decimal('0.0001'),
+                'taker_fee': safe_decimal('0.0006'),
+                'min_size': safe_decimal('5'),
+                'max_size': safe_decimal('5000000')
             },
             'deribit': {
-                'funding_rate': Decimal('0.0001'),
-                'maker_fee': Decimal('0.0001'),
-                'taker_fee': Decimal('0.0005'),
-                'min_size': Decimal('1'),
-                'max_size': Decimal('2000000')
+                'funding_rate': safe_decimal('0.0001'),
+                'maker_fee': safe_decimal('0.0001'),
+                'taker_fee': safe_decimal('0.0005'),
+                'min_size': safe_decimal('1'),
+                'max_size': safe_decimal('2000000')
             }
         }
         
@@ -136,24 +138,24 @@ class CrossVenueArbitrageProver:
         try:
             # Calculate funding spread
             funding_spread = funding_rate_b - funding_rate_a
-            funding_spread_bps = funding_spread * Decimal('10000')  # Convert to basis points
+            funding_spread_bps = funding_spread * safe_decimal('10000')  # Convert to basis points
             
             # Minimum profitable spread (considering execution costs)
-            min_profitable_spread_bps = Decimal('5')  # 5 bps minimum
+            min_profitable_spread_bps = safe_decimal('5')  # 5 bps minimum
             
             if abs(funding_spread_bps) < min_profitable_spread_bps:
                 return None
             
             # Calculate estimated profit
-            estimated_profit = notional_size * abs(funding_spread) * Decimal('3')  # 3 funding periods per day
+            estimated_profit = notional_size * abs(funding_spread) * safe_decimal('3')  # 3 funding periods per day
             
             # Calculate execution costs
             venue_a_config = self.venues.get(venue_a, {})
             venue_b_config = self.venues.get(venue_b, {})
             
             execution_cost = notional_size * (
-                venue_a_config.get('taker_fee', Decimal('0.001')) + 
-                venue_b_config.get('taker_fee', Decimal('0.001'))
+                venue_a_config.get('taker_fee', safe_decimal('0.001')) + 
+                venue_b_config.get('taker_fee', safe_decimal('0.001'))
             )
             
             net_profit = estimated_profit - execution_cost
@@ -170,14 +172,14 @@ class CrossVenueArbitrageProver:
                 venue_a=venue_a,
                 venue_b=venue_b,
                 asset=asset,
-                price_a=Decimal('0'),  # Not applicable for funding
-                price_b=Decimal('0'),
-                spread_bps=Decimal('0'),
+                price_a=safe_decimal('0'),  # Not applicable for funding
+                price_b=safe_decimal('0'),
+                spread_bps=safe_decimal('0'),
                 funding_rate_a=funding_rate_a,
                 funding_rate_b=funding_rate_b,
                 funding_spread_bps=funding_spread_bps,
-                oracle_price=Decimal('0'),
-                oracle_divergence_bps=Decimal('0'),
+                oracle_price=safe_decimal('0'),
+                oracle_divergence_bps=safe_decimal('0'),
                 notional_size=notional_size,
                 estimated_profit=estimated_profit,
                 execution_cost=execution_cost,
@@ -217,12 +219,12 @@ class CrossVenueArbitrageProver:
             # Calculate oracle divergence
             if oracle_price > 0:
                 divergence = (venue_price - oracle_price) / oracle_price
-                divergence_bps = divergence * Decimal('10000')
+                divergence_bps = divergence * safe_decimal('10000')
             else:
                 return None
             
             # Minimum profitable divergence (considering execution costs)
-            min_profitable_divergence_bps = Decimal('10')  # 10 bps minimum
+            min_profitable_divergence_bps = safe_decimal('10')  # 10 bps minimum
             
             if abs(divergence_bps) < min_profitable_divergence_bps:
                 return None
@@ -232,7 +234,7 @@ class CrossVenueArbitrageProver:
             
             # Calculate execution costs
             venue_config = self.venues.get(venue, {})
-            execution_cost = notional_size * venue_config.get('taker_fee', Decimal('0.001'))
+            execution_cost = notional_size * venue_config.get('taker_fee', safe_decimal('0.001'))
             
             net_profit = estimated_profit - execution_cost
             
@@ -251,9 +253,9 @@ class CrossVenueArbitrageProver:
                 price_a=venue_price,
                 price_b=oracle_price,
                 spread_bps=divergence_bps,
-                funding_rate_a=Decimal('0'),
-                funding_rate_b=Decimal('0'),
-                funding_spread_bps=Decimal('0'),
+                funding_rate_a=safe_decimal('0'),
+                funding_rate_b=safe_decimal('0'),
+                funding_spread_bps=safe_decimal('0'),
                 oracle_price=oracle_price,
                 oracle_divergence_bps=divergence_bps,
                 notional_size=notional_size,
@@ -296,12 +298,12 @@ class CrossVenueArbitrageProver:
             # Calculate spread
             if perps_price > 0:
                 spread = (hyperps_price - perps_price) / perps_price
-                spread_bps = spread * Decimal('10000')
+                spread_bps = spread * safe_decimal('10000')
             else:
                 return None
             
             # Minimum profitable spread
-            min_profitable_spread_bps = Decimal('15')  # 15 bps minimum for cross-venue
+            min_profitable_spread_bps = safe_decimal('15')  # 15 bps minimum for cross-venue
             
             if abs(spread_bps) < min_profitable_spread_bps:
                 return None
@@ -314,8 +316,8 @@ class CrossVenueArbitrageProver:
             perps_config = self.venues.get(perps_venue, {})
             
             execution_cost = notional_size * (
-                hyperps_config.get('taker_fee', Decimal('0.0002')) + 
-                perps_config.get('taker_fee', Decimal('0.001'))
+                hyperps_config.get('taker_fee', safe_decimal('0.0002')) + 
+                perps_config.get('taker_fee', safe_decimal('0.001'))
             )
             
             net_profit = estimated_profit - execution_cost
@@ -335,11 +337,11 @@ class CrossVenueArbitrageProver:
                 price_a=hyperps_price,
                 price_b=perps_price,
                 spread_bps=spread_bps,
-                funding_rate_a=Decimal('0'),
-                funding_rate_b=Decimal('0'),
-                funding_spread_bps=Decimal('0'),
-                oracle_price=Decimal('0'),
-                oracle_divergence_bps=Decimal('0'),
+                funding_rate_a=safe_decimal('0'),
+                funding_rate_b=safe_decimal('0'),
+                funding_spread_bps=safe_decimal('0'),
+                oracle_price=safe_decimal('0'),
+                oracle_divergence_bps=safe_decimal('0'),
                 notional_size=notional_size,
                 estimated_profit=estimated_profit,
                 execution_cost=execution_cost,
@@ -380,12 +382,12 @@ class CrossVenueArbitrageProver:
             # Calculate spread
             if price_b > 0:
                 spread = (price_a - price_b) / price_b
-                spread_bps = spread * Decimal('10000')
+                spread_bps = spread * safe_decimal('10000')
             else:
                 return None
             
             # Minimum profitable spread
-            min_profitable_spread_bps = Decimal('20')  # 20 bps minimum for cross-venue
+            min_profitable_spread_bps = safe_decimal('20')  # 20 bps minimum for cross-venue
             
             if abs(spread_bps) < min_profitable_spread_bps:
                 return None
@@ -398,8 +400,8 @@ class CrossVenueArbitrageProver:
             venue_b_config = self.venues.get(venue_b, {})
             
             execution_cost = notional_size * (
-                venue_a_config.get('taker_fee', Decimal('0.001')) + 
-                venue_b_config.get('taker_fee', Decimal('0.001'))
+                venue_a_config.get('taker_fee', safe_decimal('0.001')) + 
+                venue_b_config.get('taker_fee', safe_decimal('0.001'))
             )
             
             net_profit = estimated_profit - execution_cost
@@ -419,11 +421,11 @@ class CrossVenueArbitrageProver:
                 price_a=price_a,
                 price_b=price_b,
                 spread_bps=spread_bps,
-                funding_rate_a=Decimal('0'),
-                funding_rate_b=Decimal('0'),
-                funding_spread_bps=Decimal('0'),
-                oracle_price=Decimal('0'),
-                oracle_divergence_bps=Decimal('0'),
+                funding_rate_a=safe_decimal('0'),
+                funding_rate_b=safe_decimal('0'),
+                funding_spread_bps=safe_decimal('0'),
+                oracle_price=safe_decimal('0'),
+                oracle_divergence_bps=safe_decimal('0'),
                 notional_size=notional_size,
                 estimated_profit=estimated_profit,
                 execution_cost=execution_cost,
@@ -506,10 +508,10 @@ class CrossVenueArbitrageProver:
                 return CrossVenueArbitrageSummary(
                     total_opportunities=0,
                     successful_arbitrages=0,
-                    success_rate=Decimal('0'),
-                    total_profit=Decimal('0'),
-                    total_notional=Decimal('0'),
-                    average_spread_bps=Decimal('0'),
+                    success_rate=safe_decimal('0'),
+                    total_profit=safe_decimal('0'),
+                    total_notional=safe_decimal('0'),
+                    average_spread_bps=safe_decimal('0'),
                     strategy_breakdown={},
                     venue_breakdown={},
                     daily_profit_trend=[],
@@ -521,15 +523,15 @@ class CrossVenueArbitrageProver:
             # Calculate basic metrics
             total_opportunities = len(self.immutable_opportunities)
             successful_arbitrages = sum(1 for opp in self.immutable_opportunities if opp.success)
-            success_rate = successful_arbitrages / total_opportunities if total_opportunities > 0 else Decimal('0')
+            success_rate = successful_arbitrages / total_opportunities if total_opportunities > 0 else safe_decimal('0')
             
             total_profit = sum(opp.net_profit for opp in self.immutable_opportunities if opp.success)
             total_notional = sum(opp.notional_size for opp in self.immutable_opportunities if opp.success)
             
             # Calculate average spread
             spreads = [opp.spread_bps for opp in self.immutable_opportunities if opp.success and opp.spread_bps != 0]
-            average_spread_bps = statistics.mean([float(s) for s in spreads]) if spreads else 0.0
-            average_spread_bps = Decimal(str(average_spread_bps))
+            average_spread_bps = statistics.mean([safe_float(s) for s in spreads]) if spreads else 0.0
+            average_spread_bps = safe_decimal(str(average_spread_bps))
             
             # Strategy breakdown
             strategy_breakdown = {}
@@ -540,7 +542,7 @@ class CrossVenueArbitrageProver:
                         'count': len(strategy_opps),
                         'success_rate': sum(1 for opp in strategy_opps if opp.success) / len(strategy_opps),
                         'total_profit': str(sum(opp.net_profit for opp in strategy_opps if opp.success)),
-                        'average_spread_bps': str(statistics.mean([float(opp.spread_bps) for opp in strategy_opps if opp.success and opp.spread_bps != 0]) if strategy_opps else 0.0)
+                        'average_spread_bps': str(statistics.mean([safe_float(opp.spread_bps) for opp in strategy_opps if opp.success and opp.spread_bps != 0]) if strategy_opps else 0.0)
                     }
             
             # Venue breakdown
@@ -557,7 +559,7 @@ class CrossVenueArbitrageProver:
                         'count': len(venue_opps),
                         'success_rate': sum(1 for opp in venue_opps if opp.success) / len(venue_opps),
                         'total_profit': str(sum(opp.net_profit for opp in venue_opps if opp.success)),
-                        'average_spread_bps': str(statistics.mean([float(opp.spread_bps) for opp in venue_opps if opp.success and opp.spread_bps != 0]) if venue_opps else 0.0)
+                        'average_spread_bps': str(statistics.mean([safe_float(opp.spread_bps) for opp in venue_opps if opp.success and opp.spread_bps != 0]) if venue_opps else 0.0)
                     }
             
             # Daily profit trend
@@ -603,8 +605,8 @@ class CrossVenueArbitrageProver:
                         daily_profits[date] = {
                             'date': date,
                             'opportunities': 0,
-                            'total_profit': Decimal('0'),
-                            'average_spread_bps': Decimal('0')
+                            'total_profit': safe_decimal('0'),
+                            'average_spread_bps': safe_decimal('0')
                         }
                     
                     daily_profits[date]['opportunities'] += 1
@@ -616,7 +618,7 @@ class CrossVenueArbitrageProver:
                 if date_opps:
                     spreads = [opp.spread_bps for opp in date_opps if opp.spread_bps != 0]
                     if spreads:
-                        daily_profits[date]['average_spread_bps'] = Decimal(str(statistics.mean([float(s) for s in spreads])))
+                        daily_profits[date]['average_spread_bps'] = safe_decimal(str(statistics.mean([safe_float(s) for s in spreads])))
             
             # Convert to list and sort by date
             trend = []
@@ -642,7 +644,7 @@ class CrossVenueArbitrageProver:
                 return {}
             
             # Calculate profit distribution
-            profits = [float(opp.net_profit) for opp in self.immutable_opportunities if opp.success]
+            profits = [safe_float(opp.net_profit) for opp in self.immutable_opportunities if opp.success]
             
             if profits:
                 risk_metrics = {
@@ -772,9 +774,9 @@ def demo_cross_venue_arbitrage_prover():
             venue_a='hyperliquid',
             venue_b='binance',
             asset='XRP/USD',
-            funding_rate_a=Decimal('0.0001'),
-            funding_rate_b=Decimal('0.0003'),  # 2bps spread
-            notional_size=Decimal('10000')
+            funding_rate_a=safe_decimal('0.0001'),
+            funding_rate_b=safe_decimal('0.0003'),  # 2bps spread
+            notional_size=safe_decimal('10000')
         )
         if opportunity and i % 5 == 0:
             print(f"  Funding Capture {i+1}: {opportunity.funding_spread_bps:.1f}bps, ${opportunity.net_profit:.2f}")
@@ -784,9 +786,9 @@ def demo_cross_venue_arbitrage_prover():
         opportunity = prover.detect_oracle_divergence_opportunity(
             venue='hyperliquid',
             asset='XRP/USD',
-            venue_price=Decimal('0.52'),
-            oracle_price=Decimal('0.5195'),  # 10bps divergence
-            notional_size=Decimal('5000')
+            venue_price=safe_decimal('0.52'),
+            oracle_price=safe_decimal('0.5195'),  # 10bps divergence
+            notional_size=safe_decimal('5000')
         )
         if opportunity and i % 5 == 0:
             print(f"  Oracle Divergence {i+1}: {opportunity.oracle_divergence_bps:.1f}bps, ${opportunity.net_profit:.2f}")
@@ -797,9 +799,9 @@ def demo_cross_venue_arbitrage_prover():
             hyperps_venue='hyperliquid',
             perps_venue='bybit',
             asset='XRP/USD',
-            hyperps_price=Decimal('0.52'),
-            perps_price=Decimal('0.5192'),  # 15bps spread
-            notional_size=Decimal('8000')
+            hyperps_price=safe_decimal('0.52'),
+            perps_price=safe_decimal('0.5192'),  # 15bps spread
+            notional_size=safe_decimal('8000')
         )
         if opportunity and i % 5 == 0:
             print(f"  Hyperps vs Perps {i+1}: {opportunity.spread_bps:.1f}bps, ${opportunity.net_profit:.2f}")
@@ -810,9 +812,9 @@ def demo_cross_venue_arbitrage_prover():
             venue_a='hyperliquid',
             venue_b='deribit',
             asset='XRP/USD',
-            price_a=Decimal('0.52'),
-            price_b=Decimal('0.5190'),  # 20bps spread
-            notional_size=Decimal('12000')
+            price_a=safe_decimal('0.52'),
+            price_b=safe_decimal('0.5190'),  # 20bps spread
+            notional_size=safe_decimal('12000')
         )
         if opportunity and i % 5 == 0:
             print(f"  Cross-Venue Spread {i+1}: {opportunity.spread_bps:.1f}bps, ${opportunity.net_profit:.2f}")

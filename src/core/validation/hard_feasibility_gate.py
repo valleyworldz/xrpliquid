@@ -2,6 +2,7 @@
 Hard Feasibility Gate - Prevents orders from being submitted if feasibility fails
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 import logging
 import json
 from typing import Dict, Any, Optional, Tuple
@@ -42,10 +43,10 @@ class HardFeasibilityGate:
         try:
             # Extract order details
             side = order_data.get('side', '').upper()
-            size = Decimal(str(order_data.get('size', 0)))
-            price = Decimal(str(order_data.get('price', 0)))
-            take_profit = Decimal(str(order_data.get('take_profit', 0)))
-            stop_loss = Decimal(str(order_data.get('stop_loss', 0)))
+            size = safe_decimal(str(order_data.get('size', 0)))
+            price = safe_decimal(str(order_data.get('price', 0)))
+            take_profit = safe_decimal(str(order_data.get('take_profit', 0)))
+            stop_loss = safe_decimal(str(order_data.get('stop_loss', 0)))
             
             # Check 1: Basic order validation
             if size <= 0 or price <= 0:
@@ -62,7 +63,7 @@ class HardFeasibilityGate:
                 tp_distance = abs(take_profit - price) / price
                 sl_distance = abs(price - stop_loss) / price
                 
-                if tp_distance > Decimal('0.10'):  # 10% TP limit
+                if tp_distance > safe_decimal('0.10'):  # 10% TP limit
                     return FeasibilityDecision(
                         result=FeasibilityResult.INFEASIBLE,
                         reason=f"TP distance too large: {tp_distance:.2%}",
@@ -71,7 +72,7 @@ class HardFeasibilityGate:
                         timestamp=datetime.now().isoformat()
                     )
                 
-                if sl_distance > Decimal('0.05'):  # 5% SL limit
+                if sl_distance > safe_decimal('0.05'):  # 5% SL limit
                     return FeasibilityDecision(
                         result=FeasibilityResult.INFEASIBLE,
                         reason=f"SL distance too large: {sl_distance:.2%}",
@@ -96,14 +97,14 @@ class HardFeasibilityGate:
                 
                 # Check if order size is reasonable relative to market depth
                 if side == 'BUY':
-                    available_depth = sum(Decimal(str(ask[1])) for ask in asks[:5])
+                    available_depth = sum(safe_decimal(str(ask[1])) for ask in asks[:5])
                 else:
-                    available_depth = sum(Decimal(str(bid[1])) for bid in bids[:5])
+                    available_depth = sum(safe_decimal(str(bid[1])) for bid in bids[:5])
                 
-                if size > available_depth * Decimal('0.1'):  # Max 10% of top 5 levels
+                if size > available_depth * safe_decimal('0.1'):  # Max 10% of top 5 levels
                     return FeasibilityDecision(
                         result=FeasibilityResult.INFEASIBLE,
-                        reason=f"Order size too large for market depth: {size} > {available_depth * Decimal('0.1')}",
+                        reason=f"Order size too large for market depth: {size} > {available_depth * safe_decimal('0.1')}",
                         confidence=1.0,
                         should_proceed=False,
                         timestamp=datetime.now().isoformat()
@@ -111,11 +112,11 @@ class HardFeasibilityGate:
             
             # Check 4: Spread validation
             if market_depth and market_depth.get('bids') and market_depth.get('asks'):
-                best_bid = Decimal(str(market_depth['bids'][0][0]))
-                best_ask = Decimal(str(market_depth['asks'][0][0]))
+                best_bid = safe_decimal(str(market_depth['bids'][0][0]))
+                best_ask = safe_decimal(str(market_depth['asks'][0][0]))
                 spread = (best_ask - best_bid) / best_bid
                 
-                if spread > Decimal('0.01'):  # 1% spread limit
+                if spread > safe_decimal('0.01'):  # 1% spread limit
                     return FeasibilityDecision(
                         result=FeasibilityResult.MARGINAL,
                         reason=f"Wide spread: {spread:.2%}",

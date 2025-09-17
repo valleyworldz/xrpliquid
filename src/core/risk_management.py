@@ -4,6 +4,7 @@ Combines advanced risk management, performance tracking, and portfolio protectio
 for the XRP trading bot with real-time monitoring and adaptive controls.
 
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import os
 import csv
@@ -418,7 +419,7 @@ class PerformanceTracker:
         
         # Calculate profit factor
         gross_profit = sum(t["pnl] for t in self.trades if t["pnl"] > 0)
-        gross_loss = abs(sum(t["pnl] for t in self.trades if t["pnl"] < 0     profit_factor = gross_profit / gross_loss if gross_loss >0else float('inf')
+        gross_loss = abs(sum(t["pnl] for t in self.trades if t["pnl"] < 0     profit_factor = gross_profit / gross_loss if gross_loss >0else safe_float('inf')
         
         return [object Object]      total_trades": total_trades,
          win_rate": win_rate,
@@ -528,8 +529,8 @@ class RiskManagementSystem:
  heck if account is at risk of liquidation"""
         try:
             # Extract account information
-            margin_summary = account_data.get(marginSummary, {})           account_value = float(margin_summary.get('accountValue, 0))
-            total_margin_used = float(margin_summary.get(totalMarginUsed',0      
+            margin_summary = account_data.get(marginSummary, {})           account_value = safe_float(margin_summary.get('accountValue, 0))
+            total_margin_used = safe_float(margin_summary.get(totalMarginUsed',0      
             if account_value <= 0            return True  # Already liquidated
             
             # Calculate margin ratio

@@ -7,6 +7,7 @@ This module contains all configuration parameters and settings for the trading b
 Extracted from the monolithic PERFECT_CONSOLIDATED_BOT.py for better maintainability.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import os
 from typing import Dict, Tuple, Any
 from dataclasses import dataclass
@@ -179,7 +180,7 @@ class VolatilityRegimeFilters:
             'profit_target_multiplier': 0.9
         },
         'extreme_volatility': {
-            'max_atr': float('inf'),  # No limit
+            'max_atr': safe_float('inf'),  # No limit
             'min_signal_strength': 0.99,
             'position_size_multiplier': 0.5,
             'profit_target_multiplier': 0.8

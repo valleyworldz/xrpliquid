@@ -3,6 +3,8 @@ Decimal Normalizer - Comprehensive Decimal/float Bug Fix
 Normalizes all external numeric inputs at API boundary to Decimal with end-to-end consistency
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 from decimal import Decimal, ROUND_HALF_EVEN, getcontext
 from typing import Any, Union, Dict, List, Optional, Tuple
@@ -41,36 +43,36 @@ class DecimalNormalizer:
         """
         try:
             if value is None:
-                return Decimal('0')
+                return safe_decimal('0')
             
             if isinstance(value, Decimal):
                 # Ensure precision
-                return value.quantize(Decimal('0.' + '0' * precision))
+                return value.quantize(safe_decimal('0.' + '0' * precision))
             
             if isinstance(value, (int, float)):
                 # Convert to Decimal with proper precision
-                decimal_value = Decimal(str(value))
+                decimal_value = safe_decimal(str(value))
                 # For now, return the decimal value as is to avoid quantize issues
                 return decimal_value
             
             if isinstance(value, str):
                 # Try to parse as number
-                decimal_value = Decimal(value)
-                return decimal_value.quantize(Decimal('0.' + '0' * precision))
+                decimal_value = safe_decimal(value)
+                return decimal_value.quantize(safe_decimal('0.' + '0' * precision))
             
             if isinstance(value, np.number):
                 # Handle numpy types
-                decimal_value = Decimal(str(float(value)))
-                return decimal_value.quantize(Decimal('0.' + '0' * precision))
+                decimal_value = safe_decimal(str(safe_float(value)))
+                return decimal_value.quantize(safe_decimal('0.' + '0' * precision))
             
             # For other types, try to convert to string first
-            decimal_value = Decimal(str(value))
-            return decimal_value.quantize(Decimal('0.' + '0' * precision))
+            decimal_value = safe_decimal(str(value))
+            return decimal_value.quantize(safe_decimal('0.' + '0' * precision))
                 
         except Exception as e:
             self.logger.error(f"❌ Decimal normalization error: {e}")
             self.conversion_stats["errors"] += 1
-            return Decimal('0')
+            return safe_decimal('0')
         finally:
             self.conversion_stats["conversions"] += 1
             self.conversion_stats["types_converted"][str(type(value))] = \
@@ -127,7 +129,7 @@ class DecimalNormalizer:
             elif operation == "divide":
                 if decimal_b == 0:
                     self.logger.warning("⚠️ Division by zero attempted")
-                    return Decimal('0')
+                    return safe_decimal('0')
                 result = decimal_a / decimal_b
             else:
                 raise ValueError(f"Unknown operation: {operation}")
@@ -137,7 +139,7 @@ class DecimalNormalizer:
             
         except Exception as e:
             self.logger.error(f"❌ Safe operation error ({operation}): {e}")
-            return Decimal('0')
+            return safe_decimal('0')
     
     def normalize_order_data(self, order_data: Dict[str, Any]) -> Dict[str, Decimal]:
         """
@@ -261,7 +263,7 @@ class DecimalOrderBook:
         
         if best_bid and best_ask:
             return best_ask[0] - best_bid[0]
-        return Decimal('0')
+        return safe_decimal('0')
     
     def get_mid_price(self) -> Decimal:
         """Calculate mid price in decimal"""
@@ -269,8 +271,8 @@ class DecimalOrderBook:
         best_ask = self.get_best_ask()
         
         if best_bid and best_ask:
-            return (best_bid[0] + best_ask[0]) / Decimal('2')
-        return Decimal('0')
+            return (best_bid[0] + best_ask[0]) / safe_decimal('2')
+        return safe_decimal('0')
 
 class DecimalTrade:
     """
@@ -287,11 +289,11 @@ class DecimalTrade:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary with decimal values"""
         return {
-            'price': float(self.price),
-            'size': float(self.size),
+            'price': safe_float(self.price),
+            'size': safe_float(self.size),
             'side': self.side,
             'timestamp': self.timestamp,
-            'value': float(self.value)
+            'value': safe_float(self.value)
         }
 
 # Demo function
@@ -305,7 +307,7 @@ def demo_decimal_normalizer():
         123.456,
         "789.012",
         1000,
-        Decimal('555.777'),
+        safe_decimal('555.777'),
         np.float64(999.888),
         None
     ]

@@ -41,19 +41,19 @@ class EnhancedBalanceManager:
                 return None
             
             margin_summary = user_state.get("marginSummary", {})
-            account_value = float(margin_summary.get("accountValue", "0"))
+            account_value = safe_float(margin_summary.get("accountValue", "0"))
             
             positions = {}
             asset_positions = user_state.get("assetPositions", [])
             
             for pos in asset_positions:
                 symbol = pos.get("position", {}).get("coin", "")
-                size = float(pos.get("position", {}).get("szi", "0"))
+                size = safe_float(pos.get("position", {}).get("szi", "0"))
                 
                 if abs(size) > 0.001:
                     positions[symbol] = {
                         'size': size,
-                        'entry_price': float(pos.get("position", {}).get("entryPx", "0"))
+                        'entry_price': safe_float(pos.get("position", {}).get("entryPx", "0"))
                     }
             
             available_balance = self.calculate_available_balance(account_value, positions)

@@ -13,6 +13,7 @@ This module implements comprehensive performance analytics:
 - Performance forecasting
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -476,7 +477,7 @@ class PerformanceQuantAnalyst:
             total_wins = sum(winning_trades) if winning_trades else 0
             total_losses = abs(sum(losing_trades)) if losing_trades else 0
             
-            profit_factor = total_wins / total_losses if total_losses > 0 else float('inf') if total_wins > 0 else 0
+            profit_factor = total_wins / total_losses if total_losses > 0 else safe_float('inf') if total_wins > 0 else 0
             
             average_win = np.mean(winning_trades) if winning_trades else 0
             average_loss = np.mean(losing_trades) if losing_trades else 0

@@ -12,6 +12,7 @@ Advanced real-time monitoring system for supreme autonomous trading:
 - Emergency detection
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import json
 import threading
@@ -150,7 +151,7 @@ class RealTimeMonitor:
             # Get initial balance
             user_state = self.api.get_user_state()
             if user_state:
-                self.session_start_balance = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+                self.session_start_balance = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
                 self.last_balance = self.session_start_balance
             
             # Start monitoring thread
@@ -213,8 +214,8 @@ class RealTimeMonitor:
             if not user_state:
                 return None
             
-            current_balance = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
-            unrealized_pnl = float(user_state.get("marginSummary", {}).get("unrealizedPnl", "0"))
+            current_balance = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+            unrealized_pnl = safe_float(user_state.get("marginSummary", {}).get("unrealizedPnl", "0"))
             
             # Calculate returns
             if self.last_balance > 0:
@@ -259,7 +260,7 @@ class RealTimeMonitor:
             # Profit factor
             total_wins = sum(trade.get("pnl", 0) for trade in self.trade_history if trade.get("pnl", 0) > 0)
             total_losses = abs(sum(trade.get("pnl", 0) for trade in self.trade_history if trade.get("pnl", 0) < 0))
-            profit_factor = total_wins / total_losses if total_losses > 0 else float('inf')
+            profit_factor = total_wins / total_losses if total_losses > 0 else safe_float('inf')
             
             # Largest win/loss
             pnls = [trade.get("pnl", 0) for trade in self.trade_history]

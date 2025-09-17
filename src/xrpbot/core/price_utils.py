@@ -5,6 +5,7 @@ Low-level price manipulation and technical indicators.
 All functions are pure and stateless for easy testing.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
 from typing import Union, List, Optional
 import numpy as np
@@ -26,13 +27,13 @@ def align_price_to_tick(price: Union[float, Decimal], tick_size: Union[float, De
         ValueError: If direction is invalid
     """
     if tick_size <= 0:
-        return Decimal(str(price))
+        return safe_decimal(str(price))
     
     if direction not in ("up", "tp", "buy", "down", "sl", "sell"):
         raise ValueError(f"Direction must be one of: up/tp/buy/down/sl/sell, got: {direction}")
     
-    p = Decimal(str(price))
-    t = Decimal(str(tick_size))
+    p = safe_decimal(str(price))
+    t = safe_decimal(str(tick_size))
     
     if direction in ("up", "tp", "buy"):
         # For buys/TP orders, round up to ensure we don't get a worse price

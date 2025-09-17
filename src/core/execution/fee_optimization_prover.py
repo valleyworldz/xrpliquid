@@ -2,6 +2,7 @@
 Fee Optimization Prover - % of orders filled as maker, exact rebates captured vs taker costs, annualized savings quantified
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 import logging
 import json
 from typing import Dict, Any, List, Optional, Tuple
@@ -61,12 +62,12 @@ class FeeOptimizationProver:
         
         # Fee structure (Hyperliquid specific)
         self.fee_structure = {
-            'maker_rebate': Decimal('0.0001'),  # 0.01% rebate for makers
-            'taker_fee': Decimal('0.0002'),     # 0.02% fee for takers
+            'maker_rebate': safe_decimal('0.0001'),  # 0.01% rebate for makers
+            'taker_fee': safe_decimal('0.0002'),     # 0.02% fee for takers
             'venue_fees': {
-                'hyperliquid': {'maker': Decimal('0.0001'), 'taker': Decimal('0.0002')},
-                'binance': {'maker': Decimal('0.0001'), 'taker': Decimal('0.001')},
-                'bybit': {'maker': Decimal('0.0001'), 'taker': Decimal('0.0006')}
+                'hyperliquid': {'maker': safe_decimal('0.0001'), 'taker': safe_decimal('0.0002')},
+                'binance': {'maker': safe_decimal('0.0001'), 'taker': safe_decimal('0.001')},
+                'bybit': {'maker': safe_decimal('0.0001'), 'taker': safe_decimal('0.0006')}
             }
         }
         
@@ -107,21 +108,21 @@ class FeeOptimizationProver:
             notional_value = execution_size * execution_price
             
             if order_type == 'maker':
-                fee_rate = Decimal('0')  # Makers pay no fees
-                fee_amount = Decimal('0')
+                fee_rate = safe_decimal('0')  # Makers pay no fees
+                fee_amount = safe_decimal('0')
                 rebate_rate = self.fee_structure['venue_fees'][venue]['maker']
                 rebate_amount = notional_value * rebate_rate
             else:  # taker
                 fee_rate = self.fee_structure['venue_fees'][venue]['taker']
                 fee_amount = notional_value * fee_rate
-                rebate_rate = Decimal('0')
-                rebate_amount = Decimal('0')
+                rebate_rate = safe_decimal('0')
+                rebate_amount = safe_decimal('0')
             
             # Calculate net cost (negative = savings)
             net_cost = fee_amount - rebate_amount
             
             # Calculate slippage
-            slippage = abs(execution_price - price) / price if price > 0 else Decimal('0')
+            slippage = abs(execution_price - price) / price if price > 0 else safe_decimal('0')
             
             # Create record
             record = FeeOptimizationRecord(
@@ -217,14 +218,14 @@ class FeeOptimizationProver:
                     total_orders=0,
                     maker_orders=0,
                     taker_orders=0,
-                    maker_ratio=Decimal('0'),
-                    total_fees_paid=Decimal('0'),
-                    total_rebates_earned=Decimal('0'),
-                    net_fee_savings=Decimal('0'),
-                    annualized_savings=Decimal('0'),
-                    average_maker_rebate=Decimal('0'),
-                    average_taker_fee=Decimal('0'),
-                    fee_optimization_score=Decimal('0'),
+                    maker_ratio=safe_decimal('0'),
+                    total_fees_paid=safe_decimal('0'),
+                    total_rebates_earned=safe_decimal('0'),
+                    net_fee_savings=safe_decimal('0'),
+                    annualized_savings=safe_decimal('0'),
+                    average_maker_rebate=safe_decimal('0'),
+                    average_taker_fee=safe_decimal('0'),
+                    fee_optimization_score=safe_decimal('0'),
                     venue_breakdown={},
                     daily_savings_trend=[],
                     last_updated=datetime.now().isoformat(),
@@ -235,7 +236,7 @@ class FeeOptimizationProver:
             total_orders = len(self.immutable_records)
             maker_orders = sum(1 for record in self.immutable_records if record.order_type == 'maker')
             taker_orders = total_orders - maker_orders
-            maker_ratio = maker_orders / total_orders if total_orders > 0 else Decimal('0')
+            maker_ratio = maker_orders / total_orders if total_orders > 0 else safe_decimal('0')
             
             # Calculate fee metrics
             total_fees_paid = sum(record.fee_amount for record in self.immutable_records)
@@ -246,8 +247,8 @@ class FeeOptimizationProver:
             maker_records = [record for record in self.immutable_records if record.order_type == 'maker']
             taker_records = [record for record in self.immutable_records if record.order_type == 'taker']
             
-            average_maker_rebate = sum(record.rebate_amount for record in maker_records) / len(maker_records) if maker_records else Decimal('0')
-            average_taker_fee = sum(record.fee_amount for record in taker_records) / len(taker_records) if taker_records else Decimal('0')
+            average_maker_rebate = sum(record.rebate_amount for record in maker_records) / len(maker_records) if maker_records else safe_decimal('0')
+            average_taker_fee = sum(record.fee_amount for record in taker_records) / len(taker_records) if taker_records else safe_decimal('0')
             
             # Calculate fee optimization score (0-100)
             if total_orders > 0:
@@ -256,16 +257,16 @@ class FeeOptimizationProver:
                 savings_score = min(50, abs(net_fee_savings) * 1000)  # 50 points for savings
                 fee_optimization_score = maker_score + savings_score
             else:
-                fee_optimization_score = Decimal('0')
+                fee_optimization_score = safe_decimal('0')
             
             # Calculate annualized savings
             if self.immutable_records:
                 first_date = datetime.fromisoformat(self.immutable_records[0].timestamp)
                 last_date = datetime.fromisoformat(self.immutable_records[-1].timestamp)
                 days_trading = (last_date - first_date).days + 1
-                annualized_savings = net_fee_savings * (365 / days_trading) if days_trading > 0 else Decimal('0')
+                annualized_savings = net_fee_savings * (365 / days_trading) if days_trading > 0 else safe_decimal('0')
             else:
-                annualized_savings = Decimal('0')
+                annualized_savings = safe_decimal('0')
             
             # Calculate venue breakdown
             venue_breakdown = {}
@@ -330,9 +331,9 @@ class FeeOptimizationProver:
                         'orders': 0,
                         'makers': 0,
                         'takers': 0,
-                        'fees_paid': Decimal('0'),
-                        'rebates_earned': Decimal('0'),
-                        'net_savings': Decimal('0')
+                        'fees_paid': safe_decimal('0'),
+                        'rebates_earned': safe_decimal('0'),
+                        'net_savings': safe_decimal('0')
                     }
                 
                 daily_savings[date]['orders'] += 1
@@ -418,14 +419,14 @@ def demo_fee_optimization_prover():
     for i in range(100):
         order_id = f"order_{i:03d}"
         side = "BUY" if i % 2 == 0 else "SELL"
-        size = Decimal('100')
-        price = Decimal('0.52')
+        size = safe_decimal('100')
+        price = safe_decimal('0.52')
         
         # 70% maker, 30% taker (excellent optimization)
         order_type = "maker" if i % 10 < 7 else "taker"
         
         # Simulate execution
-        execution_price = price + Decimal(str(0.0001 * (i % 5)))  # Small price movement
+        execution_price = price + safe_decimal(str(0.0001 * (i % 5)))  # Small price movement
         execution_size = size
         
         # Record execution

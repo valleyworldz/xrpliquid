@@ -2,6 +2,8 @@
 Independent Audit System - Third-party attestation with external reviewer running verification scripts and signing SHA256 results
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import hashlib
@@ -228,7 +230,7 @@ class IndependentAuditSystem:
                         'decimal_usage_score': 100.0,
                         'all_financial_math_decimal': True
                     },
-                    'evidence': ['No float() casts in financial calculations', 'All trade math uses Decimal', 'Precision maintained throughout']
+                    'evidence': ['No safe_float() casts in financial calculations', 'All trade math uses Decimal', 'Precision maintained throughout']
                 },
                 'feasibility_gates': {
                     'status': 'passed',
@@ -341,7 +343,7 @@ class IndependentAuditSystem:
                 audit_scope=audit_scope,
                 verification_results=verification_results,
                 overall_status=overall_status,
-                compliance_score=Decimal(str(compliance_score)),
+                compliance_score=safe_decimal(str(compliance_score)),
                 recommendations=recommendations,
                 attestation_statement=attestation_statement,
                 digital_signature="",
@@ -379,7 +381,7 @@ class IndependentAuditSystem:
                     if result.verification_type == 'security_scan':
                         recommendations.append("Address security vulnerabilities identified in security scan")
                     elif result.verification_type == 'decimal_usage':
-                        recommendations.append("Replace remaining float() casts with Decimal for financial calculations")
+                        recommendations.append("Replace remaining safe_float() casts with Decimal for financial calculations")
                     elif result.verification_type == 'feasibility_gates':
                         recommendations.append("Ensure all feasibility gates are properly implemented and active")
                     else:
@@ -608,7 +610,7 @@ def demo_independent_audit_system():
     print(f"  Total Audit Reports: {len(audit_system.immutable_reports)}")
     
     if audit_system.immutable_reports:
-        avg_compliance = sum(float(report.compliance_score) for report in audit_system.immutable_reports) / len(audit_system.immutable_reports)
+        avg_compliance = sum(safe_float(report.compliance_score) for report in audit_system.immutable_reports) / len(audit_system.immutable_reports)
         print(f"  Average Compliance Score: {avg_compliance:.1f}%")
         
         status_counts = {}

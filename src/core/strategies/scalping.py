@@ -11,6 +11,7 @@ High-frequency scalping strategy with advanced features:
 - Risk-adjusted profit targets
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timedelta
@@ -224,13 +225,13 @@ class Scalping(TradingStrategy):
                 return {"spread": 0.0, "depth": 0.0, "imbalance": 0.0}
             
             # Calculate bid-ask spread
-            best_bid = float(levels[0][0]["px"])
-            best_ask = float(levels[1][0]["px"])
+            best_bid = safe_float(levels[0][0]["px"])
+            best_ask = safe_float(levels[1][0]["px"])
             spread = (best_ask - best_bid) / best_bid
             
             # Calculate market depth
-            bid_depth = sum(float(level["sz"]) for level in levels[0][:5])  # Top 5 bid levels
-            ask_depth = sum(float(level["sz"]) for level in levels[1][:5])  # Top 5 ask levels
+            bid_depth = sum(safe_float(level["sz"]) for level in levels[0][:5])  # Top 5 bid levels
+            ask_depth = sum(safe_float(level["sz"]) for level in levels[1][:5])  # Top 5 ask levels
             total_depth = bid_depth + ask_depth
             
             # Calculate order book imbalance
@@ -252,7 +253,7 @@ class Scalping(TradingStrategy):
             if not market_data or "price" not in market_data:
                 return {}
             
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             price_history = market_data.get("price_history", [current_price])
             volume_history = market_data.get("volume_history", [1.0])
             order_book = market_data.get("order_book", {})

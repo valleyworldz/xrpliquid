@@ -8,6 +8,7 @@ This system eliminates all 206-asset fetching and focuses purely on XRP trading
 with all 9 specialized roles operating at peak efficiency.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -200,8 +201,8 @@ class UltraEfficientXRPSystem:
         try:
             user_state = self.api.get_user_state()
             if user_state and "marginSummary" in user_state:
-                account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                 available_margin = account_value - total_margin_used
                 
                 # 🛡️ RISK OVERSIGHT OFFICER: Monitor margin health
@@ -232,10 +233,10 @@ class UltraEfficientXRPSystem:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == 'XRP':
-                        xrp_price = float(asset_data.get('mid', 0))
+                        xrp_price = safe_float(asset_data.get('mid', 0))
                         break
             elif isinstance(market_data, dict):
-                xrp_price = float(market_data.get('XRP', 0.52))
+                xrp_price = safe_float(market_data.get('XRP', 0.52))
             
             if not xrp_price:
                 xrp_price = 0.52  # Fallback price
@@ -246,7 +247,7 @@ class UltraEfficientXRPSystem:
                 funding_data = self.api.info_client.funding_history("XRP", 1)
                 if funding_data and isinstance(funding_data, list) and len(funding_data) > 0:
                     if isinstance(funding_data[0], dict):
-                        current_funding = float(funding_data[0].get('funding', 0))
+                        current_funding = safe_float(funding_data[0].get('funding', 0))
                     else:
                         current_funding = 0.0001
             except Exception:
@@ -430,8 +431,8 @@ class UltraEfficientXRPSystem:
                 available_margin = 0.0
                 
                 if user_state and "marginSummary" in user_state:
-                    account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                    total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                    account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                    total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                     available_margin = account_value - total_margin_used
                 
                 # 🎯 CHIEF QUANTITATIVE STRATEGIST: Calculate optimal XRP position size
@@ -578,8 +579,8 @@ class UltraEfficientXRPSystem:
                 available_margin = 0.0
                 
                 if user_state and "marginSummary" in user_state:
-                    account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                    total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                    account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                    total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                     available_margin = account_value - total_margin_used
                 
                 # 🎯 CHIEF QUANTITATIVE STRATEGIST: Ultra-conservative scalp sizing
@@ -727,8 +728,8 @@ class UltraEfficientXRPSystem:
                 available_margin = 0.0
                 
                 if user_state and "marginSummary" in user_state:
-                    account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                    total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                    account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                    total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                     available_margin = account_value - total_margin_used
             except Exception as margin_error:
                 self.logger.warning(f"⚠️ [XRP_ARB_MARGIN_ERROR] Could not get margin info: {margin_error}")
@@ -884,8 +885,8 @@ class UltraEfficientXRPSystem:
                     available_margin = 0.0
                     
                     if user_state and "marginSummary" in user_state:
-                        account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                        total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                        account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                        total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                         available_margin = account_value - total_margin_used
                     
                     # 🎯 CHIEF QUANTITATIVE STRATEGIST: Conservative arbitrage sizing

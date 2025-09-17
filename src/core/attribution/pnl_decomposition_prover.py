@@ -2,6 +2,8 @@
 PnL Decomposition Prover - PnL decomposition proof: directional, funding, rebate, slippage, impact with live closed trades
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import time
@@ -119,13 +121,13 @@ class PnLDecompositionProver:
                            size: Decimal,
                            entry_price: Decimal,
                            exit_price: Decimal,
-                           funding_rate: Decimal = Decimal('0'),
-                           time_held_hours: Decimal = Decimal('8'),
-                           maker_ratio: Decimal = Decimal('0.7'),
-                           rebate_rate: Decimal = Decimal('0.0001'),
-                           slippage_bps: Decimal = Decimal('2'),
-                           impact_bps: Decimal = Decimal('1'),
-                           fee_rate: Decimal = Decimal('0.0002')) -> TradeAttribution:
+                           funding_rate: Decimal = safe_decimal('0'),
+                           time_held_hours: Decimal = safe_decimal('8'),
+                           maker_ratio: Decimal = safe_decimal('0.7'),
+                           rebate_rate: Decimal = safe_decimal('0.0001'),
+                           slippage_bps: Decimal = safe_decimal('2'),
+                           impact_bps: Decimal = safe_decimal('1'),
+                           fee_rate: Decimal = safe_decimal('0.0002')) -> TradeAttribution:
         """
         Decompose trade PnL into components
         """
@@ -141,31 +143,31 @@ class PnLDecompositionProver:
             
             # 1. Directional PnL (main component)
             directional_pnl = total_pnl
-            directional_percentage = Decimal('100.0')  # Will be adjusted after calculating other components
+            directional_percentage = safe_decimal('100.0')  # Will be adjusted after calculating other components
             
             # 2. Funding PnL
-            funding_pnl = size * funding_rate * (time_held_hours / Decimal('8'))  # 8-hour funding periods
-            funding_percentage = (funding_pnl / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            funding_pnl = size * funding_rate * (time_held_hours / safe_decimal('8'))  # 8-hour funding periods
+            funding_percentage = (funding_pnl / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # 3. Rebate PnL
             rebate_pnl = size * rebate_rate * maker_ratio
-            rebate_percentage = (rebate_pnl / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            rebate_percentage = (rebate_pnl / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # 4. Slippage Cost (negative)
-            slippage_cost = size * (slippage_bps / Decimal('10000'))
-            slippage_percentage = (slippage_cost / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            slippage_cost = size * (slippage_bps / safe_decimal('10000'))
+            slippage_percentage = (slippage_cost / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # 5. Impact Cost (negative)
-            impact_cost = size * (impact_bps / Decimal('10000'))
-            impact_percentage = (impact_cost / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            impact_cost = size * (impact_bps / safe_decimal('10000'))
+            impact_percentage = (impact_cost / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # 6. Fees Cost (negative)
             fees_cost = size * fee_rate
-            fees_percentage = (fees_cost / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            fees_percentage = (fees_cost / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # Adjust directional PnL to account for other components
             directional_pnl = total_pnl - funding_pnl - rebate_pnl + slippage_cost + impact_cost + fees_cost
-            directional_percentage = (directional_pnl / total_pnl * 100) if total_pnl != 0 else Decimal('0')
+            directional_percentage = (directional_pnl / total_pnl * 100) if total_pnl != 0 else safe_decimal('0')
             
             # Create PnL components
             components = [
@@ -317,10 +319,10 @@ class PnLDecompositionProver:
             if not self.immutable_attributions:
                 return PnLDecompositionSummary(
                     total_trades=0,
-                    total_pnl=Decimal('0'),
+                    total_pnl=safe_decimal('0'),
                     component_breakdown={},
                     daily_attribution=[],
-                    attribution_accuracy=Decimal('0'),
+                    attribution_accuracy=safe_decimal('0'),
                     realized_vs_unrealized={},
                     risk_adjusted_returns={},
                     last_updated=datetime.now().isoformat(),
@@ -342,7 +344,7 @@ class PnLDecompositionProver:
                 
                 if component_trades:
                     total_amount = sum(component.amount for component in component_trades)
-                    avg_percentage = statistics.mean([float(component.percentage) for component in component_trades])
+                    avg_percentage = statistics.mean([safe_float(component.percentage) for component in component_trades])
                     
                     component_breakdown[component_type] = {
                         'total_amount': str(total_amount),
@@ -397,8 +399,8 @@ class PnLDecompositionProver:
                     daily_attributions[date] = {
                         'date': date,
                         'trades': 0,
-                        'total_pnl': Decimal('0'),
-                        'components': {component_type: Decimal('0') for component_type in self.component_types.keys()}
+                        'total_pnl': safe_decimal('0'),
+                        'components': {component_type: safe_decimal('0') for component_type in self.component_types.keys()}
                     }
                 
                 daily_attributions[date]['trades'] += 1
@@ -440,13 +442,13 @@ class PnLDecompositionProver:
             
             if accuracy_scores:
                 avg_accuracy = statistics.mean(accuracy_scores)
-                return Decimal(str(avg_accuracy))
+                return safe_decimal(str(avg_accuracy))
             else:
-                return Decimal('0')
+                return safe_decimal('0')
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating attribution accuracy: {e}")
-            return Decimal('0')
+            return safe_decimal('0')
     
     def _analyze_realized_vs_unrealized(self) -> Dict[str, Any]:
         """Analyze realized vs unrealized PnL components"""
@@ -479,7 +481,7 @@ class PnLDecompositionProver:
             
             for attribution in self.immutable_attributions:
                 for component in attribution.components:
-                    component_returns[component.component_type].append(float(component.amount))
+                    component_returns[component.component_type].append(safe_float(component.amount))
             
             risk_adjusted_returns = {}
             
@@ -540,7 +542,7 @@ class PnLDecompositionProver:
                 
                 # Verify component sum equals total PnL
                 component_sum = sum(component.amount for component in attribution.components)
-                if abs(component_sum - attribution.total_pnl) > Decimal('0.01'):  # Allow 1 cent tolerance
+                if abs(component_sum - attribution.total_pnl) > safe_decimal('0.01'):  # Allow 1 cent tolerance
                     self.logger.error(f"❌ Component sum mismatch for {attribution.trade_id}")
                     return False
             
@@ -567,20 +569,20 @@ def demo_pnl_decomposition_prover():
         trade_id = f"trade_{i:03d}"
         symbol = "XRP/USD"
         side = "BUY" if i % 2 == 0 else "SELL"
-        size = Decimal('1000') + Decimal(str(i * 100))  # Varying sizes
+        size = safe_decimal('1000') + safe_decimal(str(i * 100))  # Varying sizes
         
         # Simulate prices with some movement
-        base_price = Decimal('0.52')
-        entry_price = base_price + Decimal(str(i * 0.0001))
-        exit_price = entry_price + Decimal(str((i % 10 - 5) * 0.001))  # -5 to +4 bps movement
+        base_price = safe_decimal('0.52')
+        entry_price = base_price + safe_decimal(str(i * 0.0001))
+        exit_price = entry_price + safe_decimal(str((i % 10 - 5) * 0.001))  # -5 to +4 bps movement
         
         # Simulate different funding rates
-        funding_rate = Decimal('0.0001') if i % 3 == 0 else Decimal('0.0002')
+        funding_rate = safe_decimal('0.0001') if i % 3 == 0 else safe_decimal('0.0002')
         
         # Simulate different execution characteristics
-        maker_ratio = Decimal('0.6') + Decimal(str((i % 4) * 0.1))  # 60-90% maker
-        slippage_bps = Decimal('1') + Decimal(str(i % 3))  # 1-3 bps slippage
-        impact_bps = Decimal('0.5') + Decimal(str((i % 2) * 0.5))  # 0.5-1 bps impact
+        maker_ratio = safe_decimal('0.6') + safe_decimal(str((i % 4) * 0.1))  # 60-90% maker
+        slippage_bps = safe_decimal('1') + safe_decimal(str(i % 3))  # 1-3 bps slippage
+        impact_bps = safe_decimal('0.5') + safe_decimal(str((i % 2) * 0.5))  # 0.5-1 bps impact
         
         # Decompose trade PnL
         attribution = prover.decompose_trade_pnl(
@@ -591,12 +593,12 @@ def demo_pnl_decomposition_prover():
             entry_price=entry_price,
             exit_price=exit_price,
             funding_rate=funding_rate,
-            time_held_hours=Decimal('8'),
+            time_held_hours=safe_decimal('8'),
             maker_ratio=maker_ratio,
-            rebate_rate=Decimal('0.0001'),
+            rebate_rate=safe_decimal('0.0001'),
             slippage_bps=slippage_bps,
             impact_bps=impact_bps,
-            fee_rate=Decimal('0.0002')
+            fee_rate=safe_decimal('0.0002')
         )
         
         if attribution and i % 10 == 0:

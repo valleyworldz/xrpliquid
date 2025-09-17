@@ -4,6 +4,8 @@
 Pre-validation of orders against Hyperliquid exchange constraints
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 from typing import Dict, Any, Optional, Tuple
 from dataclasses import dataclass
@@ -17,32 +19,32 @@ class HyperliquidInvariants:
     
     # Tick sizes for major assets
     TICK_SIZES = {
-        'XRP': Decimal('0.0001'),
-        'BTC': Decimal('0.01'),
-        'ETH': Decimal('0.01'),
-        'SOL': Decimal('0.001'),
-        'ARB': Decimal('0.0001'),
-        'OP': Decimal('0.0001'),
+        'XRP': safe_decimal('0.0001'),
+        'BTC': safe_decimal('0.01'),
+        'ETH': safe_decimal('0.01'),
+        'SOL': safe_decimal('0.001'),
+        'ARB': safe_decimal('0.0001'),
+        'OP': safe_decimal('0.0001'),
     }
     
     # Minimum notional values
     MIN_NOTIONAL = {
-        'XRP': Decimal('1.0'),    # $1 minimum
-        'BTC': Decimal('10.0'),   # $10 minimum
-        'ETH': Decimal('10.0'),   # $10 minimum
-        'SOL': Decimal('5.0'),    # $5 minimum
-        'ARB': Decimal('1.0'),    # $1 minimum
-        'OP': Decimal('1.0'),     # $1 minimum
+        'XRP': safe_decimal('1.0'),    # $1 minimum
+        'BTC': safe_decimal('10.0'),   # $10 minimum
+        'ETH': safe_decimal('10.0'),   # $10 minimum
+        'SOL': safe_decimal('5.0'),    # $5 minimum
+        'ARB': safe_decimal('1.0'),    # $1 minimum
+        'OP': safe_decimal('1.0'),     # $1 minimum
     }
     
     # Maximum position sizes
     MAX_POSITION_SIZE = {
-        'XRP': Decimal('1000000.0'),  # $1M max
-        'BTC': Decimal('5000000.0'),  # $5M max
-        'ETH': Decimal('5000000.0'),  # $5M max
-        'SOL': Decimal('2000000.0'),  # $2M max
-        'ARB': Decimal('1000000.0'),  # $1M max
-        'OP': Decimal('1000000.0'),   # $1M max
+        'XRP': safe_decimal('1000000.0'),  # $1M max
+        'BTC': safe_decimal('5000000.0'),  # $5M max
+        'ETH': safe_decimal('5000000.0'),  # $5M max
+        'SOL': safe_decimal('2000000.0'),  # $2M max
+        'ARB': safe_decimal('1000000.0'),  # $1M max
+        'OP': safe_decimal('1000000.0'),   # $1M max
     }
     
     # Funding cycle constraints
@@ -54,12 +56,12 @@ class HyperliquidInvariants:
     POST_ONLY_ORDER_TYPES = ['limit']
     
     # Leverage constraints
-    MAX_LEVERAGE = Decimal('20.0')  # 20x maximum leverage
-    MIN_LEVERAGE = Decimal('1.0')   # 1x minimum leverage
+    MAX_LEVERAGE = safe_decimal('20.0')  # 20x maximum leverage
+    MIN_LEVERAGE = safe_decimal('1.0')   # 1x minimum leverage
     
     # Margin constraints
-    MIN_MARGIN_RATIO = Decimal('0.05')  # 5% minimum margin ratio
-    MAINTENANCE_MARGIN_RATIO = Decimal('0.03')  # 3% maintenance margin
+    MIN_MARGIN_RATIO = safe_decimal('0.05')  # 5% minimum margin ratio
+    MAINTENANCE_MARGIN_RATIO = safe_decimal('0.03')  # 3% maintenance margin
 
 class HyperliquidValidator:
     """Validates orders against Hyperliquid invariants"""
@@ -74,7 +76,7 @@ class HyperliquidValidator:
             return False, f"Unknown symbol: {symbol}"
         
         tick_size = self.invariants.TICK_SIZES[symbol]
-        price_decimal = Decimal(str(price))
+        price_decimal = safe_decimal(str(price))
         
         # Check if price is aligned with tick size
         remainder = price_decimal % tick_size
@@ -91,7 +93,7 @@ class HyperliquidValidator:
             return False, f"Unknown symbol: {symbol}"
         
         notional = quantity * price
-        min_notional = float(self.invariants.MIN_NOTIONAL[symbol])
+        min_notional = safe_float(self.invariants.MIN_NOTIONAL[symbol])
         
         if notional < min_notional:
             return False, f"Notional ${notional:.2f} below minimum ${min_notional:.2f} for {symbol}"
@@ -104,7 +106,7 @@ class HyperliquidValidator:
             return False, f"Unknown symbol: {symbol}"
         
         notional = quantity * price
-        max_notional = float(self.invariants.MAX_POSITION_SIZE[symbol])
+        max_notional = safe_float(self.invariants.MAX_POSITION_SIZE[symbol])
         
         if notional > max_notional:
             return False, f"Notional ${notional:.2f} exceeds maximum ${max_notional:.2f} for {symbol}"
@@ -113,7 +115,7 @@ class HyperliquidValidator:
     
     def validate_leverage(self, leverage: float) -> Tuple[bool, Optional[str]]:
         """Validate leverage constraints"""
-        leverage_decimal = Decimal(str(leverage))
+        leverage_decimal = safe_decimal(str(leverage))
         
         if leverage_decimal < self.invariants.MIN_LEVERAGE:
             return False, f"Leverage {leverage} below minimum {self.invariants.MIN_LEVERAGE}"
@@ -129,7 +131,7 @@ class HyperliquidValidator:
             return True, None
         
         side = order.get('side', '').lower()
-        quantity = float(order.get('quantity', 0))
+        quantity = safe_float(order.get('quantity', 0))
         
         if side == 'buy' and current_position >= 0:
             return False, "Reduce-only buy order with no short position"
@@ -182,7 +184,7 @@ class HyperliquidValidator:
         
         # Check minimum margin ratio
         margin_ratio = required_margin / notional
-        if margin_ratio < float(self.invariants.MIN_MARGIN_RATIO):
+        if margin_ratio < safe_float(self.invariants.MIN_MARGIN_RATIO):
             return False, f"Margin ratio {margin_ratio:.2%} below minimum {self.invariants.MIN_MARGIN_RATIO:.2%}"
         
         return True, None
@@ -191,9 +193,9 @@ class HyperliquidValidator:
                       current_margin: float = 0.0) -> Tuple[bool, Optional[str]]:
         """Comprehensive order validation"""
         symbol = order.get('symbol', '')
-        price = float(order.get('price', 0))
-        quantity = float(order.get('quantity', 0))
-        leverage = float(order.get('leverage', 1.0))
+        price = safe_float(order.get('price', 0))
+        quantity = safe_float(order.get('quantity', 0))
+        leverage = safe_float(order.get('leverage', 1.0))
         order_type = order.get('order_type', 'limit')
         post_only = order.get('post_only', False)
         timestamp = order.get('timestamp', 0)

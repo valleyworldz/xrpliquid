@@ -5,6 +5,7 @@ ADVANCED MARKET SCANNER
 Intelligent token selection based on liquidity, volume, funding rates, and market dynamics
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import json
 import numpy as np
@@ -105,7 +106,7 @@ class AdvancedMarketScanner:
             if symbol not in markets:
                 return None
             
-            current_price = float(markets[symbol])
+            current_price = safe_float(markets[symbol])
             
             # Get token metadata
             token_meta = None
@@ -118,14 +119,14 @@ class AdvancedMarketScanner:
                 return None
             
             # Calculate metrics
-            volume_24h = float(token_meta.get('volume24h', 0))
-            market_cap = float(token_meta.get('marketCap', 0))
-            oi_value = float(open_interest.get(symbol, 0))
+            volume_24h = safe_float(token_meta.get('volume24h', 0))
+            market_cap = safe_float(token_meta.get('marketCap', 0))
+            oi_value = safe_float(open_interest.get(symbol, 0))
             
             # Get funding rate
             funding_rate = 0.0
             if symbol in funding_rates:
-                funding_rate = float(funding_rates[symbol].get('fundingRate', 0))
+                funding_rate = safe_float(funding_rates[symbol].get('fundingRate', 0))
             
             # Get order book for spread calculation
             orderbook = self.get_orderbook_depth(symbol)

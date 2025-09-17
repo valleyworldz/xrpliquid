@@ -2,6 +2,8 @@
 Capital Scaling Stress Tester - Simulation + live partial scaling runs showing no slippage cliffs or margin shocks >$100k notional
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import time
@@ -64,40 +66,40 @@ class CapitalScalingStressTester:
         
         # Scaling tiers
         self.scaling_tiers = {
-            'seed': {'min_notional': Decimal('1000'), 'max_notional': Decimal('10000'), 'risk_multiplier': Decimal('1.0')},
-            'growth': {'min_notional': Decimal('10000'), 'max_notional': Decimal('50000'), 'risk_multiplier': Decimal('1.5')},
-            'scale': {'min_notional': Decimal('50000'), 'max_notional': Decimal('200000'), 'risk_multiplier': Decimal('2.0')},
-            'institutional': {'min_notional': Decimal('200000'), 'max_notional': Decimal('1000000'), 'risk_multiplier': Decimal('3.0')}
+            'seed': {'min_notional': safe_decimal('1000'), 'max_notional': safe_decimal('10000'), 'risk_multiplier': safe_decimal('1.0')},
+            'growth': {'min_notional': safe_decimal('10000'), 'max_notional': safe_decimal('50000'), 'risk_multiplier': safe_decimal('1.5')},
+            'scale': {'min_notional': safe_decimal('50000'), 'max_notional': safe_decimal('200000'), 'risk_multiplier': safe_decimal('2.0')},
+            'institutional': {'min_notional': safe_decimal('200000'), 'max_notional': safe_decimal('1000000'), 'risk_multiplier': safe_decimal('3.0')}
         }
         
         # Venue configurations
         self.venues = {
             'hyperliquid': {
-                'max_notional': Decimal('10000000'),
-                'liquidity_depth': Decimal('500000'),
+                'max_notional': safe_decimal('10000000'),
+                'liquidity_depth': safe_decimal('500000'),
                 'slippage_model': 'linear',
-                'margin_requirement': Decimal('0.05')
+                'margin_requirement': safe_decimal('0.05')
             },
             'binance': {
-                'max_notional': Decimal('50000000'),
-                'liquidity_depth': Decimal('2000000'),
+                'max_notional': safe_decimal('50000000'),
+                'liquidity_depth': safe_decimal('2000000'),
                 'slippage_model': 'sqrt',
-                'margin_requirement': Decimal('0.04')
+                'margin_requirement': safe_decimal('0.04')
             },
             'bybit': {
-                'max_notional': Decimal('20000000'),
-                'liquidity_depth': Decimal('800000'),
+                'max_notional': safe_decimal('20000000'),
+                'liquidity_depth': safe_decimal('800000'),
                 'slippage_model': 'linear',
-                'margin_requirement': Decimal('0.06')
+                'margin_requirement': safe_decimal('0.06')
             }
         }
         
         # Risk thresholds
         self.risk_thresholds = {
-            'slippage_cliff_bps': Decimal('50'),  # 50 bps slippage cliff
-            'margin_shock_percent': Decimal('0.20'),  # 20% margin shock
-            'liquidity_threshold': Decimal('0.10'),  # 10% of daily volume
-            'max_notional_ratio': Decimal('0.05')  # 5% of total liquidity
+            'slippage_cliff_bps': safe_decimal('50'),  # 50 bps slippage cliff
+            'margin_shock_percent': safe_decimal('0.20'),  # 20% margin shock
+            'liquidity_threshold': safe_decimal('0.10'),  # 10% of daily volume
+            'max_notional_ratio': safe_decimal('0.05')  # 5% of total liquidity
         }
         
         # Ensure data directory exists
@@ -137,7 +139,7 @@ class CapitalScalingStressTester:
                 raise ValueError(f"Unknown venue: {venue}")
             
             # Check if notional size is within venue limits
-            if notional_size > venue_config.get('max_notional', Decimal('0')):
+            if notional_size > venue_config.get('max_notional', safe_decimal('0')):
                 raise ValueError(f"Notional size {notional_size} exceeds venue limit {venue_config.get('max_notional', 0)}")
             
             # Simulate execution
@@ -145,14 +147,14 @@ class CapitalScalingStressTester:
             
             # Calculate slippage
             slippage_bps = self._calculate_slippage(notional_size, venue, venue_config)
-            slippage_cost = notional_size * (slippage_bps / Decimal('10000'))
+            slippage_cost = notional_size * (slippage_bps / safe_decimal('10000'))
             
             # Calculate margin requirements
-            margin_requirement = notional_size * venue_config.get('margin_requirement', Decimal('0.05'))
+            margin_requirement = notional_size * venue_config.get('margin_requirement', safe_decimal('0.05'))
             margin_utilization = margin_requirement / notional_size
             
             # Calculate liquidity depth
-            liquidity_depth = venue_config.get('liquidity_depth', Decimal('100000'))
+            liquidity_depth = venue_config.get('liquidity_depth', safe_decimal('100000'))
             
             # Calculate price impact
             price_impact_bps = self._calculate_price_impact(notional_size, venue, venue_config)
@@ -207,12 +209,12 @@ class CapitalScalingStressTester:
                 asset=asset,
                 venue=venue,
                 execution_time_ms=0.0,
-                slippage_bps=Decimal('0'),
-                slippage_cost=Decimal('0'),
-                margin_requirement=Decimal('0'),
-                margin_utilization=Decimal('0'),
-                liquidity_depth=Decimal('0'),
-                price_impact_bps=Decimal('0'),
+                slippage_bps=safe_decimal('0'),
+                slippage_cost=safe_decimal('0'),
+                margin_requirement=safe_decimal('0'),
+                margin_utilization=safe_decimal('0'),
+                liquidity_depth=safe_decimal('0'),
+                price_impact_bps=safe_decimal('0'),
                 execution_success=False,
                 error_message=str(e),
                 hash_proof=""
@@ -230,7 +232,7 @@ class CapitalScalingStressTester:
             start_time = time.time()
             
             # Use 10% of target notional for live testing
-            live_notional = notional_size * Decimal('0.1')
+            live_notional = notional_size * safe_decimal('0.1')
             
             # Get venue configuration
             venue_config = self.venues.get(venue, {})
@@ -241,15 +243,15 @@ class CapitalScalingStressTester:
             execution_time_ms = self._simulate_execution_time(live_notional, venue)
             
             # Calculate slippage (live execution typically has higher slippage)
-            slippage_bps = self._calculate_slippage(live_notional, venue, venue_config) * Decimal('1.2')  # 20% higher for live
-            slippage_cost = live_notional * (slippage_bps / Decimal('10000'))
+            slippage_bps = self._calculate_slippage(live_notional, venue, venue_config) * safe_decimal('1.2')  # 20% higher for live
+            slippage_cost = live_notional * (slippage_bps / safe_decimal('10000'))
             
             # Calculate margin requirements
-            margin_requirement = live_notional * venue_config.get('margin_requirement', Decimal('0.05'))
+            margin_requirement = live_notional * venue_config.get('margin_requirement', safe_decimal('0.05'))
             margin_utilization = margin_requirement / live_notional
             
             # Calculate liquidity depth
-            liquidity_depth = venue_config.get('liquidity_depth', Decimal('100000'))
+            liquidity_depth = venue_config.get('liquidity_depth', safe_decimal('100000'))
             
             # Calculate price impact
             price_impact_bps = self._calculate_price_impact(live_notional, venue, venue_config)
@@ -304,12 +306,12 @@ class CapitalScalingStressTester:
                 asset=asset,
                 venue=venue,
                 execution_time_ms=0.0,
-                slippage_bps=Decimal('0'),
-                slippage_cost=Decimal('0'),
-                margin_requirement=Decimal('0'),
-                margin_utilization=Decimal('0'),
-                liquidity_depth=Decimal('0'),
-                price_impact_bps=Decimal('0'),
+                slippage_bps=safe_decimal('0'),
+                slippage_cost=safe_decimal('0'),
+                margin_requirement=safe_decimal('0'),
+                margin_utilization=safe_decimal('0'),
+                liquidity_depth=safe_decimal('0'),
+                price_impact_bps=safe_decimal('0'),
                 execution_success=False,
                 error_message=str(e),
                 hash_proof=""
@@ -337,10 +339,10 @@ class CapitalScalingStressTester:
                 
                 # Test multiple notional sizes
                 notional_sizes = [
-                    max_notional * Decimal('0.1'),   # 10%
-                    max_notional * Decimal('0.25'),  # 25%
-                    max_notional * Decimal('0.5'),   # 50%
-                    max_notional * Decimal('0.75'),  # 75%
+                    max_notional * safe_decimal('0.1'),   # 10%
+                    max_notional * safe_decimal('0.25'),  # 25%
+                    max_notional * safe_decimal('0.5'),   # 50%
+                    max_notional * safe_decimal('0.75'),  # 75%
                     max_notional                     # 100%
                 ]
                 
@@ -359,8 +361,8 @@ class CapitalScalingStressTester:
                     'market_conditions': market_conditions,
                     'test_results': [asdict(result) for result in scenario_results],
                     'success_rate': sum(1 for result in scenario_results if result.execution_success) / len(scenario_results),
-                    'max_slippage_bps': max(float(result.slippage_bps) for result in scenario_results),
-                    'max_margin_utilization': max(float(result.margin_utilization) for result in scenario_results)
+                    'max_slippage_bps': max(safe_float(result.slippage_bps) for result in scenario_results),
+                    'max_margin_utilization': max(safe_float(result.margin_utilization) for result in scenario_results)
                 }
             
             return stress_results
@@ -376,7 +378,7 @@ class CapitalScalingStressTester:
             base_time = 50.0  # 50ms base
             
             # Scale with notional size (larger orders take longer)
-            size_factor = float(notional_size) / 100000  # Scale factor
+            size_factor = safe_float(notional_size) / 100000  # Scale factor
             
             # Venue-specific adjustments
             venue_adjustments = {
@@ -402,42 +404,42 @@ class CapitalScalingStressTester:
         """Calculate slippage based on notional size and venue"""
         try:
             # Base slippage
-            base_slippage = Decimal('2.0')  # 2 bps base
+            base_slippage = safe_decimal('2.0')  # 2 bps base
             
             # Scale with notional size
-            liquidity_depth = venue_config.get('liquidity_depth', Decimal('100000'))
+            liquidity_depth = venue_config.get('liquidity_depth', safe_decimal('100000'))
             size_ratio = notional_size / liquidity_depth
             
             # Slippage model
             slippage_model = venue_config.get('slippage_model', 'linear')
             
             if slippage_model == 'linear':
-                size_slippage = base_slippage * size_ratio * Decimal('10')
+                size_slippage = base_slippage * size_ratio * safe_decimal('10')
             elif slippage_model == 'sqrt':
-                size_slippage = base_slippage * (size_ratio ** Decimal('0.5')) * Decimal('20')
+                size_slippage = base_slippage * (size_ratio ** safe_decimal('0.5')) * safe_decimal('20')
             else:
-                size_slippage = base_slippage * size_ratio * Decimal('10')
+                size_slippage = base_slippage * size_ratio * safe_decimal('10')
             
             total_slippage = base_slippage + size_slippage
             
-            return min(total_slippage, Decimal('100.0'))  # Cap at 100 bps
+            return min(total_slippage, safe_decimal('100.0'))  # Cap at 100 bps
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating slippage: {e}")
-            return Decimal('5.0')
+            return safe_decimal('5.0')
     
     def _calculate_price_impact(self, notional_size: Decimal, venue: str, venue_config: Dict[str, Any]) -> Decimal:
         """Calculate price impact"""
         try:
             # Price impact is typically 50-80% of slippage
             slippage = self._calculate_slippage(notional_size, venue, venue_config)
-            price_impact = slippage * Decimal('0.7')
+            price_impact = slippage * safe_decimal('0.7')
             
             return price_impact
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating price impact: {e}")
-            return Decimal('3.0')
+            return safe_decimal('3.0')
     
     def _get_stress_scenario_conditions(self, scenario: str) -> Dict[str, Any]:
         """Get market conditions for stress scenario"""
@@ -527,10 +529,10 @@ class CapitalScalingStressTester:
                 return CapitalScalingSummary(
                     total_tests=0,
                     successful_tests=0,
-                    success_rate=Decimal('0'),
-                    max_notional_tested=Decimal('0'),
-                    average_slippage_bps=Decimal('0'),
-                    max_slippage_bps=Decimal('0'),
+                    success_rate=safe_decimal('0'),
+                    max_notional_tested=safe_decimal('0'),
+                    average_slippage_bps=safe_decimal('0'),
+                    max_slippage_bps=safe_decimal('0'),
                     slippage_cliff_threshold=self.risk_thresholds['slippage_cliff_bps'],
                     margin_shock_threshold=self.risk_thresholds['margin_shock_percent'],
                     liquidity_analysis={},
@@ -544,18 +546,18 @@ class CapitalScalingStressTester:
             # Calculate basic metrics
             total_tests = len(self.immutable_tests)
             successful_tests = sum(1 for test in self.immutable_tests if test.execution_success)
-            success_rate = successful_tests / total_tests if total_tests > 0 else Decimal('0')
+            success_rate = successful_tests / total_tests if total_tests > 0 else safe_decimal('0')
             
             max_notional_tested = max(test.notional_size for test in self.immutable_tests)
             
             # Calculate slippage metrics
             successful_slippages = [test.slippage_bps for test in self.immutable_tests if test.execution_success]
             if successful_slippages:
-                average_slippage_bps = Decimal(str(statistics.mean([float(s) for s in successful_slippages])))
+                average_slippage_bps = safe_decimal(str(statistics.mean([safe_float(s) for s in successful_slippages])))
                 max_slippage_bps = max(successful_slippages)
             else:
-                average_slippage_bps = Decimal('0')
-                max_slippage_bps = Decimal('0')
+                average_slippage_bps = safe_decimal('0')
+                max_slippage_bps = safe_decimal('0')
             
             # Liquidity analysis
             liquidity_analysis = self._analyze_liquidity()
@@ -607,9 +609,9 @@ class CapitalScalingStressTester:
                     liquidity_analysis[venue] = {
                         'total_tests': len(venue_tests),
                         'success_rate': sum(1 for test in venue_tests if test.execution_success) / len(venue_tests),
-                        'average_liquidity_depth': str(statistics.mean([float(test.liquidity_depth) for test in venue_tests])),
+                        'average_liquidity_depth': str(statistics.mean([safe_float(test.liquidity_depth) for test in venue_tests])),
                         'max_notional_tested': str(max(test.notional_size for test in venue_tests)),
-                        'liquidity_utilization': str(statistics.mean([float(test.notional_size / test.liquidity_depth) for test in venue_tests if test.liquidity_depth > 0]))
+                        'liquidity_utilization': str(statistics.mean([safe_float(test.notional_size / test.liquidity_depth) for test in venue_tests if test.liquidity_depth > 0]))
                     }
             
             return liquidity_analysis
@@ -635,7 +637,7 @@ class CapitalScalingStressTester:
                         'max_notional': str(tier_config['max_notional']),
                         'total_tests': len(tier_tests),
                         'success_rate': sum(1 for test in tier_tests if test.execution_success) / len(tier_tests),
-                        'average_slippage_bps': str(statistics.mean([float(test.slippage_bps) for test in tier_tests if test.execution_success])),
+                        'average_slippage_bps': str(statistics.mean([safe_float(test.slippage_bps) for test in tier_tests if test.execution_success])),
                         'max_slippage_bps': str(max(test.slippage_bps for test in tier_tests if test.execution_success)),
                         'average_execution_time_ms': statistics.mean([test.execution_time_ms for test in tier_tests if test.execution_success])
                     }
@@ -668,9 +670,9 @@ class CapitalScalingStressTester:
                 stress_analysis[scenario] = {
                     'total_tests': len(tests),
                     'success_rate': sum(1 for test in tests if test.execution_success) / len(tests),
-                    'average_slippage_bps': str(statistics.mean([float(test.slippage_bps) for test in tests if test.execution_success])),
+                    'average_slippage_bps': str(statistics.mean([safe_float(test.slippage_bps) for test in tests if test.execution_success])),
                     'max_slippage_bps': str(max(test.slippage_bps for test in tests if test.execution_success)),
-                    'average_margin_utilization': str(statistics.mean([float(test.margin_utilization) for test in tests if test.execution_success]))
+                    'average_margin_utilization': str(statistics.mean([safe_float(test.margin_utilization) for test in tests if test.execution_success]))
                 }
             
             return stress_analysis
@@ -689,8 +691,8 @@ class CapitalScalingStressTester:
             successful_tests = [test for test in self.immutable_tests if test.execution_success]
             
             if successful_tests:
-                slippages = [float(test.slippage_bps) for test in successful_tests]
-                margin_utilizations = [float(test.margin_utilization) for test in successful_tests]
+                slippages = [safe_float(test.slippage_bps) for test in successful_tests]
+                margin_utilizations = [safe_float(test.margin_utilization) for test in successful_tests]
                 execution_times = [test.execution_time_ms for test in successful_tests]
                 
                 risk_metrics = {
@@ -802,12 +804,12 @@ def demo_capital_scaling_stress_tester():
     print("🔧 Running capital scaling tests...")
     
     test_sizes = [
-        Decimal('10000'),   # $10k
-        Decimal('50000'),   # $50k
-        Decimal('100000'),  # $100k
-        Decimal('250000'),  # $250k
-        Decimal('500000'),  # $500k
-        Decimal('1000000')  # $1M
+        safe_decimal('10000'),   # $10k
+        safe_decimal('50000'),   # $50k
+        safe_decimal('100000'),  # $100k
+        safe_decimal('250000'),  # $250k
+        safe_decimal('500000'),  # $500k
+        safe_decimal('1000000')  # $1M
     ]
     
     for size in test_sizes:
@@ -830,7 +832,7 @@ def demo_capital_scaling_stress_tester():
     # Run stress tests
     print(f"\n🚀 Running stress tests...")
     stress_results = tester.run_stress_test(
-        max_notional=Decimal('500000'),
+        max_notional=safe_decimal('500000'),
         asset='XRP/USD',
         venue='hyperliquid',
         stress_scenarios=['normal', 'high_volatility', 'low_liquidity', 'margin_call']

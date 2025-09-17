@@ -8,6 +8,7 @@ handling quirks like cancel signatures, open_orders formats, and
 providing both sync and async interfaces.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import logging
 import time
@@ -96,8 +97,8 @@ class HyperliquidClient:
                 return None
                 
             # Calculate mid price
-            best_bid = float(l2_snapshot['levels'][0][0]) if l2_snapshot['levels'] else None
-            best_ask = float(l2_snapshot['levels'][0][1]) if l2_snapshot['levels'] else None
+            best_bid = safe_float(l2_snapshot['levels'][0][0]) if l2_snapshot['levels'] else None
+            best_ask = safe_float(l2_snapshot['levels'][0][1]) if l2_snapshot['levels'] else None
             
             if best_bid and best_ask:
                 mid_price = (best_bid + best_ask) / 2
@@ -127,10 +128,10 @@ class HyperliquidClient:
             margin_summary = account_info['marginSummary']
             
             return {
-                'free_collateral': float(margin_summary.get('accountValue', 0)),
-                'used_margin': float(margin_summary.get('totalMarginUsed', 0)),
-                'available_margin': float(margin_summary.get('totalNtlPos', 0)),
-                'account_value': float(margin_summary.get('accountValue', 0))
+                'free_collateral': safe_float(margin_summary.get('accountValue', 0)),
+                'used_margin': safe_float(margin_summary.get('totalMarginUsed', 0)),
+                'available_margin': safe_float(margin_summary.get('totalNtlPos', 0)),
+                'account_value': safe_float(margin_summary.get('accountValue', 0))
             }
             
         except Exception as e:
@@ -151,14 +152,14 @@ class HyperliquidClient:
                 
             positions = []
             for pos in account_info['assetPositions']:
-                if pos['coin'] == symbol and float(pos['position']['szi']) != 0:
-                    size = int(float(pos['position']['szi']))
-                    entry_price = float(pos['position']['entryPx'])
+                if pos['coin'] == symbol and safe_float(pos['position']['szi']) != 0:
+                    size = int(safe_float(pos['position']['szi']))
+                    entry_price = safe_float(pos['position']['entryPx'])
                     is_long = size > 0
                     
                     # Calculate unrealized PnL
-                    unrealized_pnl = float(pos.get('unrealizedPnl', 0))
-                    margin_used = float(pos.get('marginUsed', 0))
+                    unrealized_pnl = safe_float(pos.get('unrealizedPnl', 0))
+                    margin_used = safe_float(pos.get('marginUsed', 0))
                     
                     positions.append(PositionInfo(
                         size=size,
@@ -272,7 +273,7 @@ class HyperliquidClient:
             funding_info = self.info.funding_history(xrp_asset['name'])
             
             if funding_info and len(funding_info) > 0:
-                return float(funding_info[0].get('funding', 0))
+                return safe_float(funding_info[0].get('funding', 0))
             else:
                 return None
                 

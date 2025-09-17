@@ -7,6 +7,8 @@ Common utility functions for price normalization, tick alignment, and calculatio
 Addresses mixed units and magic thresholds issues.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import List, Optional, Tuple, Dict
 from decimal import Decimal, ROUND_HALF_UP
@@ -38,20 +40,20 @@ def align_price_to_tick(price: float, tick_size: float, direction: str = "neutra
         return price
         
     # Use Decimal for precise rounding
-    decimal_price = Decimal(str(price))
-    decimal_tick = Decimal(str(tick_size))
+    decimal_price = safe_decimal(str(price))
+    decimal_tick = safe_decimal(str(tick_size))
     
     if direction == "up":
         # Round up to next tick
-        aligned = (decimal_price / decimal_tick).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
+        aligned = (decimal_price / decimal_tick).quantize(safe_decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
     elif direction == "down":
         # Round down to previous tick
-        aligned = (decimal_price / decimal_tick).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
+        aligned = (decimal_price / decimal_tick).quantize(safe_decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
     else:
         # Neutral rounding
-        aligned = (decimal_price / decimal_tick).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
+        aligned = (decimal_price / decimal_tick).quantize(safe_decimal('1'), rounding=ROUND_HALF_UP) * decimal_tick
         
-    return float(aligned)
+    return safe_float(aligned)
 
 
 def calculate_atr(prices: List[float], period: int = 14) -> float:
@@ -185,8 +187,8 @@ def normalize_l2_snapshot(raw_data: dict, depth: int = 0) -> List[Tuple[float, f
     normalized = []
     for level in levels[:depth] if depth > 0 else levels:
         if len(level) >= 2:
-            price = float(level[0])
-            size = float(level[1])
+            price = safe_float(level[0])
+            size = safe_float(level[1])
             normalized.append((price, size))
             
     return normalized

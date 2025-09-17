@@ -3,6 +3,7 @@ Statistical Validation and Research Quality
 Implements deflated Sharpe, PSR, parameter stability, and stationarity monitoring.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 import json
@@ -149,16 +150,16 @@ class StatisticalValidator:
             "overfitting_risk": overfitting_risk,
             "confidence_bands": confidence_bands,
             "parameter_range": {
-                "min": float(df['parameter'].min()),
-                "max": float(df['parameter'].max()),
-                "mean": float(df['parameter'].mean()),
-                "std": float(df['parameter'].std())
+                "min": safe_float(df['parameter'].min()),
+                "max": safe_float(df['parameter'].max()),
+                "mean": safe_float(df['parameter'].mean()),
+                "std": safe_float(df['parameter'].std())
             },
             "performance_range": {
-                "min": float(df['performance'].min()),
-                "max": float(df['performance'].max()),
-                "mean": float(df['performance'].mean()),
-                "std": float(df['performance'].std())
+                "min": safe_float(df['performance'].min()),
+                "max": safe_float(df['performance'].max()),
+                "mean": safe_float(df['performance'].mean()),
+                "std": safe_float(df['performance'].std())
             }
         }
     
@@ -251,9 +252,9 @@ class StatisticalValidator:
         rolling_stats["sharpe_ratio"] = {
             "values": rolling_sharpe.dropna().tolist(),
             "timestamps": rolling_sharpe.dropna().index.tolist(),
-            "current": float(rolling_sharpe.iloc[-1]) if not rolling_sharpe.empty else 0.0,
-            "mean": float(rolling_sharpe.mean()) if not rolling_sharpe.empty else 0.0,
-            "std": float(rolling_sharpe.std()) if not rolling_sharpe.empty else 0.0
+            "current": safe_float(rolling_sharpe.iloc[-1]) if not rolling_sharpe.empty else 0.0,
+            "mean": safe_float(rolling_sharpe.mean()) if not rolling_sharpe.empty else 0.0,
+            "std": safe_float(rolling_sharpe.std()) if not rolling_sharpe.empty else 0.0
         }
         
         # Rolling win rate
@@ -263,9 +264,9 @@ class StatisticalValidator:
         rolling_stats["win_rate"] = {
             "values": rolling_win_rate.dropna().tolist(),
             "timestamps": rolling_win_rate.dropna().index.tolist(),
-            "current": float(rolling_win_rate.iloc[-1]) if not rolling_win_rate.empty else 0.0,
-            "mean": float(rolling_win_rate.mean()) if not rolling_win_rate.empty else 0.0,
-            "std": float(rolling_win_rate.std()) if not rolling_win_rate.empty else 0.0
+            "current": safe_float(rolling_win_rate.iloc[-1]) if not rolling_win_rate.empty else 0.0,
+            "mean": safe_float(rolling_win_rate.mean()) if not rolling_win_rate.empty else 0.0,
+            "std": safe_float(rolling_win_rate.std()) if not rolling_win_rate.empty else 0.0
         }
         
         # Rolling expectancy
@@ -275,9 +276,9 @@ class StatisticalValidator:
         rolling_stats["expectancy"] = {
             "values": rolling_expectancy.dropna().tolist(),
             "timestamps": rolling_expectancy.dropna().index.tolist(),
-            "current": float(rolling_expectancy.iloc[-1]) if not rolling_expectancy.empty else 0.0,
-            "mean": float(rolling_expectancy.mean()) if not rolling_expectancy.empty else 0.0,
-            "std": float(rolling_expectancy.std()) if not rolling_expectancy.empty else 0.0
+            "current": safe_float(rolling_expectancy.iloc[-1]) if not rolling_expectancy.empty else 0.0,
+            "mean": safe_float(rolling_expectancy.mean()) if not rolling_expectancy.empty else 0.0,
+            "std": safe_float(rolling_expectancy.std()) if not rolling_expectancy.empty else 0.0
         }
         
         # Edge decay detection
@@ -351,10 +352,10 @@ class StatisticalValidator:
             "data_summary": {
                 "n_observations": len(returns),
                 "time_span_days": (returns.index[-1] - returns.index[0]).days if len(returns) > 1 else 0,
-                "mean_return": float(returns.mean()),
-                "std_return": float(returns.std()),
-                "skewness": float(returns.skew()),
-                "kurtosis": float(returns.kurtosis())
+                "mean_return": safe_float(returns.mean()),
+                "std_return": safe_float(returns.std()),
+                "skewness": safe_float(returns.skew()),
+                "kurtosis": safe_float(returns.kurtosis())
             }
         }
         

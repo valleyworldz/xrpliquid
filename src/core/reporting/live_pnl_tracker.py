@@ -2,6 +2,8 @@
 Live Proven PnL Tracker - Immutable daily reports showing compounding PnL, Sharpe, drawdown vs Hyperliquid benchmarks
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import json
 import hashlib
@@ -102,19 +104,19 @@ class LivePnLTracker:
             
             # Calculate returns
             daily_returns = [record.daily_return for record in records]
-            total_return = records[-1].cumulative_return if records else Decimal('0')
+            total_return = records[-1].cumulative_return if records else safe_decimal('0')
             
             # Calculate Sharpe ratio
             if len(daily_returns) > 1:
-                mean_return = Decimal(str(statistics.mean([float(r) for r in daily_returns])))
-                std_return = Decimal(str(statistics.stdev([float(r) for r in daily_returns])))
-                sharpe_ratio = mean_return / std_return * Decimal('16') if std_return > 0 else Decimal('0')  # Annualized
+                mean_return = safe_decimal(str(statistics.mean([safe_float(r) for r in daily_returns])))
+                std_return = safe_decimal(str(statistics.stdev([safe_float(r) for r in daily_returns])))
+                sharpe_ratio = mean_return / std_return * safe_decimal('16') if std_return > 0 else safe_decimal('0')  # Annualized
             else:
-                sharpe_ratio = Decimal('0')
+                sharpe_ratio = safe_decimal('0')
             
             # Calculate max drawdown
-            peak = Decimal('0')
-            max_dd = Decimal('0')
+            peak = safe_decimal('0')
+            max_dd = safe_decimal('0')
             for record in records:
                 if record.cumulative_return > peak:
                     peak = record.cumulative_return
@@ -124,16 +126,16 @@ class LivePnLTracker:
             
             # Calculate win rate
             winning_days = sum(1 for record in records if record.daily_return > 0)
-            win_rate = Decimal(str(winning_days / len(records))) if records else Decimal('0')
+            win_rate = safe_decimal(str(winning_days / len(records))) if records else safe_decimal('0')
             
             # Calculate profit factor
             total_profits = sum(record.daily_return for record in records if record.daily_return > 0)
             total_losses = abs(sum(record.daily_return for record in records if record.daily_return < 0))
-            profit_factor = total_profits / total_losses if total_losses > 0 else Decimal('0')
+            profit_factor = total_profits / total_losses if total_losses > 0 else safe_decimal('0')
             
             # Calculate alpha vs Hyperliquid
             total_alpha = sum(record.alpha_vs_benchmark for record in records)
-            alpha_vs_hyperliquid = total_alpha / len(records) if records else Decimal('0')
+            alpha_vs_hyperliquid = total_alpha / len(records) if records else safe_decimal('0')
             
             return {
                 'total_return': total_return,
@@ -168,7 +170,7 @@ class LivePnLTracker:
         try:
             # Calculate derived metrics
             total_pnl = realized_pnl + unrealized_pnl
-            daily_return = (ending_balance - starting_balance) / starting_balance if starting_balance > 0 else Decimal('0')
+            daily_return = (ending_balance - starting_balance) / starting_balance if starting_balance > 0 else safe_decimal('0')
             
             # Calculate cumulative return
             if self.immutable_records:
@@ -190,8 +192,8 @@ class LivePnLTracker:
                 total_pnl=total_pnl,
                 daily_return=daily_return,
                 cumulative_return=cumulative_return,
-                sharpe_ratio=Decimal('0'),  # Will be calculated in summary
-                max_drawdown=Decimal('0'),  # Will be calculated in summary
+                sharpe_ratio=safe_decimal('0'),  # Will be calculated in summary
+                max_drawdown=safe_decimal('0'),  # Will be calculated in summary
                 trades_count=trades_count,
                 maker_trades=maker_trades,
                 taker_trades=taker_trades,
@@ -268,17 +270,17 @@ class LivePnLTracker:
             if not self.immutable_records:
                 return LivePnLSummary(
                     total_days=0,
-                    total_return=Decimal('0'),
-                    annualized_return=Decimal('0'),
-                    sharpe_ratio=Decimal('0'),
-                    max_drawdown=Decimal('0'),
-                    win_rate=Decimal('0'),
-                    profit_factor=Decimal('0'),
-                    alpha_vs_hyperliquid=Decimal('0'),
+                    total_return=safe_decimal('0'),
+                    annualized_return=safe_decimal('0'),
+                    sharpe_ratio=safe_decimal('0'),
+                    max_drawdown=safe_decimal('0'),
+                    win_rate=safe_decimal('0'),
+                    profit_factor=safe_decimal('0'),
+                    alpha_vs_hyperliquid=safe_decimal('0'),
                     total_trades=0,
-                    maker_ratio=Decimal('0'),
-                    total_fees_saved=Decimal('0'),
-                    total_rebates_earned=Decimal('0'),
+                    maker_ratio=safe_decimal('0'),
+                    total_fees_saved=safe_decimal('0'),
+                    total_rebates_earned=safe_decimal('0'),
                     last_updated=datetime.now().isoformat(),
                     immutable_hash=""
                 )
@@ -289,7 +291,7 @@ class LivePnLTracker:
             # Calculate additional metrics
             total_trades = sum(record.trades_count for record in self.immutable_records)
             total_maker_trades = sum(record.maker_trades for record in self.immutable_records)
-            maker_ratio = total_maker_trades / total_trades if total_trades > 0 else Decimal('0')
+            maker_ratio = total_maker_trades / total_trades if total_trades > 0 else safe_decimal('0')
             
             total_fees_saved = sum(record.rebates_earned - record.fees_paid for record in self.immutable_records)
             total_rebates_earned = sum(record.rebates_earned for record in self.immutable_records)
@@ -297,10 +299,10 @@ class LivePnLTracker:
             # Calculate annualized return
             days_trading = len(self.immutable_records)
             if days_trading > 0:
-                total_return_float = float(metrics['total_return'])
-                annualized_return = Decimal(str((1 + total_return_float) ** (365 / days_trading) - 1))
+                total_return_float = safe_float(metrics['total_return'])
+                annualized_return = safe_decimal(str((1 + total_return_float) ** (365 / days_trading) - 1))
             else:
-                annualized_return = Decimal('0')
+                annualized_return = safe_decimal('0')
             
             # Create summary
             summary = LivePnLSummary(
@@ -378,16 +380,16 @@ def demo_live_pnl_tracker():
     # Simulate 7 days of trading
     print("🔧 Simulating 7 days of live trading...")
     
-    starting_balance = Decimal('10000')
+    starting_balance = safe_decimal('10000')
     current_balance = starting_balance
     
     for day in range(7):
         date = (datetime.now() - timedelta(days=6-day)).strftime('%Y-%m-%d')
         
         # Simulate daily performance
-        daily_return = Decimal(str(0.02 + (day * 0.005)))  # 2% to 5% daily returns
-        realized_pnl = current_balance * daily_return * Decimal('0.7')  # 70% realized
-        unrealized_pnl = current_balance * daily_return * Decimal('0.3')  # 30% unrealized
+        daily_return = safe_decimal(str(0.02 + (day * 0.005)))  # 2% to 5% daily returns
+        realized_pnl = current_balance * daily_return * safe_decimal('0.7')  # 70% realized
+        unrealized_pnl = current_balance * daily_return * safe_decimal('0.3')  # 30% unrealized
         
         ending_balance = current_balance + realized_pnl + unrealized_pnl
         
@@ -397,13 +399,13 @@ def demo_live_pnl_tracker():
         taker_trades = trades_count - maker_trades
         
         # Simulate fees and rebates
-        fees_paid = Decimal(str(trades_count * 0.001))  # 0.1% per trade
-        rebates_earned = Decimal(str(maker_trades * 0.0005))  # 0.05% rebate for makers
-        funding_earned = Decimal(str(day * 0.001))  # Daily funding
-        slippage_cost = Decimal(str(trades_count * 0.0002))  # 0.02% slippage
+        fees_paid = safe_decimal(str(trades_count * 0.001))  # 0.1% per trade
+        rebates_earned = safe_decimal(str(maker_trades * 0.0005))  # 0.05% rebate for makers
+        funding_earned = safe_decimal(str(day * 0.001))  # Daily funding
+        slippage_cost = safe_decimal(str(trades_count * 0.0002))  # 0.02% slippage
         
         # Hyperliquid benchmark (simulated)
-        hyperliquid_benchmark = Decimal('0.015')  # 1.5% daily benchmark
+        hyperliquid_benchmark = safe_decimal('0.015')  # 1.5% daily benchmark
         
         # Record daily PnL
         record = tracker.record_daily_pnl(

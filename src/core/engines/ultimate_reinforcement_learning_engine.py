@@ -13,6 +13,7 @@ This module implements the pinnacle of adaptive trading intelligence:
 - Meta-learning for rapid adaptation
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -231,7 +232,7 @@ class UltimateReinforcementLearningEngine:
         # Performance tracking
         self.total_episodes = 0
         self.total_steps = 0
-        self.best_performance = -float('inf')
+        self.best_performance = -safe_float('inf')
         self.learning_curves = {}
         
         # Threading

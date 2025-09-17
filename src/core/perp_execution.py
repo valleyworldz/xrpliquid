@@ -14,6 +14,7 @@ Features:
 - Advanced TP/SL with OCO
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 from typing import Dict, Any, Optional
 from core.api.hyperliquid_api import HyperliquidAPI
@@ -47,10 +48,10 @@ class PerpExecutor:
             if user_state and "marginSummary" in user_state:
                 margin_info = user_state["marginSummary"]
                 return {
-                    "account_value": float(margin_info.get("accountValue", "0")),
-                    "total_margin_used": float(margin_info.get("totalMarginUsed", "0")),
-                    "total_n_unrealized_pnl": float(margin_info.get("totalNUnrealizedPnl", "0")),
-                    "total_margin_used_pct": float(margin_info.get("totalMarginUsedPct", "0"))
+                    "account_value": safe_float(margin_info.get("accountValue", "0")),
+                    "total_margin_used": safe_float(margin_info.get("totalMarginUsed", "0")),
+                    "total_n_unrealized_pnl": safe_float(margin_info.get("totalNUnrealizedPnl", "0")),
+                    "total_margin_used_pct": safe_float(margin_info.get("totalMarginUsedPct", "0"))
                 }
             return {}
         except Exception as e:
@@ -73,11 +74,11 @@ class PerpExecutor:
                 for position in user_state["assetPositions"]:
                     if position.get("coin") == token:
                         return {
-                            "size": float(position.get("szi", "0")),
-                            "entry_price": float(position.get("entryPx", "0")),
-                            "unrealized_pnl": float(position.get("unrealizedPnl", "0")),
-                            "leverage": float(position.get("leverage", "1")),
-                            "margin_used": float(position.get("marginUsed", "0"))
+                            "size": safe_float(position.get("szi", "0")),
+                            "entry_price": safe_float(position.get("entryPx", "0")),
+                            "unrealized_pnl": safe_float(position.get("unrealizedPnl", "0")),
+                            "leverage": safe_float(position.get("leverage", "1")),
+                            "margin_used": safe_float(position.get("marginUsed", "0"))
                         }
             return {"size": 0, "entry_price": 0, "unrealized_pnl": 0, "leverage": 1, "margin_used": 0}
         except Exception as e:
@@ -395,7 +396,7 @@ class PerpExecutor:
         try:
             market_data = self.api.get_market_data(token)
             if market_data and "fundingRate" in market_data:
-                return float(market_data["fundingRate"])
+                return safe_float(market_data["fundingRate"])
             return 0.0
         except Exception as e:
             self.logger.error(f"[PERP] Error getting funding rate for {token}: {e}")
@@ -453,18 +454,18 @@ class PerpExecutor:
             if user_state and "assetPositions" in user_state:
                 for position in user_state["assetPositions"]:
                     token = position.get("coin")
-                    size = float(position.get("szi", "0"))
+                    size = safe_float(position.get("szi", "0"))
                     
                     if size != 0:
-                        unrealized_pnl = float(position.get("unrealizedPnl", "0"))
+                        unrealized_pnl = safe_float(position.get("unrealizedPnl", "0"))
                         total_unrealized_pnl += unrealized_pnl
                         
                         positions[token] = {
                             "size": size,
-                            "entry_price": float(position.get("entryPx", "0")),
+                            "entry_price": safe_float(position.get("entryPx", "0")),
                             "unrealized_pnl": unrealized_pnl,
-                            "leverage": float(position.get("leverage", "1")),
-                            "margin_used": float(position.get("marginUsed", "0"))
+                            "leverage": safe_float(position.get("leverage", "1")),
+                            "margin_used": safe_float(position.get("marginUsed", "0"))
                         }
             
             return {

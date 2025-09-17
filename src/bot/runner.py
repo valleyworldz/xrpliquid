@@ -3,6 +3,7 @@
 Main Bot Runner - Async Execution Loop and Component Coordination
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import logging
 import time
@@ -126,8 +127,8 @@ class BotRunner:
                 return
             
             # Extract account information
-            free_collateral = float(account_data.get("withdrawable", 0))
-            margin_ratio = float(account_data.get("marginRatio", 0))
+            free_collateral = safe_float(account_data.get("withdrawable", 0))
+            margin_ratio = safe_float(account_data.get("marginRatio", 0))
             
             # Check margin safety
             if not self.risk_manager.check_margin_ratio(margin_ratio, free_collateral):

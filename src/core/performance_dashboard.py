@@ -6,6 +6,7 @@
 Comprehensive dashboard for monitoring trading performance in real-time.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import os
 import sys
 import json
@@ -138,14 +139,14 @@ class PerformanceDashboard:
             open_positions = [p for p in positions if p.get('szi', 0) != 0]
             
             # Calculate P&L
-            unrealized_pnl = sum(float(p.get('unrealizedPnl', 0)) for p in open_positions)
+            unrealized_pnl = sum(safe_float(p.get('unrealizedPnl', 0)) for p in open_positions)
             
             # Get trade history (last 100 trades)
             trades = self._get_recent_trades()
             
             # Calculate metrics
-            total_balance = float(account_info.get('marginSummary', {}).get('accountValue', 0))
-            available_balance = float(account_info.get('marginSummary', {}).get('availableMargin', 0))
+            total_balance = safe_float(account_info.get('marginSummary', {}).get('accountValue', 0))
+            available_balance = safe_float(account_info.get('marginSummary', {}).get('availableMargin', 0))
             
             # Trade statistics
             winning_trades = len([t for t in trades if t.get('pnl', 0) > 0])
@@ -242,7 +243,7 @@ class PerformanceDashboard:
             gross_profit = sum(t.get('pnl', 0) for t in trades if t.get('pnl', 0) > 0)
             gross_loss = abs(sum(t.get('pnl', 0) for t in trades if t.get('pnl', 0) < 0))
             
-            return gross_profit / gross_loss if gross_loss > 0 else float('inf')
+            return gross_profit / gross_loss if gross_loss > 0 else safe_float('inf')
             
         except Exception:
             return 0.0
@@ -409,7 +410,7 @@ class PerformanceDashboard:
                 return 0.0
             
             total_position_value = sum(
-                abs(float(p.get('szi', 0)) * float(p.get('markPx', 0)))
+                abs(safe_float(p.get('szi', 0)) * safe_float(p.get('markPx', 0)))
                 for p in positions
             )
             

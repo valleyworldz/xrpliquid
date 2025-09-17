@@ -10,6 +10,7 @@ Features:
 - Self-improving algorithms that get better over time
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import time
 try:
@@ -199,12 +200,12 @@ class AutoLearningSystem:
             # Optimize position percentage
             best_position = self.find_optimal_parameter('position_percentage')
             if best_position:
-                optimized_params['position_percentage'] = float(best_position)
+                optimized_params['position_percentage'] = safe_float(best_position)
             
             # Optimize profit target
             best_profit_target = self.find_optimal_parameter('profit_target')
             if best_profit_target:
-                optimized_params['profit_target'] = float(best_profit_target)
+                optimized_params['profit_target'] = safe_float(best_profit_target)
             
             # Optimize token preference
             best_token = self.find_optimal_parameter('token_preference')
@@ -244,7 +245,7 @@ class AutoLearningSystem:
                 return None
             
             best_value = None
-            best_avg_profit = float('-inf')
+            best_avg_profit = safe_float('-inf')
             
             for value, profits in param_data.items():
                 if len(profits) >= 3:  # Need at least 3 samples

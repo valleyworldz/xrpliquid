@@ -23,7 +23,7 @@ class HyperliquidVaultManager:
             try:
                 user_state = self.api.get_user_state()
                 if user_state and 'vaultEquity' in user_state:
-                    vault_equity = float(user_state.get('vaultEquity', 0))
+                    vault_equity = safe_float(user_state.get('vaultEquity', 0))
                     if vault_equity > 0:
                         vault_info['is_participating'] = True
                         vault_info['hlp_balance'] = vault_equity

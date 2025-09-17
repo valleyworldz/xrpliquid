@@ -12,6 +12,7 @@ Supreme AI-powered autonomous trading intelligence that combines:
 - Self-improving algorithms
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import json
 import asyncio
@@ -782,10 +783,10 @@ class UltimateAutonomousBrain:
             self.brain_metrics.timestamp = datetime.now()
             
             if self.prediction_accuracy_history:
-                self.brain_metrics.prediction_accuracy = float(np.mean(self.prediction_accuracy_history[-50:]))
+                self.brain_metrics.prediction_accuracy = safe_float(np.mean(self.prediction_accuracy_history[-50:]))
             
             if self.decision_success_history:
-                self.brain_metrics.decision_success_rate = float(np.mean(self.decision_success_history[-50:]))
+                self.brain_metrics.decision_success_rate = safe_float(np.mean(self.decision_success_history[-50:]))
             
             # Update system intelligence score
             intelligence_factors = [
@@ -795,7 +796,7 @@ class UltimateAutonomousBrain:
                 self.brain_metrics.optimization_score
             ]
             
-            self.brain_metrics.system_intelligence = float(np.mean(intelligence_factors))
+            self.brain_metrics.system_intelligence = safe_float(np.mean(intelligence_factors))
             
         except Exception as e:
             self.logger.error(f"❌ [ULTIMATE_BRAIN] Error updating brain metrics: {e}")

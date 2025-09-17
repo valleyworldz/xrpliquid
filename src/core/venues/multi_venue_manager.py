@@ -3,6 +3,8 @@ Multi-Venue Manager
 Parallel connector to multiple exchanges for resilience and benchmarking
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import json
 import logging
@@ -219,12 +221,12 @@ class MultiVenueManager:
                     venue=VenueType.HYPERLIQUID,
                     symbol="XRP-USD",
                     timestamp=datetime.now().isoformat(),
-                    bid_price=Decimal("0.5234"),
-                    ask_price=Decimal("0.5236"),
-                    bid_size=Decimal("1000"),
-                    ask_size=Decimal("1000"),
-                    last_price=Decimal("0.5235"),
-                    volume_24h=Decimal("1000000"),
+                    bid_price=safe_decimal("0.5234"),
+                    ask_price=safe_decimal("0.5236"),
+                    bid_size=safe_decimal("1000"),
+                    ask_size=safe_decimal("1000"),
+                    last_price=safe_decimal("0.5235"),
+                    volume_24h=safe_decimal("1000000"),
                     spread_bps=3.8
                 )
                 
@@ -246,12 +248,12 @@ class MultiVenueManager:
                     venue=VenueType.BINANCE,
                     symbol="XRPUSDT",
                     timestamp=datetime.now().isoformat(),
-                    bid_price=Decimal("0.5233"),
-                    ask_price=Decimal("0.5237"),
-                    bid_size=Decimal("2000"),
-                    ask_size=Decimal("2000"),
-                    last_price=Decimal("0.5235"),
-                    volume_24h=Decimal("2000000"),
+                    bid_price=safe_decimal("0.5233"),
+                    ask_price=safe_decimal("0.5237"),
+                    bid_size=safe_decimal("2000"),
+                    ask_size=safe_decimal("2000"),
+                    last_price=safe_decimal("0.5235"),
+                    volume_24h=safe_decimal("2000000"),
                     spread_bps=7.6
                 )
                 
@@ -273,12 +275,12 @@ class MultiVenueManager:
                     venue=VenueType.BYBIT,
                     symbol="XRPUSDT",
                     timestamp=datetime.now().isoformat(),
-                    bid_price=Decimal("0.5232"),
-                    ask_price=Decimal("0.5238"),
-                    bid_size=Decimal("1500"),
-                    ask_size=Decimal("1500"),
-                    last_price=Decimal("0.5235"),
-                    volume_24h=Decimal("1500000"),
+                    bid_price=safe_decimal("0.5232"),
+                    ask_price=safe_decimal("0.5238"),
+                    bid_size=safe_decimal("1500"),
+                    ask_size=safe_decimal("1500"),
+                    last_price=safe_decimal("0.5235"),
+                    volume_24h=safe_decimal("1500000"),
                     spread_bps=11.4
                 )
                 
@@ -300,12 +302,12 @@ class MultiVenueManager:
                     venue=VenueType.COINBASE,
                     symbol="XRP-USD",
                     timestamp=datetime.now().isoformat(),
-                    bid_price=Decimal("0.5231"),
-                    ask_price=Decimal("0.5239"),
-                    bid_size=Decimal("800"),
-                    ask_size=Decimal("800"),
-                    last_price=Decimal("0.5235"),
-                    volume_24h=Decimal("800000"),
+                    bid_price=safe_decimal("0.5231"),
+                    ask_price=safe_decimal("0.5239"),
+                    bid_size=safe_decimal("800"),
+                    ask_size=safe_decimal("800"),
+                    last_price=safe_decimal("0.5235"),
+                    volume_24h=safe_decimal("800000"),
                     spread_bps=15.2
                 )
                 
@@ -419,7 +421,7 @@ class MultiVenueManager:
     def get_best_venue(self, symbol: str) -> Optional[VenueType]:
         """Get the best venue for a symbol based on health and spread"""
         best_venue = None
-        best_score = float('inf')
+        best_score = safe_float('inf')
         
         for venue_type, health in self.venue_health.items():
             if health.status != ConnectionStatus.CONNECTED:
@@ -462,10 +464,10 @@ class MultiVenueManager:
             venue_info = {
                 "venue": venue_type.value,
                 "status": health.status.value,
-                "bid_price": float(market_data.bid_price),
-                "ask_price": float(market_data.ask_price),
+                "bid_price": safe_float(market_data.bid_price),
+                "ask_price": safe_float(market_data.ask_price),
                 "spread_bps": market_data.spread_bps,
-                "volume_24h": float(market_data.volume_24h),
+                "volume_24h": safe_float(market_data.volume_24h),
                 "success_rate": health.success_rate,
                 "latency_ms": health.latency_ms
             }
@@ -504,12 +506,12 @@ class MultiVenueManager:
                 for symbol, data in venue_data.items():
                     metrics["market_data"][venue_type.value][symbol] = {
                         "timestamp": data.timestamp,
-                        "bid_price": float(data.bid_price),
-                        "ask_price": float(data.ask_price),
-                        "bid_size": float(data.bid_size),
-                        "ask_size": float(data.ask_size),
-                        "last_price": float(data.last_price),
-                        "volume_24h": float(data.volume_24h),
+                        "bid_price": safe_float(data.bid_price),
+                        "ask_price": safe_float(data.ask_price),
+                        "bid_size": safe_float(data.bid_size),
+                        "ask_size": safe_float(data.ask_size),
+                        "last_price": safe_float(data.last_price),
+                        "volume_24h": safe_float(data.volume_24h),
                         "spread_bps": data.spread_bps
                     }
             

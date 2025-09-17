@@ -3,6 +3,7 @@ Tick Tape Capture - Hyperliquid WebSocket Market Data
 Captures tick-for-tick market data for replay power and audit trails.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import asyncio
 import websockets
@@ -137,8 +138,8 @@ class TickListener:
             
             # Extract trade information
             timestamp_ms = int(trade.get("time", time.time() * 1000))
-            price = float(trade.get("px", 0))
-            quantity = float(trade.get("sz", 0))
+            price = safe_float(trade.get("px", 0))
+            quantity = safe_float(trade.get("sz", 0))
             side = trade.get("side", "unknown")
             
             # For now, we'll use placeholder values for bid/ask
@@ -183,10 +184,10 @@ class TickListener:
             # Get best bid/ask
             levels = data.get("levels", [])
             if len(levels) >= 2:
-                best_bid = float(levels[0][0])  # [price, size]
-                best_ask = float(levels[1][0])
-                depth_bid = float(levels[0][1])
-                depth_ask = float(levels[1][1])
+                best_bid = safe_float(levels[0][0])  # [price, size]
+                best_ask = safe_float(levels[1][0])
+                depth_bid = safe_float(levels[0][1])
+                depth_ask = safe_float(levels[1][1])
             else:
                 return None
             

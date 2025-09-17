@@ -3,6 +3,7 @@ Per-Trade Attribution + Explanations
 Comprehensive attribution system with SHAP explanations for each trade.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Any, Optional, Tuple
@@ -225,7 +226,7 @@ class TradeAttributionEngine:
             contributions = {}
             
             for i, feature_name in enumerate(feature_names):
-                contributions[feature_name] = float(shap_values[0][i])
+                contributions[feature_name] = safe_float(shap_values[0][i])
             
             return contributions
         else:

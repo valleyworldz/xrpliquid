@@ -3,6 +3,7 @@ Symbol Registry - Multi-Asset Trading Support
 Implements symbol registry, position netting, and throughput optimization.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import pandas as pd
 from datetime import datetime, timezone
@@ -287,7 +288,7 @@ class SymbolRegistry:
         for i, symbol1 in enumerate(symbols):
             correlation_result["correlation_matrix"][symbol1] = {}
             for j, symbol2 in enumerate(symbols):
-                correlation_result["correlation_matrix"][symbol1][symbol2] = float(correlation_matrix[i, j])
+                correlation_result["correlation_matrix"][symbol1][symbol2] = safe_float(correlation_matrix[i, j])
         
         # Find high correlation pairs
         threshold = 0.7
@@ -297,7 +298,7 @@ class SymbolRegistry:
                     correlation_result["high_correlation_pairs"].append({
                         "symbol1": symbol1,
                         "symbol2": symbol2,
-                        "correlation": float(correlation_matrix[i, j])
+                        "correlation": safe_float(correlation_matrix[i, j])
                     })
         
         # Group highly correlated symbols

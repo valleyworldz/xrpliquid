@@ -1,3 +1,4 @@
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 import os
 import csv
@@ -325,7 +326,7 @@ class PerformanceTracker:
         # Calculate profit factor
         gross_profit = sum(t["pnl"] for t in self.trades if t["pnl"] > 0)
         gross_loss = abs(sum(t["pnl"] for t in self.trades if t["pnl"] < 0))
-        profit_factor = gross_profit / gross_loss if gross_loss > 0 else float('inf')
+        profit_factor = gross_profit / gross_loss if gross_loss > 0 else safe_float('inf')
         
         return {
             "total_trades": total_trades,

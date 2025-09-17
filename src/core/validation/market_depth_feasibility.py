@@ -3,6 +3,8 @@ Market Depth Feasibility Checker - Hard Pre-Trade Gate
 Makes market-depth feasibility a hard pre-trade gate to prevent invalid TP/SL placements
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import logging
 from decimal import Decimal
 from typing import Dict, List, Optional, Tuple, Any
@@ -42,9 +44,9 @@ class MarketDepthFeasibilityChecker:
     
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.min_depth_ratio = Decimal('0.1')  # 10% of order size must be available
-        self.max_price_impact = Decimal('0.05')  # 5% max price impact
-        self.min_spread_ratio = Decimal('0.001')  # 0.1% minimum spread
+        self.min_depth_ratio = safe_decimal('0.1')  # 10% of order size must be available
+        self.max_price_impact = safe_decimal('0.05')  # 5% max price impact
+        self.min_spread_ratio = safe_decimal('0.001')  # 0.1% minimum spread
         self.depth_levels = 5  # Check top 5 levels
         
     def check_tp_sl_feasibility(self, 
@@ -63,14 +65,14 @@ class MarketDepthFeasibilityChecker:
             sl_distance = abs(sl_price - entry_price) / entry_price
             
             # Check if distances are reasonable (within 10% for TP, 5% for SL)
-            if tp_distance > Decimal('0.10') or sl_distance > Decimal('0.05'):
+            if tp_distance > safe_decimal('0.10') or sl_distance > safe_decimal('0.05'):
                 return FeasibilityCheck(
                     result=FeasibilityResult.INFEASIBLE,
                     confidence=1.0,
                     reason=f"TP/SL distances too large: TP={tp_distance:.2%}, SL={sl_distance:.2%}",
                     required_depth=order_size,
-                    available_depth=Decimal('0'),
-                    price_impact=Decimal('0'),
+                    available_depth=safe_decimal('0'),
+                    price_impact=safe_decimal('0'),
                     snapshot_hash=market_depth.snapshot_hash,
                     timestamp=datetime.now().isoformat()
                 )
@@ -125,8 +127,8 @@ class MarketDepthFeasibilityChecker:
                 confidence=0.0,
                 reason=f"Error in feasibility check: {e}",
                 required_depth=order_size,
-                available_depth=Decimal('0'),
-                price_impact=Decimal('0'),
+                available_depth=safe_decimal('0'),
+                price_impact=safe_decimal('0'),
                 snapshot_hash=market_depth.snapshot_hash,
                 timestamp=datetime.now().isoformat()
             )
@@ -146,8 +148,8 @@ class MarketDepthFeasibilityChecker:
                     confidence=1.0,
                     reason="No market depth available",
                     required_depth=order_size,
-                    available_depth=Decimal('0'),
-                    price_impact=Decimal('0'),
+                    available_depth=safe_decimal('0'),
+                    price_impact=safe_decimal('0'),
                     snapshot_hash="",
                     timestamp=datetime.now().isoformat()
                 )
@@ -170,15 +172,15 @@ class MarketDepthFeasibilityChecker:
                     confidence=1.0,
                     reason=f"No depth levels available at target price {target_price}",
                     required_depth=order_size,
-                    available_depth=Decimal('0'),
-                    price_impact=Decimal('0'),
+                    available_depth=safe_decimal('0'),
+                    price_impact=safe_decimal('0'),
                     snapshot_hash="",
                     timestamp=datetime.now().isoformat()
                 )
             
             # Calculate available depth and price impact
-            total_available = Decimal('0')
-            weighted_price = Decimal('0')
+            total_available = safe_decimal('0')
+            weighted_price = safe_decimal('0')
             remaining_size = order_size
             
             for price, size in relevant_levels:
@@ -197,8 +199,8 @@ class MarketDepthFeasibilityChecker:
                     confidence=1.0,
                     reason="No available depth for execution",
                     required_depth=order_size,
-                    available_depth=Decimal('0'),
-                    price_impact=Decimal('0'),
+                    available_depth=safe_decimal('0'),
+                    price_impact=safe_decimal('0'),
                     snapshot_hash="",
                     timestamp=datetime.now().isoformat()
                 )
@@ -248,8 +250,8 @@ class MarketDepthFeasibilityChecker:
                 confidence=0.0,
                 reason=f"Error in execution check: {e}",
                 required_depth=order_size,
-                available_depth=Decimal('0'),
-                price_impact=Decimal('0'),
+                available_depth=safe_decimal('0'),
+                price_impact=safe_decimal('0'),
                 snapshot_hash="",
                 timestamp=datetime.now().isoformat()
             )
@@ -300,12 +302,12 @@ class MarketDepthFeasibilityChecker:
             return {
                 "feasible": feasible,
                 "reason": reason,
-                "spread": float(spread),
-                "spread_ratio": float(spread_ratio),
-                "depth_imbalance": float(depth_imbalance),
+                "spread": safe_float(spread),
+                "spread_ratio": safe_float(spread_ratio),
+                "depth_imbalance": safe_float(depth_imbalance),
                 "market_quality": market_quality,
-                "total_bid_depth": float(total_bid_depth),
-                "total_ask_depth": float(total_ask_depth)
+                "total_bid_depth": safe_float(total_bid_depth),
+                "total_ask_depth": safe_float(total_ask_depth)
             }
             
         except Exception as e:
@@ -329,9 +331,9 @@ class MarketDepthFeasibilityChecker:
                 "result": check.result.value,
                 "reason": check.reason,
                 "confidence": check.confidence,
-                "required_depth": float(check.required_depth),
-                "available_depth": float(check.available_depth),
-                "price_impact": float(check.price_impact),
+                "required_depth": safe_float(check.required_depth),
+                "available_depth": safe_float(check.available_depth),
+                "price_impact": safe_float(check.price_impact),
                 "snapshot_hash": check.snapshot_hash,
                 "order_data": order_data
             }
@@ -356,18 +358,18 @@ def demo_market_depth_feasibility():
         symbol="XRP-USD",
         timestamp=datetime.now().isoformat(),
         bids=[
-            (Decimal('0.5234'), Decimal('1000')),
-            (Decimal('0.5233'), Decimal('1500')),
-            (Decimal('0.5232'), Decimal('2000')),
-            (Decimal('0.5231'), Decimal('1200')),
-            (Decimal('0.5230'), Decimal('800'))
+            (safe_decimal('0.5234'), safe_decimal('1000')),
+            (safe_decimal('0.5233'), safe_decimal('1500')),
+            (safe_decimal('0.5232'), safe_decimal('2000')),
+            (safe_decimal('0.5231'), safe_decimal('1200')),
+            (safe_decimal('0.5230'), safe_decimal('800'))
         ],
         asks=[
-            (Decimal('0.5236'), Decimal('1000')),
-            (Decimal('0.5237'), Decimal('1500')),
-            (Decimal('0.5238'), Decimal('2000')),
-            (Decimal('0.5239'), Decimal('1200')),
-            (Decimal('0.5240'), Decimal('800'))
+            (safe_decimal('0.5236'), safe_decimal('1000')),
+            (safe_decimal('0.5237'), safe_decimal('1500')),
+            (safe_decimal('0.5238'), safe_decimal('2000')),
+            (safe_decimal('0.5239'), safe_decimal('1200')),
+            (safe_decimal('0.5240'), safe_decimal('800'))
         ],
         snapshot_hash="demo_snapshot_123"
     )
@@ -384,10 +386,10 @@ def demo_market_depth_feasibility():
     
     # Test TP/SL feasibility
     print(f"\n🎯 TP/SL Feasibility Check:")
-    entry_price = Decimal('0.5235')
-    tp_price = Decimal('0.5250')  # 0.29% above entry
-    sl_price = Decimal('0.5210')  # 0.48% below entry
-    order_size = Decimal('500')
+    entry_price = safe_decimal('0.5235')
+    tp_price = safe_decimal('0.5250')  # 0.29% above entry
+    sl_price = safe_decimal('0.5210')  # 0.48% below entry
+    order_size = safe_decimal('500')
     
     feasibility = checker.check_tp_sl_feasibility(
         market_depth, entry_price, tp_price, sl_price, order_size, "buy"
@@ -402,8 +404,8 @@ def demo_market_depth_feasibility():
     
     # Test infeasible scenario
     print(f"\n❌ Infeasible Scenario Test:")
-    infeasible_tp = Decimal('0.5300')  # 1.24% above entry (too far)
-    infeasible_sl = Decimal('0.5200')  # 0.67% below entry (too far)
+    infeasible_tp = safe_decimal('0.5300')  # 1.24% above entry (too far)
+    infeasible_sl = safe_decimal('0.5200')  # 0.67% below entry (too far)
     
     infeasible_check = checker.check_tp_sl_feasibility(
         market_depth, entry_price, infeasible_tp, infeasible_sl, order_size, "buy"
@@ -417,10 +419,10 @@ def demo_market_depth_feasibility():
         order_data = {
             "symbol": "XRP-USD",
             "side": "buy",
-            "size": float(order_size),
-            "entry_price": float(entry_price),
-            "tp_price": float(infeasible_tp),
-            "sl_price": float(infeasible_sl)
+            "size": safe_float(order_size),
+            "entry_price": safe_float(entry_price),
+            "tp_price": safe_float(infeasible_tp),
+            "sl_price": safe_float(infeasible_sl)
         }
         checker.log_feasibility_failure(infeasible_check, order_data)
     

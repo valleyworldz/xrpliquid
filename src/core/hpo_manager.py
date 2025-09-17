@@ -13,6 +13,7 @@ Features:
 - Performance tracking and logging
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import optuna
 import numpy as np
 from typing import Dict, Any, Tuple, Optional
@@ -55,11 +56,11 @@ class HPOManager:
             # Log trial results
             self.logger.info(f"[HPO] Scalping trial - PnL: {pnl:.4f}, Vol: {volatility:.4f}, Sharpe: {sharpe:.4f}")
             
-            return sharpe if not np.isnan(sharpe) else -float("inf")
+            return sharpe if not np.isnan(sharpe) else -safe_float("inf")
             
         except Exception as e:
             self.logger.error(f"[HPO] Error in scalping objective: {e}")
-            return -float("inf")
+            return -safe_float("inf")
     
     def _objective_grid_trading(self, trial) -> float:
         """Objective function for grid trading strategy optimization"""
@@ -80,11 +81,11 @@ class HPOManager:
             
             self.logger.info(f"[HPO] Grid trial - PnL: {pnl:.4f}, Vol: {volatility:.4f}, Sharpe: {sharpe:.4f}")
             
-            return sharpe if not np.isnan(sharpe) else -float("inf")
+            return sharpe if not np.isnan(sharpe) else -safe_float("inf")
             
         except Exception as e:
             self.logger.error(f"[HPO] Error in grid objective: {e}")
-            return -float("inf")
+            return -safe_float("inf")
     
     def _objective_mean_reversion(self, trial) -> float:
         """Objective function for mean reversion strategy optimization"""
@@ -106,11 +107,11 @@ class HPOManager:
             
             self.logger.info(f"[HPO] Mean reversion trial - PnL: {pnl:.4f}, Vol: {volatility:.4f}, Sharpe: {sharpe:.4f}")
             
-            return sharpe if not np.isnan(sharpe) else -float("inf")
+            return sharpe if not np.isnan(sharpe) else -safe_float("inf")
             
         except Exception as e:
             self.logger.error(f"[HPO] Error in mean reversion objective: {e}")
-            return -float("inf")
+            return -safe_float("inf")
     
     def run_scalping_optimization(self) -> Dict[str, Any]:
         """Run hyperparameter optimization for scalping strategy"""

@@ -1,3 +1,4 @@
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import logging
 import secrets
@@ -73,7 +74,7 @@ class Exchange(API):
         coin = self.info.name_to_coin[name]
         if not px:
             # Get midprice
-            px = float(self.info.all_mids()[coin])
+            px = safe_float(self.info.all_mids()[coin])
 
         # spot assets start at 10000
         is_spot = self.info.coin_to_asset[coin] >= 10_000
@@ -81,7 +82,7 @@ class Exchange(API):
         # Calculate Slippage
         px *= (1 + slippage) if is_buy else (1 - slippage)
         # We round px to 5 significant figures and 6 decimals for perps, 8 decimals for spot
-        return round(float(f"{px:.5g}"), 6 if not is_spot else 8)
+        return round(safe_float(f"{px:.5g}"), 6 if not is_spot else 8)
 
     def order(
         self,
@@ -220,7 +221,7 @@ class Exchange(API):
             item = position["position"]
             if coin != item["coin"]:
                 continue
-            szi = float(item["szi"])
+            szi = safe_float(item["szi"])
             if not sz:
                 sz = abs(szi)
             is_buy = True if szi < 0 else False

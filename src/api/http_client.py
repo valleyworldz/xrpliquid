@@ -4,6 +4,7 @@ HTTP Client Module
 Hardened HTTP client with retry, backoff, and circuit breaker for Hyperliquid API
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import logging
@@ -108,7 +109,7 @@ class FallbackNumpy:
     def isnan(self, value):
         """Check if value is NaN"""
         try:
-            return float(value) != float(value)  # NaN is the only value that doesn't equal itself
+            return safe_float(value) != safe_float(value)  # NaN is the only value that doesn't equal itself
         except:
             return False
 
@@ -204,8 +205,8 @@ class FallbackDataFrame:
                                     prev_val_raw = values[i-periods]
                                     
                                     if current_val_raw is not None and prev_val_raw is not None:
-                                        current_val = float(current_val_raw)
-                                        prev_val = float(prev_val_raw)
+                                        current_val = safe_float(current_val_raw)
+                                        prev_val = safe_float(prev_val_raw)
                                         if prev_val != 0:
                                             change = (current_val - prev_val) / prev_val
                                             new_values.append(change)

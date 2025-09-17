@@ -6,6 +6,7 @@ Advanced order book analysis, volume profiling, and market microstructure
 analysis for optimal trade execution and timing.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 import pandas as pd
 import logging
@@ -149,14 +150,14 @@ class MarketMicrostructureEngine:
             # Process bid levels
             for level in snap.get('bids', [])[:self.max_book_levels]:
                 if len(level) >= 2:
-                    price, size = float(level[0]), float(level[1])
+                    price, size = safe_float(level[0]), safe_float(level[1])
                     orders = int(level[2]) if len(level) > 2 else 1
                     bids.append(OrderBookLevel(price, size, orders, 'bid'))
             
             # Process ask levels
             for level in snap.get('asks', [])[:self.max_book_levels]:
                 if len(level) >= 2:
-                    price, size = float(level[0]), float(level[1])
+                    price, size = safe_float(level[0]), safe_float(level[1])
                     orders = int(level[2]) if len(level) > 2 else 1
                     asks.append(OrderBookLevel(price, size, orders, 'ask'))
             

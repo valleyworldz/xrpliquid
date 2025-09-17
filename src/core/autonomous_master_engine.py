@@ -13,6 +13,7 @@ The ultimate 24/7 autonomous trading system that maximizes profits through:
 - Performance optimization
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import threading
 import time
@@ -166,7 +167,7 @@ class SupremeAutonomousEngine:
             
             # Get current account state
             user_state = self.api.get_user_state()
-            account_value = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+            account_value = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
             
             # Initialize trading state
             self.trading_state = TradingState(
@@ -460,8 +461,8 @@ class SupremeAutonomousEngine:
             if not user_state:
                 return
             
-            account_value = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
-            unrealized_pnl = float(user_state.get("marginSummary", {}).get("unrealizedPnl", "0"))
+            account_value = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+            unrealized_pnl = safe_float(user_state.get("marginSummary", {}).get("unrealizedPnl", "0"))
             
             # Get position information
             positions = self.portfolio_manager.get_open_positions()

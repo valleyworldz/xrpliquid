@@ -19,6 +19,7 @@ Portfolio Manager with Profit Rotation Framework
 - Per-symbol cooldowns to avoid FOMO
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from collections import defaultdict
 from typing import Dict, Any, List, Tuple, Optional
@@ -179,13 +180,13 @@ class PortfolioManager:
                 
                 position = position_data["position"]
                 symbol = position.get("coin")
-                size = float(position.get("szi", "0"))
+                size = safe_float(position.get("szi", "0"))
                 
                 if symbol and size != 0:
                     # Create Position object
-                    entry_price = float(position.get("entryPx", "0"))
-                    unrealized_pnl = float(position.get("unrealizedPnl", "0"))
-                    position_value = float(position.get("positionValue", "0"))
+                    entry_price = safe_float(position.get("entryPx", "0"))
+                    unrealized_pnl = safe_float(position.get("unrealizedPnl", "0"))
+                    position_value = safe_float(position.get("positionValue", "0"))
                     unrealized_pnl_pct = (unrealized_pnl / position_value * 100) if position_value > 0 else 0
                     
                     # Get asset ID from meta manager
@@ -394,7 +395,7 @@ class PortfolioManager:
             if user_state and "marginSummary" in user_state:
                 account_value = user_state["marginSummary"].get("accountValue", "0")
                 # Remove commas and convert to float
-                return float(account_value.replace(",", ""))
+                return safe_float(account_value.replace(",", ""))
             else:
                 self.logger.warning("[PORTFOLIO] Could not get portfolio value from user state")
                 return 1000.0  # Default value
@@ -587,8 +588,8 @@ class PortfolioManager:
                         symbol = str(asset_id)
                     
                     if symbol:
-                        quantity = float(asset_pos['position']['szi'])
-                        entry_price = float(asset_pos['position']['entryPx'])
+                        quantity = safe_float(asset_pos['position']['szi'])
+                        entry_price = safe_float(asset_pos['position']['entryPx'])
                         
                         # Get current price
                         current_price = self.get_current_price(symbol)
@@ -633,7 +634,7 @@ class PortfolioManager:
         try:
             market_data = self.api.get_market_data(symbol)
             if market_data and 'price' in market_data:
-                return float(market_data['price'])
+                return safe_float(market_data['price'])
             return 0.0
         except Exception as e:
             self.logger.error(f"Error getting price for {symbol}: {e}")
@@ -714,8 +715,8 @@ class PortfolioManager:
             self.logger.debug(f"FULL USER STATE: {json.dumps(user_state, indent=2)}")
             # Use marginSummary[accountValue] - marginSummary[totalMarginUsed] for free margin
             margin_summary = user_state.get("marginSummary", {})
-            account_value = float(margin_summary.get("accountValue", 0))
-            margin_used = float(margin_summary.get("totalMarginUsed", 0))
+            account_value = safe_float(margin_summary.get("accountValue", 0))
+            margin_used = safe_float(margin_summary.get("totalMarginUsed", 0))
             available_margin = account_value - margin_used
             if available_margin < 10:  # Minimum $10 to open new position
                 self.logger.info(f"[PORTFOLIO] Insufficient margin for new position: ${available_margin:.2f}")
@@ -1016,7 +1017,7 @@ class PortfolioManager:
                 self.logger.error(f"[EXECUTOR] Could not get market data for {symbol}")
                 return
             
-            current_price = float(market_data.get("price", 0))
+            current_price = safe_float(market_data.get("price", 0))
             if current_price == 0:
                 self.logger.error(f"[EXECUTOR] Invalid price for {symbol}")
                 return
@@ -1026,7 +1027,7 @@ class PortfolioManager:
             if not user_state:
                 return
             
-            withdrawable = float(user_state.get("withdrawable", "0"))
+            withdrawable = safe_float(user_state.get("withdrawable", "0"))
             if withdrawable < 20:
                 self.logger.info(f"[EXECUTOR] Insufficient margin for {symbol}: ${withdrawable:.2f}")
                 return
@@ -1099,8 +1100,8 @@ class PortfolioManager:
                     continue
                 
                 # Calculate unrealized PnL percentage
-                unrealized_pnl = float(position.get("unrealizedPnl", "0"))
-                position_value = float(position.get("positionValue", "0"))
+                unrealized_pnl = safe_float(position.get("unrealizedPnl", "0"))
+                position_value = safe_float(position.get("positionValue", "0"))
                 
                 if position_value > 0:
                     pnl_pct = unrealized_pnl / position_value
@@ -1137,7 +1138,7 @@ class PortfolioManager:
     def _close_position(self, symbol: str, position: Dict) -> bool:
         """Close a specific position"""
         try:
-            size = float(position.get("szi", "0"))
+            size = safe_float(position.get("szi", "0"))
             if size == 0:
                 return False
             side = "sell" if size > 0 else "buy"
@@ -1146,7 +1147,7 @@ class PortfolioManager:
             if not market_data or "price" not in market_data:
                 self.logger.error(f"[PORTFOLIO] Could not get market price for {symbol}")
                 return False
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             # Validate and round close order size/price using HyperliquidAPI
             asset_id, coin_name = self.api.resolve_symbol_to_asset_id(symbol)
             if asset_id is None:
@@ -1183,7 +1184,7 @@ class PortfolioManager:
                 self.logger.error(f"[PORTFOLIO] Could not get market price for {symbol} in fallback")
                 return False
             
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             
             # Place market order with reduce_only
             order_response = self.api.place_order(
@@ -1245,15 +1246,15 @@ class PortfolioManager:
                 
                 position = position_data["position"]
                 symbol = position.get("coin")
-                size = float(position.get("szi", "0"))
+                size = safe_float(position.get("szi", "0"))
                 
                 if symbol and size != 0:
                     # Create a Position object with correct parameters
-                    entry_price = float(position.get("entryPx", "0"))
+                    entry_price = safe_float(position.get("entryPx", "0"))
                     current_price = entry_price  # Will be updated with current price
                     side = "long" if size > 0 else "short"
-                    unrealized_pnl = float(position.get("unrealizedPnl", "0"))
-                    position_value = float(position.get("positionValue", "0"))
+                    unrealized_pnl = safe_float(position.get("unrealizedPnl", "0"))
+                    position_value = safe_float(position.get("positionValue", "0"))
                     
                     # Calculate unrealized PnL percentage
                     unrealized_pnl_pct = (unrealized_pnl / position_value * 100) if position_value > 0 else 0
@@ -1291,7 +1292,7 @@ class PortfolioManager:
             if not user_state:
                 return
             
-            withdrawable = float(user_state.get("withdrawable", "0"))
+            withdrawable = safe_float(user_state.get("withdrawable", "0"))
             if withdrawable < 20:  # Minimum $20 to open new position
                 self.logger.info(f"[PORTFOLIO] Insufficient margin for new position: ${withdrawable:.2f}")
                 return
@@ -1378,7 +1379,7 @@ class PortfolioManager:
             # Simple scoring based on price movement
             # In production, this would use more sophisticated analysis
             
-            current_price = float(market_data.get("price", 0))
+            current_price = safe_float(market_data.get("price", 0))
             if current_price == 0:
                 return 0
             
@@ -1415,8 +1416,8 @@ class PortfolioManager:
             # Prepare data for strategy
             data = {
                 "symbol": symbol,
-                "price": float(market_data.get("price", 0)),
-                "volume": float(market_data.get("volume", 0)),
+                "price": safe_float(market_data.get("price", 0)),
+                "volume": safe_float(market_data.get("volume", 0)),
                 "timestamp": time.time()
             }
             

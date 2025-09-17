@@ -29,6 +29,7 @@ except ImportError:
     # Fallback for pandas import issues
     print("⚠️ Pandas not available in enhanced_risk_manager, using fallback calculations")
     pd = None
+from src.core.utils.decimal_boundary_guard import safe_float
 from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime, timedelta
 import logging
@@ -120,7 +121,7 @@ class EnhancedRiskManager:
                 variance = sum((r - mean_return) ** 2 for r in returns) / len(returns) if returns else 0
                 volatility = math.sqrt(variance) * math.sqrt(252)  # Annualized
             
-            return float(volatility)
+            return safe_float(volatility)
             
         except Exception as e:
             self.logger.error(f"[RISK] Error calculating volatility: {e}")

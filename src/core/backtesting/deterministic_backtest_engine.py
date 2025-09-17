@@ -5,6 +5,7 @@ Comprehensive backtesting system for funding arbitrage strategy with
 realistic market conditions, fees, slippage, and funding payments.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -528,7 +529,7 @@ class DeterministicBacktestEngine:
         # Profit factor
         gross_profit = trades_df[trades_df['net_pnl'] > 0]['net_pnl'].sum()
         gross_loss = abs(trades_df[trades_df['net_pnl'] < 0]['net_pnl'].sum())
-        profit_factor = gross_profit / gross_loss if gross_loss > 0 else float('inf')
+        profit_factor = gross_profit / gross_loss if gross_loss > 0 else safe_float('inf')
         
         # Average win/loss
         avg_win = trades_df[trades_df['net_pnl'] > 0]['net_pnl'].mean() if winning_trades > 0 else 0

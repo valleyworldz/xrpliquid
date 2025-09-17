@@ -13,6 +13,7 @@ Features:
 - Position tracking
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 from typing import Dict, Any, Optional
 from core.api.hyperliquid_api import HyperliquidAPI
@@ -46,7 +47,7 @@ class SpotExecutor:
             if user_state and "assetPositions" in user_state:
                 for position in user_state["assetPositions"]:
                     if position.get("coin") == token:
-                        return float(position.get("szi", "0"))
+                        return safe_float(position.get("szi", "0"))
             return 0.0
         except Exception as e:
             self.logger.error(f"[SPOT] Error getting balance for {token}: {e}")
@@ -301,7 +302,7 @@ class SpotExecutor:
             if user_state and "assetPositions" in user_state:
                 for position in user_state["assetPositions"]:
                     token = position.get("coin")
-                    quantity = float(position.get("szi", "0"))
+                    quantity = safe_float(position.get("szi", "0"))
                     
                     if quantity > 0:
                         # Get current price
@@ -332,7 +333,7 @@ class SpotExecutor:
             if user_state and "assetPositions" in user_state:
                 for position in user_state["assetPositions"]:
                     token = position.get("coin")
-                    quantity = float(position.get("szi", "0"))
+                    quantity = safe_float(position.get("szi", "0"))
                     
                     if quantity > 0:
                         market_data = self.api.get_market_data(token)

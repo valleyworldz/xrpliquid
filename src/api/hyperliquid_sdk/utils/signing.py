@@ -1,3 +1,5 @@
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 from decimal import Decimal
 
@@ -365,11 +367,11 @@ def sign_inner(wallet, data):
 
 def float_to_wire(x: float) -> str:
     rounded = "{:.8f}".format(x)
-    if abs(float(rounded) - x) >= 1e-12:
+    if abs(safe_float(rounded) - x) >= 1e-12:
         raise ValueError("float_to_wire causes rounding", x)
     if rounded == "-0":
         rounded = "0"
-    normalized = Decimal(rounded).normalize()
+    normalized = safe_decimal(rounded).normalize()
     return f"{normalized:f}"
 
 

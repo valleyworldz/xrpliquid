@@ -7,6 +7,7 @@ This is the definitive Ultimate Trading System that achieves perfect 10/10
 performance across all 9 specialized roles as defined in the Hat Manifesto.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -123,8 +124,8 @@ class UltimateTradingSystemV2:
         try:
             user_state = self.api.get_user_state()
             if user_state and "marginSummary" in user_state:
-                account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                 available_margin = account_value - total_margin_used
                 
                 # 🛡️ RISK OVERSIGHT OFFICER: Monitor margin health
@@ -156,17 +157,17 @@ class UltimateTradingSystemV2:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == 'XRP':
-                        xrp_price = float(asset_data.get('mid', 0))
+                        xrp_price = safe_float(asset_data.get('mid', 0))
                         break
                     elif isinstance(asset_data, str) and 'XRP' in asset_data:
                         # Handle string format response
                         try:
-                            xrp_price = float(asset_data.split(':')[1]) if ':' in asset_data else 0.52
+                            xrp_price = safe_float(asset_data.split(':')[1]) if ':' in asset_data else 0.52
                         except:
                             xrp_price = 0.52
             elif isinstance(market_data, dict):
                 # Handle dict format response
-                xrp_price = float(market_data.get('XRP', 0.52))
+                xrp_price = safe_float(market_data.get('XRP', 0.52))
             
             # Get funding rate data with error handling
             current_funding = 0.0
@@ -174,7 +175,7 @@ class UltimateTradingSystemV2:
                 funding_data = self.api.info_client.funding_history("XRP", 1)
                 if funding_data and isinstance(funding_data, list) and len(funding_data) > 0:
                     if isinstance(funding_data[0], dict):
-                        current_funding = float(funding_data[0].get('funding', 0))
+                        current_funding = safe_float(funding_data[0].get('funding', 0))
                     else:
                         current_funding = 0.0001  # Default funding rate
             except Exception as funding_error:
@@ -395,10 +396,10 @@ class UltimateTradingSystemV2:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == 'XRP':
-                        xrp_price = float(asset_data.get('mid', 0))
+                        xrp_price = safe_float(asset_data.get('mid', 0))
                         break
             elif isinstance(market_data, dict):
-                xrp_price = float(market_data.get('XRP', 0.52))
+                xrp_price = safe_float(market_data.get('XRP', 0.52))
             
             if not xrp_price:
                 xrp_price = 0.52  # Use fallback price
@@ -410,8 +411,8 @@ class UltimateTradingSystemV2:
                 available_margin = 0.0
                 
                 if user_state and "marginSummary" in user_state:
-                    account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                    total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                    account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                    total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                     available_margin = account_value - total_margin_used
                     
                 self.logger.info(f"💰 [MARGIN ANALYSIS] Account Value: ${account_value:.2f}, Available: ${available_margin:.2f}")
@@ -508,10 +509,10 @@ class UltimateTradingSystemV2:
             if isinstance(market_data, list):
                 for asset_data in market_data:
                     if isinstance(asset_data, dict) and asset_data.get('coin') == 'XRP':
-                        xrp_price = float(asset_data.get('mid', 0))
+                        xrp_price = safe_float(asset_data.get('mid', 0))
                         break
             elif isinstance(market_data, dict):
-                xrp_price = float(market_data.get('XRP', 0.52))
+                xrp_price = safe_float(market_data.get('XRP', 0.52))
             
             if not xrp_price:
                 xrp_price = 0.52  # Use fallback price
@@ -522,8 +523,8 @@ class UltimateTradingSystemV2:
                 available_margin = 0.0
                 
                 if user_state and "marginSummary" in user_state:
-                    account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                    total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                    account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                    total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                     available_margin = account_value - total_margin_used
                 
                 # 🎯 CHIEF QUANTITATIVE STRATEGIST: Ultra-conservative scalp sizing
@@ -616,7 +617,7 @@ class UltimateTradingSystemV2:
                 funding_data = self.api.info_client.funding_history("XRP", 1)
                 if funding_data and isinstance(funding_data, list) and len(funding_data) > 0:
                     if isinstance(funding_data[0], dict):
-                        current_funding = float(funding_data[0].get('funding', 0))
+                        current_funding = safe_float(funding_data[0].get('funding', 0))
                     else:
                         current_funding = 0.0001  # Default funding rate
             except Exception as funding_error:
@@ -633,10 +634,10 @@ class UltimateTradingSystemV2:
                 if isinstance(market_data, list):
                     for asset_data in market_data:
                         if isinstance(asset_data, dict) and asset_data.get('coin') == 'XRP':
-                            xrp_price = float(asset_data.get('mid', 0))
+                            xrp_price = safe_float(asset_data.get('mid', 0))
                             break
                 elif isinstance(market_data, dict):
-                    xrp_price = float(market_data.get('XRP', 0.52))
+                    xrp_price = safe_float(market_data.get('XRP', 0.52))
                 
                 if not xrp_price:
                     xrp_price = 0.52  # Use fallback price
@@ -647,8 +648,8 @@ class UltimateTradingSystemV2:
                     available_margin = 0.0
                     
                     if user_state and "marginSummary" in user_state:
-                        account_value = float(user_state["marginSummary"].get("accountValue", 0))
-                        total_margin_used = float(user_state["marginSummary"].get("totalMarginUsed", 0))
+                        account_value = safe_float(user_state["marginSummary"].get("accountValue", 0))
+                        total_margin_used = safe_float(user_state["marginSummary"].get("totalMarginUsed", 0))
                         available_margin = account_value - total_margin_used
                     
                     # 🎯 CHIEF QUANTITATIVE STRATEGIST: Conservative arbitrage sizing

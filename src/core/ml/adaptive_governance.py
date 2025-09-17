@@ -3,6 +3,7 @@ Adaptive Governance - ML Model Management & Deployment
 Implements time-blocked CV, shadow mode, and feature store governance.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import pandas as pd
 import numpy as np
@@ -272,20 +273,20 @@ class AdaptiveGovernance:
             "evaluated_at": datetime.now(timezone.utc).isoformat(),
             "sample_size": len(shadow_predictions),
             "shadow_performance": {
-                "mae": float(shadow_mae),
-                "rmse": float(shadow_rmse)
+                "mae": safe_float(shadow_mae),
+                "rmse": safe_float(shadow_rmse)
             },
             "baseline_performance": {
-                "mae": float(baseline_mae),
-                "rmse": float(baseline_rmse)
+                "mae": safe_float(baseline_mae),
+                "rmse": safe_float(baseline_rmse)
             },
             "improvement": {
-                "mae_improvement": float(mae_improvement),
-                "rmse_improvement": float(rmse_improvement)
+                "mae_improvement": safe_float(mae_improvement),
+                "rmse_improvement": safe_float(rmse_improvement)
             },
             "statistical_test": {
-                "t_statistic": float(t_stat),
-                "p_value": float(p_value),
+                "t_statistic": safe_float(t_stat),
+                "p_value": safe_float(p_value),
                 "significant": significant_improvement
             },
             "promotion_recommended": significant_improvement
@@ -344,9 +345,9 @@ class AdaptiveGovernance:
             "data_shape": feature_data.shape,
             "data_types": feature_data.dtypes.to_dict(),
             "statistics": {
-                "mean": float(feature_data.mean().mean()) if feature_data.select_dtypes(include=[np.number]).size > 0 else None,
-                "std": float(feature_data.std().mean()) if feature_data.select_dtypes(include=[np.number]).size > 0 else None,
-                "missing_ratio": float(feature_data.isnull().sum().sum() / feature_data.size)
+                "mean": safe_float(feature_data.mean().mean()) if feature_data.select_dtypes(include=[np.number]).size > 0 else None,
+                "std": safe_float(feature_data.std().mean()) if feature_data.select_dtypes(include=[np.number]).size > 0 else None,
+                "missing_ratio": safe_float(feature_data.isnull().sum().sum() / feature_data.size)
             },
             "metadata": metadata or {},
             "last_updated": datetime.now(timezone.utc),
@@ -426,8 +427,8 @@ class AdaptiveGovernance:
                         drift_details.append({
                             "column": col,
                             "test": "ks_test",
-                            "statistic": float(ks_stat),
-                            "p_value": float(ks_pvalue),
+                            "statistic": safe_float(ks_stat),
+                            "p_value": safe_float(ks_pvalue),
                             "drift_detected": True
                         })
         

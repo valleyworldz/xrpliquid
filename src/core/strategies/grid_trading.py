@@ -11,6 +11,7 @@ Advanced grid trading strategy with:
 - Market condition adaptation
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import numpy as np
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime, timedelta
@@ -191,7 +192,7 @@ class GridTradingStrategy(TradingStrategy):
             if not self.validate_data(market_data):
                 return {}
             
-            current_price = float(market_data["price"])
+            current_price = safe_float(market_data["price"])
             symbol = market_data.get("symbol", "UNKNOWN")
             price_history = market_data.get("price_history", [current_price])
             

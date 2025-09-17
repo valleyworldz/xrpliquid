@@ -6,6 +6,7 @@ Immediate fixes for critical issues identified in deep analysis
 Focus on getting trading activity started and profit generation
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import sys
 import os
 import time
@@ -86,14 +87,14 @@ class Achieve100PercentSuccess:
             # Get account info for balance
             account_info = self.api.get_account_info()
             if account_info:
-                available_balance = float(account_info.get('marginSummary', {}).get('availableMargin', 0))
+                available_balance = safe_float(account_info.get('marginSummary', {}).get('availableMargin', 0))
                 print(f"💰 Available balance: ${available_balance:.2f}")
             
             # Validate each position
             valid_positions = []
             for position in positions:
                 symbol = position.get('asset', 'Unknown')
-                size = float(position.get('position', 0))
+                size = safe_float(position.get('position', 0))
                 if size != 0:
                     valid_positions.append(position)
                     print(f"✅ Valid position: {symbol} - Size: {size}")
@@ -120,7 +121,7 @@ class Achieve100PercentSuccess:
                 print("❌ Could not get account info")
                 return False
             
-            available_balance = float(account_info.get('marginSummary', {}).get('availableMargin', 0))
+            available_balance = safe_float(account_info.get('marginSummary', {}).get('availableMargin', 0))
             print(f"💰 Available balance: ${available_balance:.2f}")
             
             if available_balance < self.min_order_value:
@@ -137,7 +138,7 @@ class Achieve100PercentSuccess:
                 print(f"❌ Could not get market data for {test_symbol}")
                 return False
             
-            current_price = float(market_data.get('price', 0))
+            current_price = safe_float(market_data.get('price', 0))
             if current_price == 0:
                 print(f"❌ Invalid price for {test_symbol}")
                 return False
@@ -185,14 +186,14 @@ class Achieve100PercentSuccess:
         try:
             # Get current positions
             positions = self.api.get_user_positions()
-            active_positions = [p for p in positions if float(p.get('position', 0)) != 0]
+            active_positions = [p for p in positions if safe_float(p.get('position', 0)) != 0]
             
             print(f"📊 Monitoring {len(active_positions)} active positions")
             
             for position in active_positions:
                 symbol = position.get('asset', 'Unknown')
-                size = float(position.get('position', 0))
-                entry_price = float(position.get('entryPrice', 0))
+                size = safe_float(position.get('position', 0))
+                entry_price = safe_float(position.get('entryPrice', 0))
                 
                 if size == 0 or entry_price == 0:
                     continue
@@ -202,7 +203,7 @@ class Achieve100PercentSuccess:
                 if not market_data:
                     continue
                 
-                current_price = float(market_data.get('price', 0))
+                current_price = safe_float(market_data.get('price', 0))
                 if current_price == 0:
                     continue
                 

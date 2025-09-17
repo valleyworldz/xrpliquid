@@ -13,6 +13,7 @@ This module implements the pinnacle of market microstructure analysis:
 - Order flow toxicity analysis
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -382,7 +383,7 @@ class SpoofingDetector:
             
             # Analyze bid side
             for i, bid in enumerate(bids[:5]):
-                price, size = float(bid[0]), float(bid[1])
+                price, size = safe_float(bid[0]), safe_float(bid[1])
                 if size > 1000:  # Large order
                     # Check if this is likely spoofing
                     if i == 0 and size > 5000:  # Large order at best bid
@@ -390,7 +391,7 @@ class SpoofingDetector:
             
             # Analyze ask side
             for i, ask in enumerate(asks[:5]):
-                price, size = float(ask[0]), float(ask[1])
+                price, size = safe_float(ask[0]), safe_float(ask[1])
                 if size > 1000:  # Large order
                     if i == 0 and size > 5000:  # Large order at best ask
                         spoofing_confidence += 0.3
@@ -428,12 +429,12 @@ class LayeringDetector:
             layering_confidence = 0.0
             
             # Analyze bid layering
-            bid_sizes = [float(bid[1]) for bid in bids[:10]]
+            bid_sizes = [safe_float(bid[1]) for bid in bids[:10]]
             if len(set(bid_sizes)) == 1 and bid_sizes[0] > 100:  # Same size orders
                 layering_confidence += 0.4
             
             # Analyze ask layering
-            ask_sizes = [float(ask[1]) for ask in asks[:10]]
+            ask_sizes = [safe_float(ask[1]) for ask in asks[:10]]
             if len(set(ask_sizes)) == 1 and ask_sizes[0] > 100:  # Same size orders
                 layering_confidence += 0.4
             
@@ -476,8 +477,8 @@ class QuoteStuffingDetector:
                 quote_stuffing_confidence += 0.3
             
             # Check for small order sizes
-            small_bid_orders = sum(1 for bid in bids if float(bid[1]) < 10)
-            small_ask_orders = sum(1 for ask in asks if float(ask[1]) < 10)
+            small_bid_orders = sum(1 for bid in bids if safe_float(bid[1]) < 10)
+            small_ask_orders = sum(1 for ask in asks if safe_float(ask[1]) < 10)
             
             if small_bid_orders > 20:
                 quote_stuffing_confidence += 0.2
@@ -518,12 +519,12 @@ class IcebergDetector:
             iceberg_confidence = 0.0
             
             # Analyze bid side for iceberg
-            bid_sizes = [float(bid[1]) for bid in bids[:5]]
+            bid_sizes = [safe_float(bid[1]) for bid in bids[:5]]
             if len(set(bid_sizes)) == 1 and bid_sizes[0] > 50:  # Same size orders
                 iceberg_confidence += 0.5
             
             # Analyze ask side for iceberg
-            ask_sizes = [float(ask[1]) for ask in asks[:5]]
+            ask_sizes = [safe_float(ask[1]) for ask in asks[:5]]
             if len(set(ask_sizes)) == 1 and ask_sizes[0] > 50:  # Same size orders
                 iceberg_confidence += 0.5
             
@@ -560,8 +561,8 @@ class HiddenLiquidityDetector:
             hidden_liquidity_confidence = 0.0
             
             # Analyze order book depth
-            total_bid_volume = sum(float(bid[1]) for bid in bids)
-            total_ask_volume = sum(float(ask[1]) for ask in asks)
+            total_bid_volume = sum(safe_float(bid[1]) for bid in bids)
+            total_ask_volume = sum(safe_float(ask[1]) for ask in asks)
             
             # Check for imbalance that suggests hidden liquidity
             if total_bid_volume > total_ask_volume * 2:
@@ -572,8 +573,8 @@ class HiddenLiquidityDetector:
             
             # Check for price gaps
             if len(bids) > 1 and len(asks) > 1:
-                bid_prices = [float(bid[0]) for bid in bids[:5]]
-                ask_prices = [float(ask[0]) for ask in asks[:5]]
+                bid_prices = [safe_float(bid[0]) for bid in bids[:5]]
+                ask_prices = [safe_float(ask[0]) for ask in asks[:5]]
                 
                 bid_gaps = [bid_prices[i] - bid_prices[i+1] for i in range(len(bid_prices)-1)]
                 ask_gaps = [ask_prices[i+1] - ask_prices[i] for i in range(len(ask_prices)-1)]

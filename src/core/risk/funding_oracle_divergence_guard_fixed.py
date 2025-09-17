@@ -2,6 +2,7 @@
 Funding/Oracle Divergence Guard - Fixed version
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
 import logging
 import json
 from typing import Dict, Any, List, Tuple, Optional
@@ -41,9 +42,9 @@ class FundingOracleDivergenceGuard:
     
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.funding_spike_threshold = Decimal('0.001')  # 0.1% funding rate
-        self.oracle_divergence_threshold = Decimal('50')  # 50 bps divergence
-        self.low_liquidity_threshold = Decimal('0.3')  # 30% of normal liquidity
+        self.funding_spike_threshold = safe_decimal('0.001')  # 0.1% funding rate
+        self.oracle_divergence_threshold = safe_decimal('50')  # 50 bps divergence
+        self.low_liquidity_threshold = safe_decimal('0.3')  # 30% of normal liquidity
         
         self.halted_orders = 0
         self.allowed_orders = 0
@@ -53,7 +54,7 @@ class FundingOracleDivergenceGuard:
         Detect funding rate spikes
         """
         if abs(current_funding) > self.funding_spike_threshold:
-            severity = 'high' if abs(current_funding) > Decimal('0.005') else 'medium'
+            severity = 'high' if abs(current_funding) > safe_decimal('0.005') else 'medium'
             should_halt = True
             reason = f"Funding rate exceeds threshold: {current_funding:.4f} > {self.funding_spike_threshold:.4f}"
         else:
@@ -66,7 +67,7 @@ class FundingOracleDivergenceGuard:
             severity=severity,
             current_value=current_funding,
             threshold=self.funding_spike_threshold,
-            deviation_sigma=Decimal('0'),
+            deviation_sigma=safe_decimal('0'),
             should_halt=should_halt,
             reason=reason
         )
@@ -79,17 +80,17 @@ class FundingOracleDivergenceGuard:
             return DivergenceAlert(
                 type=DivergenceType.ORACLE_DIVERGENCE,
                 severity='medium',
-                current_value=Decimal('0'),
+                current_value=safe_decimal('0'),
                 threshold=self.oracle_divergence_threshold,
-                deviation_sigma=Decimal('0'),
+                deviation_sigma=safe_decimal('0'),
                 should_halt=True,
                 reason="Invalid mark price"
             )
         
-        divergence_bps = abs(oracle_price - mark_price) / mark_price * Decimal('10000')
+        divergence_bps = abs(oracle_price - mark_price) / mark_price * safe_decimal('10000')
         
         if divergence_bps > self.oracle_divergence_threshold:
-            severity = 'critical' if divergence_bps > Decimal('100') else 'high'
+            severity = 'critical' if divergence_bps > safe_decimal('100') else 'high'
             should_halt = True
             reason = f"Oracle divergence exceeds threshold: {divergence_bps:.1f} bps > {self.oracle_divergence_threshold} bps"
         else:
@@ -102,7 +103,7 @@ class FundingOracleDivergenceGuard:
             severity=severity,
             current_value=divergence_bps,
             threshold=self.oracle_divergence_threshold,
-            deviation_sigma=Decimal('0'),
+            deviation_sigma=safe_decimal('0'),
             should_halt=should_halt,
             reason=reason
         )
@@ -117,7 +118,7 @@ class FundingOracleDivergenceGuard:
                 severity='medium',
                 current_value=current_liquidity,
                 threshold=self.low_liquidity_threshold,
-                deviation_sigma=Decimal('0'),
+                deviation_sigma=safe_decimal('0'),
                 should_halt=True,
                 reason="Invalid normal liquidity reference"
             )
@@ -125,7 +126,7 @@ class FundingOracleDivergenceGuard:
         liquidity_ratio = current_liquidity / normal_liquidity
         
         if liquidity_ratio < self.low_liquidity_threshold:
-            severity = 'high' if liquidity_ratio < Decimal('0.1') else 'medium'
+            severity = 'high' if liquidity_ratio < safe_decimal('0.1') else 'medium'
             should_halt = True
             reason = f"Low liquidity detected: {liquidity_ratio:.1%} of normal ({current_liquidity} / {normal_liquidity})"
         else:
@@ -138,7 +139,7 @@ class FundingOracleDivergenceGuard:
             severity=severity,
             current_value=liquidity_ratio,
             threshold=self.low_liquidity_threshold,
-            deviation_sigma=Decimal('0'),
+            deviation_sigma=safe_decimal('0'),
             should_halt=should_halt,
             reason=reason
         )
@@ -151,11 +152,11 @@ class FundingOracleDivergenceGuard:
         """
         try:
             # Extract market data
-            funding_rate = Decimal(str(market_data.get('funding_rate', 0)))
-            oracle_price = Decimal(str(market_data.get('oracle_price', 0)))
-            mark_price = Decimal(str(market_data.get('mark_price', 0)))
-            current_liquidity = Decimal(str(market_data.get('current_liquidity', 1000000)))
-            normal_liquidity = Decimal(str(market_data.get('normal_liquidity', 1000000)))
+            funding_rate = safe_decimal(str(market_data.get('funding_rate', 0)))
+            oracle_price = safe_decimal(str(market_data.get('oracle_price', 0)))
+            mark_price = safe_decimal(str(market_data.get('mark_price', 0)))
+            current_liquidity = safe_decimal(str(market_data.get('current_liquidity', 1000000)))
+            normal_liquidity = safe_decimal(str(market_data.get('normal_liquidity', 1000000)))
             
             # Check all conditions
             alerts = []

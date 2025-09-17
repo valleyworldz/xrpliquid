@@ -6,6 +6,7 @@ Fixed Hyperliquid API - Works with Encrypted Credentials
 API that properly handles encrypted credentials
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import requests
 import json
 import time
@@ -106,7 +107,7 @@ class FixedHyperliquidAPI:
                 return None
             
             if normalized_symbol in mids:
-                price = float(mids[normalized_symbol])
+                price = safe_float(mids[normalized_symbol])
                 if price > 0:
                     self.logger.info(f"Retrieved price for {normalized_symbol}: ${price}")
                     return {

@@ -13,6 +13,7 @@ This module implements the pinnacle of predictive performance monitoring:
 - Performance forecasting and trend analysis
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -337,7 +338,7 @@ class UltimatePredictiveMonitor:
             # Create performance prediction
             prediction = PerformancePrediction(
                 prediction_type="performance_regime",
-                predicted_value=float(regime_prediction),
+                predicted_value=safe_float(regime_prediction),
                 confidence_interval=(0.6, 0.9),  # Placeholder
                 prediction_horizon=self.monitoring_config['prediction_horizon_minutes'],
                 confidence=max(regime_probability),

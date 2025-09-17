@@ -1,3 +1,4 @@
+from src.core.utils.decimal_boundary_guard import safe_float
 from core.api.hyperliquid_api import HyperliquidAPI
 
 class TokenMetadata:
@@ -31,9 +32,9 @@ class TokenMetadata:
                             if i < len(asset_ctxs):
                                 asset_ctx = asset_ctxs[i]
                                 details = {
-                                    "tick_size": float(asset_ctx["markPxTickSz"]),
-                                    "minimum_order": float(asset_ctx["minSz"]),
-                                    "max_leverage": float(asset["maxLeverage"]),
+                                    "tick_size": safe_float(asset_ctx["markPxTickSz"]),
+                                    "minimum_order": safe_float(asset_ctx["minSz"]),
+                                    "max_leverage": safe_float(asset["maxLeverage"]),
                                     "contract_size": 1, # Assuming 1 for now, adjust if needed
                                     "funding_interval": 3600, # Placeholder, needs actual API call
                                     "current_volatility": 0.005, # Placeholder
@@ -81,9 +82,9 @@ class TokenMetadata:
                             if i < len(asset_ctxs):
                                 asset_ctx = asset_ctxs[i]
                                 details = {
-                                    "tick_size": float(asset_ctx["markPxTickSz"]),
-                                    "minimum_order": float(asset_ctx["minSz"]),
-                                    "max_leverage": float(asset["maxLeverage"]),
+                                    "tick_size": safe_float(asset_ctx["markPxTickSz"]),
+                                    "minimum_order": safe_float(asset_ctx["minSz"]),
+                                    "max_leverage": safe_float(asset["maxLeverage"]),
                                     "contract_size": 1, # Assuming 1 for now, adjust if needed
                                     "funding_interval": 3600, # Placeholder, needs actual API call
                                     "current_volatility": 0.005, # Placeholder

@@ -12,6 +12,7 @@ Advanced profit acceleration system that maximizes returns through:
 - Performance-based strategy allocation
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import json
 from datetime import datetime, timedelta
@@ -104,7 +105,7 @@ class ProfitAccelerationEngine:
             if not user_state:
                 return self._get_default_metrics()
             
-            current_balance = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+            current_balance = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
             
             # Initialize session tracking
             if self.session_start_balance == 0:
@@ -540,7 +541,7 @@ class ProfitAccelerationEngine:
             if not user_state:
                 return {"success": False, "reason": "Cannot get account state"}
             
-            current_balance = float(user_state.get("marginSummary", {}).get("accountValue", "0"))
+            current_balance = safe_float(user_state.get("marginSummary", {}).get("accountValue", "0"))
             profit_since_start = current_balance - self.session_start_balance
             
             if profit_since_start <= 0:

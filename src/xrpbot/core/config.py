@@ -5,6 +5,7 @@ Configuration Management
 Centralized configuration for the XRP trading bot.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import os
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -141,10 +142,10 @@ class BotConfig:
     def from_env(cls) -> "BotConfig":
         """Load configuration from environment variables"""
         return cls(
-            min_xrp=float(os.getenv("MIN_XRP", "10.0")),
-            risk_per_trade=float(os.getenv("RISK_PER_TRADE", "0.02")),
-            confidence_threshold=float(os.getenv("CONFIDENCE_THRESHOLD", "0.02")),
-            max_daily_loss_pct=float(os.getenv("MAX_DAILY_LOSS_PCT", "0.05")),
+            min_xrp=safe_float(os.getenv("MIN_XRP", "10.0")),
+            risk_per_trade=safe_float(os.getenv("RISK_PER_TRADE", "0.02")),
+            confidence_threshold=safe_float(os.getenv("CONFIDENCE_THRESHOLD", "0.02")),
+            max_daily_loss_pct=safe_float(os.getenv("MAX_DAILY_LOSS_PCT", "0.05")),
             max_consecutive_losses=int(os.getenv("MAX_CONSECUTIVE_LOSSES", "3")),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             enable_prometheus=os.getenv("ENABLE_PROMETHEUS", "true").lower() == "true",

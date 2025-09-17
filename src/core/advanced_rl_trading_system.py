@@ -17,6 +17,7 @@ Features:
 - Adaptive exploration strategies
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import math
 import random
 import time
@@ -59,7 +60,7 @@ class AdvancedRLTradingSystem:
         self.episode_rewards = deque(maxlen=100)
         self.episode_lengths = deque(maxlen=100)
         self.total_episodes = 0
-        self.best_reward = float('-inf')
+        self.best_reward = safe_float('-inf')
         
         # Market state features
         self.feature_names = [
@@ -578,7 +579,7 @@ class AdvancedRLTradingSystem:
                 # Restore other parameters
                 self.epsilon = model_data.get('epsilon', self.epsilon)
                 self.total_episodes = model_data.get('total_episodes', 0)
-                self.best_reward = model_data.get('best_reward', float('-inf'))
+                self.best_reward = model_data.get('best_reward', safe_float('-inf'))
                 
                 # Restore history
                 episode_rewards = model_data.get('episode_rewards', [])
@@ -643,7 +644,7 @@ class AdvancedRLTradingSystem:
             self.episode_lengths.clear()
             
             self.total_episodes = 0
-            self.best_reward = float('-inf')
+            self.best_reward = safe_float('-inf')
             self.epsilon = 0.1
             
             self.logger.info("[RL] Training progress reset")
@@ -658,7 +659,7 @@ class AdvancedRLTradingSystem:
             learning_rates = [0.005, 0.01, 0.02]
             discount_factors = [0.9, 0.95, 0.99]
             
-            best_performance = float('-inf')
+            best_performance = safe_float('-inf')
             best_params = {}
             
             for lr in learning_rates:

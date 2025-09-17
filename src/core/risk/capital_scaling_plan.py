@@ -3,6 +3,7 @@ Capital Scaling Plan
 Defines safe bankroll tiers for compounding growth strategy.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import pandas as pd
 import numpy as np
@@ -214,7 +215,7 @@ class CapitalScalingPlan:
         tier_configs[ScalingTier.INSTITUTIONAL] = TierConfiguration(
             tier=ScalingTier.INSTITUTIONAL,
             min_capital=10000.0,
-            max_capital=float('inf'),
+            max_capital=safe_float('inf'),
             max_daily_risk=0.04,  # 4% daily risk
             max_position_size=0.30,  # 30% per position
             max_total_exposure=0.60,  # 60% total exposure

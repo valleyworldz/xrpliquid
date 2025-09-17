@@ -3,6 +3,7 @@ Fixed Executive Dashboard Generator
 Reads from canonical data sources to ensure consistency with tearsheet and latency JSON.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import json
 import pandas as pd
 import plotly.graph_objects as go
@@ -87,17 +88,17 @@ class FixedExecutiveDashboard:
         # Extract Sharpe ratio
         sharpe_match = re.search(r'Sharpe Ratio[:\s]*([\d.-]+)', content)
         if sharpe_match:
-            metrics['sharpe_ratio'] = float(sharpe_match.group(1))
+            metrics['sharpe_ratio'] = safe_float(sharpe_match.group(1))
         
         # Extract Max Drawdown
         dd_match = re.search(r'Max Drawdown[:\s]*([\d.-]+)%', content)
         if dd_match:
-            metrics['max_drawdown'] = float(dd_match.group(1))
+            metrics['max_drawdown'] = safe_float(dd_match.group(1))
         
         # Extract Win Rate
         win_match = re.search(r'Win Rate[:\s]*([\d.-]+)%', content)
         if win_match:
-            metrics['win_rate'] = float(win_match.group(1))
+            metrics['win_rate'] = safe_float(win_match.group(1))
         
         # Extract Total Trades
         trades_match = re.search(r'Total Trades[:\s]*([\d,]+)', content)

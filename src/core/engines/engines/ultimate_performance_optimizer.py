@@ -13,6 +13,7 @@ Advanced performance optimization system that maximizes trading results through:
 - Evolutionary strategy enhancement
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import json
 import numpy as np
@@ -460,7 +461,7 @@ class UltimatePerformanceOptimizer:
         try:
             param_names = list(bounds.keys())
             best_params = {}
-            best_score = float('inf')
+            best_score = safe_float('inf')
             
             # Simple grid search with random sampling
             num_iterations = 20

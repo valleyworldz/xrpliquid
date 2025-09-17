@@ -5,6 +5,7 @@ This file is kept for compatibility during migration.
 All new development should use the modular sweep/ package.
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import warnings
 import logging
 
@@ -38,8 +39,8 @@ try:
             # Convert legacy parameters to new format
             position_notional = 0.0
             if pos:
-                size = float(pos.get("size", 0))
-                entry_px = float(pos.get("entry_px", mark_px or 0))
+                size = safe_float(pos.get("size", 0))
+                entry_px = safe_float(pos.get("entry_px", mark_px or 0))
                 position_notional = abs(size * entry_px)
             
             return maybe_sweep_to_spot(

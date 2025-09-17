@@ -17,6 +17,7 @@ Features:
 - Stress testing
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 import logging
 import numpy as np
@@ -266,12 +267,12 @@ class RealTimeRiskEngine:
                     if isinstance(pos, dict):
                         # Check for returnOnEquity in position data
                         if 'returnOnEquity' in pos:
-                            position_loss_pct = abs(float(pos['returnOnEquity']))
+                            position_loss_pct = abs(safe_float(pos['returnOnEquity']))
                             self.logger.debug(f"🔍 [RISK_ENGINE] Position loss check: ROE={pos['returnOnEquity']}, calculated={position_loss_pct:.4f}, threshold={self.kill_switches['position_loss_kill'].threshold:.4f}")
                             break
                         elif 'position' in pos and isinstance(pos['position'], dict):
                             if 'returnOnEquity' in pos['position']:
-                                position_loss_pct = abs(float(pos['position']['returnOnEquity']))
+                                position_loss_pct = abs(safe_float(pos['position']['returnOnEquity']))
                                 self.logger.debug(f"🔍 [RISK_ENGINE] Position loss check: ROE={pos['position']['returnOnEquity']}, calculated={position_loss_pct:.4f}, threshold={self.kill_switches['position_loss_kill'].threshold:.4f}")
                                 break
                 
@@ -356,8 +357,8 @@ class RealTimeRiskEngine:
                                         break
                         
                         if current_pos and current_pos.get('szi', 0) != 0:
-                            position_size = abs(float(current_pos.get('szi', 0)))
-                            is_long = float(current_pos.get('szi', 0)) > 0
+                            position_size = abs(safe_float(current_pos.get('szi', 0)))
+                            is_long = safe_float(current_pos.get('szi', 0)) > 0
                             success = self.trading_bot._emergency_position_exit(position_size, is_long)
                             if success:
                                 self.logger.info("🚨 [RISK_ENGINE] Emergency position exit triggered successfully")

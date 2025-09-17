@@ -12,6 +12,7 @@ This module implements the pinnacle of profitability optimization:
 - Advanced risk management for profit protection
 """
 
+from src.core.utils.decimal_boundary_guard import safe_float
 import asyncio
 import time
 import numpy as np
@@ -412,7 +413,7 @@ class UltimateProfitabilityEngine:
             if self.losing_trades > 0:
                 profit_factor = (self.winning_trades * profit_per_trade) / (self.losing_trades * abs(profit_per_trade * 0.5))
             else:
-                profit_factor = float('inf') if self.winning_trades > 0 else 0
+                profit_factor = safe_float('inf') if self.winning_trades > 0 else 0
             
             # Calculate Sharpe ratio (simplified)
             if len(self.profit_history) > 1:

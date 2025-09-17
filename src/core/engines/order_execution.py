@@ -13,6 +13,8 @@ Features:
 - Exit signal processing
 """
 
+from src.core.utils.decimal_boundary_guard import safe_decimal
+from src.core.utils.decimal_boundary_guard import safe_float
 import time
 from typing import Dict, Any, Optional, Tuple
 from core.api.hyperliquid_api import HyperliquidAPI
@@ -42,7 +44,7 @@ class OrderExecutionEngine:
             self.hyperliquid_api.logger.warning(f"Tick size is invalid ({px_decimals}). Returning original price.")
             return price
         # Use quantize with ROUND_DOWN to ensure price is at or below the desired limit price
-        return float(Decimal(str(price)).quantize(Decimal(str(1 / (10 ** px_decimals))), rounding=ROUND_DOWN))
+        return safe_float(safe_decimal(str(price)).quantize(safe_decimal(str(1 / (10 ** px_decimals))), rounding=ROUND_DOWN))
 
     def _format_quantity(self, quantity, sz_decimals):
         """
@@ -60,7 +62,7 @@ class OrderExecutionEngine:
             return 0 # Or raise an error, depending on desired behavior
         
         # Round quantity to the nearest multiple of min_size
-        return float(Decimal(str(round(quantity / min_size) * min_size)).quantize(Decimal(str(min_size))))
+        return safe_float(safe_decimal(str(round(quantity / min_size) * min_size)).quantize(safe_decimal(str(min_size))))
 
     def place_entry_order(self, token: str, side: str, size: float, entry_price: float,
                          take_profit_pct: float = 0.02, stop_loss_pct: float = 0.01,
@@ -429,7 +431,7 @@ class OrderExecutionEngine:
         # 4. Handle Insufficient Balance or Filters Gracefully
         user_state = self.hyperliquid_api.get_user_state()
         if user_state and "marginSummary" in user_state:
-            available_usd = float(user_state["marginSummary"]["available"].replace(",","")) # Remove commas and convert to float
+            available_usd = safe_float(user_state["marginSummary"]["available"].replace(",","")) # Remove commas and convert to float
             order_cost = formatted_quantity * formatted_price
             if order_cost > available_usd * 0.98: # Use 98% of available balance as a buffer
                 self.hyperliquid_api.logger.warning(f"[SKIP] Order cost ({order_cost:.4f}) too large for available balance ({available_usd:.4f}).")
