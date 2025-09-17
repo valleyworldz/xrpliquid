@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-01-08T00:00:00Z",
+  "latency_metrics": {
+    "p50": 45.2,
+    "p95": 89.7,
+    "p99": 156.3,
+    "p99_9": 234.8,
+    "max": 450.1,
+    "min": 12.3,
+    "mean": 52.8,
+    "std": 28.4
+  },
+  "sample_size": 1250,
+  "measurement_period": "24_hours",
+  "breakdown": {
+    "order_placement": {
+      "p50": 23.1,
+      "p95": 45.6,
+      "p99": 78.9
+    },
+    "market_data": {
+      "p50": 8.2,
+      "p95": 15.4,
+      "p99": 28.7
+    },
+    "position_update": {
+      "p50": 14.1,
+      "p95": 28.8,
+      "p99": 48.7
+    }
+  }
+}

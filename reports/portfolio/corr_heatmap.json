@@ -1,0 +1,16 @@
+{
+  "symbols": ["XRP-PERP", "BTC-PERP", "ETH-PERP", "SOL-PERP"],
+  "corr": [
+    [1.0, 0.6, 0.5, 0.4],
+    [0.6, 1.0, 0.8, 0.7],
+    [0.5, 0.8, 1.0, 0.8],
+    [0.4, 0.7, 0.8, 1.0]
+  ],
+  "timestamp": "2025-01-08T00:00:00Z",
+  "analysis_period": "30_days",
+  "correlation_strength": {
+    "high": [["BTC-PERP", "ETH-PERP"], ["ETH-PERP", "SOL-PERP"]],
+    "medium": [["XRP-PERP", "BTC-PERP"]],
+    "low": [["XRP-PERP", "SOL-PERP"]]
+  }
+}

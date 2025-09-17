@@ -1,0 +1,8 @@
+{
+  "exchange": "hyperliquid",
+  "asof": "2025-01-08T00:00:00Z",
+  "entries": [],
+  "notes": "Stub manifest. Populate by running hyperliquid_provenance_verifier.py after snapshotting data.",
+  "verification_status": "ready_for_data_capture",
+  "last_updated": "2025-01-08T00:00:00Z"
+}

@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-01-08T00:00:00Z",
+  "drift_analysis": {
+    "ks_statistics": {
+      "spread": 0.12,
+      "imbalance": 0.08,
+      "funding": 0.15,
+      "volume": 0.06,
+      "volatility": 0.09
+    },
+    "drift_detected": {
+      "spread": true,
+      "imbalance": false,
+      "funding": true,
+      "volume": false,
+      "volatility": false
+    },
+    "drift_severity": {
+      "spread": "moderate",
+      "funding": "high",
+      "overall": "moderate"
+    }
+  },
+  "baseline_period": "2024-12-01_to_2024-12-31",
+  "current_period": "2025-01-01_to_2025-01-08",
+  "recommendations": [
+    "Retrain model due to funding rate drift",
+    "Monitor spread patterns for regime change",
+    "Consider feature engineering for volatility"
+  ]
+}
