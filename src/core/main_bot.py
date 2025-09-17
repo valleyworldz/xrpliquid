@@ -261,6 +261,13 @@ except ImportError as e:
 
 # Import new high-performance engine components
 try:
+    import sys
+    import os
+    # Add current directory to path if not already there
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    if current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
+    
     from src.core.engines.real_time_risk_engine import RealTimeRiskEngine
     from src.core.engines.observability_engine import ObservabilityEngine
     from src.core.engines.ml_engine import MLEngine

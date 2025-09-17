@@ -64,10 +64,10 @@ This document provides direct links to all critical proof artifacts for external
 ## 🔄 CI/CD Verification
 
 ### GitHub Actions Workflows
-- **Reproducibility**: [![Reproducibility](https://github.com/valleyworldz/xrpliquid/workflows/Reproducibility%20Enforcement/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/enforce_reproducibility.yml)
-- **Artifact Freshness**: [![Artifact Freshness](https://github.com/valleyworldz/xrpliquid/workflows/Artifact%20Freshness%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/artifact_freshness_guard.yml)
-- **No Lookahead**: [![No Lookahead](https://github.com/valleyworldz/xrpliquid/workflows/No%20Lookahead%20Guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/no_lookahead_guard.yml)
-- **Supply Chain Security**: [![Supply Chain Security](https://github.com/valleyworldz/xrpliquid/workflows/Supply%20Chain%20Security/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml)
+- **Reproducibility**: [![Reproducibility](https://github.com/valleyworldz/xrpliquid/workflows/enforce_reproducibility/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/enforce_reproducibility.yml)
+- **Artifact Freshness**: [![Artifact Freshness](https://github.com/valleyworldz/xrpliquid/workflows/artifact_freshness_guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/artifact_freshness_guard.yml)
+- **No Lookahead**: [![No Lookahead](https://github.com/valleyworldz/xrpliquid/workflows/no_lookahead_guard/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/no_lookahead_guard.yml)
+- **Supply Chain Security**: [![Supply Chain Security](https://github.com/valleyworldz/xrpliquid/workflows/supply_chain_security/badge.svg)](https://github.com/valleyworldz/xrpliquid/actions/workflows/supply_chain_security.yml)
 
 ## 📚 Documentation
 
