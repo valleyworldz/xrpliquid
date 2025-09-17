@@ -1,0 +1,32 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "subject": [
+    {
+      "name": "xrpliquid-trading-bot",
+      "digest": {
+        "sha256": "b09be082ba24e8eca92804020e589510e30c6659"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "predicate": {
+    "buildType": "https://github.com/valleyworldz/xrpliquid",
+    "builder": {
+      "id": "https://github.com/valleyworldz/xrpliquid/.github/workflows"
+    },
+    "invocation": {
+      "configSource": {
+        "uri": "github.com/valleyworldz/xrpliquid.git",
+        "digest": {
+          "sha1": "b09be082ba24e8eca92804020e589510e30c6659"
+        },
+        "entryPoint": "main"
+      }
+    },
+    "metadata": {
+      "buildInvocationId": "build-20250917-092947",
+      "buildStartedOn": "2025-09-17T09:29:47.520590",
+      "buildFinishedOn": "2025-09-17T09:29:47.520590"
+    }
+  }
+}
