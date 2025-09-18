@@ -76,6 +76,8 @@ class LiveXRPBot:
                             if key.startswith('export '):
                                 key = key[7:]
                             if key in config:
+                                # Strip quotes from value
+                                value = value.strip("'\"")
                                 if key in ["max_position_size", "risk_limit", "funding_threshold"]:
                                     config[key] = Decimal(value)
                                 else:

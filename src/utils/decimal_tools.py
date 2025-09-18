@@ -3,7 +3,7 @@ Decimal Tools - Comprehensive Decimal/float handling utilities
 Ensures full Decimal discipline throughout the trading system
 """
 
-from decimal import Decimal, getcontext
+from decimal import Decimal, getcontext, InvalidOperation, FloatOperation
 import logging
 
 # Set high precision for financial calculations
@@ -146,7 +146,9 @@ def ensure_decimal_context():
     """Ensure proper Decimal context for financial calculations."""
     getcontext().prec = 28
     getcontext().rounding = 'ROUND_HALF_EVEN'
-    getcontext().traps[Exception] = False
+    # Disable specific traps instead of all exceptions
+    getcontext().traps[InvalidOperation] = False
+    getcontext().traps[FloatOperation] = False
 
 # Initialize Decimal context
 ensure_decimal_context()
