@@ -51,6 +51,18 @@ class LiveXRPBot:
             "last_update": None
         }
         
+        # 🎯 Initialize Dynamic Portfolio Rebalancer
+        self.portfolio_rebalancer = None
+        self._init_portfolio_rebalancer()
+        
+        # 📈 Initialize Automated Stress Tester
+        self.stress_tester = None
+        self._init_stress_tester()
+        
+        # 🔄 Initialize Enhanced Position Manager
+        self.position_manager = None
+        self._init_position_manager()
+        
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from environment or config file"""
         # Load secure credentials with fail-closed design
@@ -148,6 +160,77 @@ class LiveXRPBot:
             logger.error(f"❌ Failed to initialize Hyperliquid API: {e}")
             return False
     
+    def _init_portfolio_rebalancer(self):
+        """Initialize the dynamic portfolio rebalancer"""
+        try:
+            from src.core.engines.dynamic_portfolio_rebalancer import DynamicPortfolioRebalancer
+            
+            rebalancer_config = {
+                'max_correlation': 0.7,
+                'min_rebalance_interval': 3600,  # 1 hour
+                'max_position_weight': 0.4,
+                'correlation_lookback': 168,  # 7 days
+                'rebalance_threshold': 0.05,  # 5% drift
+            }
+            
+            self.portfolio_rebalancer = DynamicPortfolioRebalancer(
+                api=self.api,
+                config=rebalancer_config,
+                logger=logger
+            )
+            
+            logger.info("🎯 Portfolio Rebalancer initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Portfolio Rebalancer: {e}")
+            self.portfolio_rebalancer = None
+    
+    def _init_stress_tester(self):
+        """Initialize the automated stress tester"""
+        try:
+            from src.core.engines.automated_stress_tester import AutomatedStressTester
+            
+            stress_tester_config = {
+                'max_acceptable_drawdown': 0.15,  # 15%
+                'stress_test_interval': 86400,    # Daily
+                'simulation_mode': True,          # Don't affect real trades
+            }
+            
+            self.stress_tester = AutomatedStressTester(
+                api=self.api,
+                config=stress_tester_config,
+                logger=logger
+            )
+            
+            logger.info("📈 Automated Stress Tester initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Stress Tester: {e}")
+            self.stress_tester = None
+    
+    def _init_position_manager(self):
+        """Initialize the enhanced position manager"""
+        try:
+            from src.core.enhanced_position_manager import EnhancedPositionManager
+            
+            position_manager_config = {
+                'max_positions': 3,
+                'rotation_enabled': True,
+                'min_position_size': 0.001,
+                'max_position_size': 100.0,
+            }
+            
+            self.position_manager = EnhancedPositionManager(
+                api=self.api,
+                config=position_manager_config
+            )
+            
+            logger.info("🔄 Enhanced Position Manager initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Position Manager: {e}")
+            self.position_manager = None
+    
     async def start(self):
         """Start the live trading bot"""
         if not self.api:
@@ -170,6 +253,18 @@ class LiveXRPBot:
                     
                     # 🎯 CRITICAL FIX: Monitor existing positions for TP/SL
                     await self._monitor_tpsl_positions()
+                    
+                    # 🎯 DYNAMIC PORTFOLIO REBALANCING
+                    if self.portfolio_rebalancer:
+                        await self.portfolio_rebalancer.monitor_and_rebalance()
+                    
+                    # 📈 AUTOMATED STRESS TESTING (runs daily)
+                    if self.stress_tester and int(time.time()) % 3600 == 0:  # Check hourly
+                        asyncio.create_task(self.stress_tester.run_stress_tests())
+                    
+                    # 🔄 ENHANCED POSITION ROTATION
+                    if self.position_manager:
+                        await self.position_manager.manage_positions()
                     
                     # Check for trading opportunities
                     if self.config["trading_enabled"]:
@@ -384,20 +479,17 @@ class LiveXRPBot:
                     else:
                         pnl_pct = (entry_price - current_price) / entry_price
                     
-                    # 🎯 SHADOW STOPS IMPLEMENTATION
+                    # 🎯 ENHANCED GRADUATED PROFIT TAKING
                     from src.core.main_bot import implement_shadow_stops
                     
                     # Calculate dynamic TP/SL levels based on current volatility
-                    profit_threshold = Decimal('0.02')  # 2% profit target
                     loss_threshold = Decimal('0.01')    # 1% stop loss
                     
-                    # Check for Take Profit trigger
-                    if pnl_pct >= profit_threshold:
-                        logger.info(f"🎯 TAKE PROFIT TRIGGERED: {symbol} at {pnl_pct:.2%} profit")
-                        await self._close_position_for_profit(symbol, position_size, current_price, "TAKE_PROFIT")
+                    # 📊 GRADUATED PROFIT TAKING TIERS
+                    await self._check_partial_tp_tiers(symbol, position, pnl_pct, current_price)
                     
                     # Check for Stop Loss trigger  
-                    elif pnl_pct <= -loss_threshold:
+                    if pnl_pct <= -loss_threshold:
                         logger.info(f"🛡️ STOP LOSS TRIGGERED: {symbol} at {pnl_pct:.2%} loss")
                         await self._close_position_for_profit(symbol, position_size, current_price, "STOP_LOSS")
                     
@@ -442,6 +534,136 @@ class LiveXRPBot:
                 
         except Exception as e:
             logger.error(f"❌ Error closing position for {symbol}: {e}")
+
+    async def _check_partial_tp_tiers(self, symbol: str, position: dict, pnl_pct: Decimal, current_price: Decimal):
+        """
+        📊 GRADUATED PROFIT TAKING IMPLEMENTATION
+        Implements institutional-grade partial profit taking at multiple tiers
+        """
+        try:
+            position_size = position["size"]
+            entry_price = position["entry_px"]
+            
+            # Track partial TP state (initialize if not exists)
+            if not hasattr(self, 'partial_tp_state'):
+                self.partial_tp_state = {}
+            
+            if symbol not in self.partial_tp_state:
+                self.partial_tp_state[symbol] = {
+                    'original_size': abs(position_size),
+                    'remaining_size': abs(position_size),
+                    'tp_25_triggered': False,
+                    'tp_50_triggered': False, 
+                    'tp_75_triggered': False,
+                    'breakeven_set': False
+                }
+            
+            tp_state = self.partial_tp_state[symbol]
+            remaining_size = tp_state['remaining_size']
+            
+            # Define profit tiers (institutional standard)
+            tp_25_threshold = Decimal('0.015')  # 1.5% for 25% position
+            tp_50_threshold = Decimal('0.025')  # 2.5% for 50% position  
+            tp_75_threshold = Decimal('0.040')  # 4.0% for 75% position
+            final_tp_threshold = Decimal('0.065')  # 6.5% for final 25%
+            
+            # 📊 TIER 1: 25% PROFIT TAKING AT 1.5%
+            if pnl_pct >= tp_25_threshold and not tp_state['tp_25_triggered']:
+                partial_size = tp_state['original_size'] * Decimal('0.25')
+                await self._execute_partial_tp(symbol, partial_size, current_price, "TP_25_PERCENT", pnl_pct)
+                tp_state['tp_25_triggered'] = True
+                tp_state['remaining_size'] -= partial_size
+                logger.info(f"🎯 TIER 1 COMPLETE: 25% position closed at {pnl_pct:.2%} profit")
+            
+            # 📊 TIER 2: 50% PROFIT TAKING AT 2.5% (total 75% closed)
+            elif pnl_pct >= tp_50_threshold and tp_state['tp_25_triggered'] and not tp_state['tp_50_triggered']:
+                partial_size = tp_state['original_size'] * Decimal('0.50')
+                await self._execute_partial_tp(symbol, partial_size, current_price, "TP_50_PERCENT", pnl_pct)
+                tp_state['tp_50_triggered'] = True
+                tp_state['remaining_size'] -= partial_size
+                
+                # 🛡️ SET BREAKEVEN STOP FOR REMAINING 25%
+                await self._set_breakeven_stop(symbol, entry_price)
+                tp_state['breakeven_set'] = True
+                logger.info(f"🎯 TIER 2 COMPLETE: 50% position closed at {pnl_pct:.2%} profit | Breakeven stop set")
+            
+            # 📊 TIER 3: 75% OF REMAINING (18.75% of original) AT 4.0%
+            elif pnl_pct >= tp_75_threshold and tp_state['tp_50_triggered'] and not tp_state['tp_75_triggered']:
+                remaining_75pct = tp_state['remaining_size'] * Decimal('0.75')
+                await self._execute_partial_tp(symbol, remaining_75pct, current_price, "TP_75_PERCENT", pnl_pct)
+                tp_state['tp_75_triggered'] = True
+                tp_state['remaining_size'] -= remaining_75pct
+                logger.info(f"🎯 TIER 3 COMPLETE: 75% of remaining closed at {pnl_pct:.2%} profit")
+            
+            # 📊 FINAL TIER: CLOSE REMAINING 25% AT 6.5%  
+            elif pnl_pct >= final_tp_threshold and tp_state['tp_75_triggered']:
+                await self._execute_partial_tp(symbol, tp_state['remaining_size'], current_price, "TP_FINAL", pnl_pct)
+                logger.info(f"🎯 FINAL TIER: All remaining position closed at {pnl_pct:.2%} profit")
+                # Clean up state
+                del self.partial_tp_state[symbol]
+                
+        except Exception as e:
+            logger.error(f"❌ Error in partial TP tiers for {symbol}: {e}")
+
+    async def _execute_partial_tp(self, symbol: str, partial_size: Decimal, current_price: Decimal, tier: str, pnl_pct: Decimal):
+        """Execute partial take profit order"""
+        try:
+            # Determine order direction (opposite of position)
+            current_position = self.positions.get(symbol)
+            if not current_position:
+                return
+                
+            position_size = current_position["size"]
+            is_buy = position_size < 0  # If short position, buy to close
+            
+            close_order_result = self.api.place_order(
+                coin=symbol,
+                is_buy=is_buy,
+                sz=float(partial_size),
+                limit_px=float(current_price * Decimal('0.999' if is_buy else '1.001')),
+                reduce_only=True
+            )
+            
+            if close_order_result and close_order_result.get("status") == "ok":
+                self.stats["successful_trades"] += 1
+                self.stats[f"partial_tp_{tier.lower()}"] = self.stats.get(f"partial_tp_{tier.lower()}", 0) + 1
+                logger.info(f"✅ {tier}: Partial TP executed | Size: {partial_size} | Profit: {pnl_pct:.2%}")
+                logger.info(f"💰 PARTIAL PROFIT COLLECTED: {tier} at ${current_price}")
+            else:
+                logger.error(f"❌ Failed to execute {tier}: {close_order_result}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error executing partial TP {tier}: {e}")
+
+    async def _set_breakeven_stop(self, symbol: str, entry_price: Decimal):
+        """Set breakeven stop loss for remaining position"""
+        try:
+            current_position = self.positions.get(symbol)
+            if not current_position:
+                return
+                
+            remaining_size = self.partial_tp_state[symbol]['remaining_size']
+            position_size = current_position["size"]
+            is_buy = position_size < 0
+            
+            # Set stop at breakeven + small buffer (0.1%) to ensure profitability
+            breakeven_price = entry_price * Decimal('1.001' if not is_buy else '0.999')
+            
+            stop_order_result = self.api.place_order(
+                coin=symbol,
+                is_buy=is_buy,
+                sz=float(remaining_size),
+                limit_px=float(breakeven_price),
+                reduce_only=True
+            )
+            
+            if stop_order_result and stop_order_result.get("status") == "ok":
+                logger.info(f"🛡️ BREAKEVEN STOP SET: {symbol} at ${breakeven_price} for remaining {remaining_size}")
+            else:
+                logger.error(f"❌ Failed to set breakeven stop: {stop_order_result}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error setting breakeven stop: {e}")
 
     async def _check_momentum_opportunities(self, current_price: Decimal):
         """Check for momentum trading opportunities"""
