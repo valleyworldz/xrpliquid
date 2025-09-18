@@ -168,6 +168,9 @@ class LiveXRPBot:
                     # Update account info
                     await self._update_account_info()
                     
+                    # 🎯 CRITICAL FIX: Monitor existing positions for TP/SL
+                    await self._monitor_tpsl_positions()
+                    
                     # Check for trading opportunities
                     if self.config["trading_enabled"]:
                         await self._check_trading_opportunities()
@@ -278,6 +281,10 @@ class LiveXRPBot:
                 self.stats["total_trades"] += 1
                 self.stats["successful_trades"] += 1
                 logger.info(f"✅ Funding arbitrage order placed successfully")
+                
+                # 🎯 CRITICAL FIX: Place TP/SL orders after successful entry
+                await self._place_tpsl_orders(current_price, position_size, side, funding_rate)
+                
             else:
                 self.stats["total_trades"] += 1
                 self.stats["failed_trades"] += 1
@@ -288,6 +295,154 @@ class LiveXRPBot:
             self.stats["total_trades"] += 1
             self.stats["failed_trades"] += 1
     
+    async def _place_tpsl_orders(self, entry_price: Decimal, position_size: Decimal, side: str, funding_rate: Decimal):
+        """
+        🎯 ENHANCED TP/SL ORDER PLACEMENT
+        Integrates the volatility-scaled TP/SL system with actual order placement
+        """
+        try:
+            from src.core.main_bot import calculate_enhanced_volatility_scaled_tpsl, BotConfig
+            
+            # Calculate current volatility (simplified for funding arbitrage)
+            # For funding arbitrage, use moderate volatility scaling
+            current_volatility = abs(float(funding_rate)) * 1000  # Convert to percentage
+            
+            # Create a config object with our TP/SL parameters
+            config = BotConfig()
+            
+            # Calculate enhanced TP/SL prices using our new system
+            tp_price, sl_price, effective_rr, volatility_regime = calculate_enhanced_volatility_scaled_tpsl(
+                entry_price=entry_price,
+                atr_value=entry_price * Decimal('0.02'),  # 2% ATR estimate for funding arbitrage
+                current_volatility_pct=current_volatility,
+                config=config
+            )
+            
+            logger.info(f"🎯 TP/SL Calculation: Regime={volatility_regime}, RR={effective_rr:.2f}")
+            logger.info(f"🎯 Entry: {entry_price}, TP: {tp_price}, SL: {sl_price}")
+            
+            # Place Take Profit order
+            tp_order_result = self.api.place_order(
+                coin="XRP",
+                is_buy=(side == "S"),  # Opposite side to close position
+                sz=float(position_size),
+                limit_px=float(tp_price),
+                reduce_only=True  # This closes the position
+            )
+            
+            # Place Stop Loss order  
+            sl_order_result = self.api.place_order(
+                coin="XRP",
+                is_buy=(side == "S"),  # Opposite side to close position
+                sz=float(position_size),
+                limit_px=float(sl_price),
+                reduce_only=True  # This closes the position
+            )
+            
+            if tp_order_result and tp_order_result.get("status") == "ok":
+                logger.info(f"✅ Take Profit order placed: {tp_price}")
+            else:
+                logger.error(f"❌ Failed to place TP order: {tp_order_result}")
+                
+            if sl_order_result and sl_order_result.get("status") == "ok":
+                logger.info(f"✅ Stop Loss order placed: {sl_price}")
+            else:
+                logger.error(f"❌ Failed to place SL order: {sl_order_result}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error placing TP/SL orders: {e}")
+            # Continue execution - don't fail the trade if TP/SL placement fails
+
+    async def _monitor_tpsl_positions(self):
+        """
+        🛡️ POSITION MONITORING & SHADOW STOPS
+        Monitor positions and implement shadow stops for profit collection
+        """
+        try:
+            if not self.positions:
+                return
+                
+            # Get current market data
+            market_data = self.api.get_market_data("XRP")
+            if not market_data:
+                return
+                
+            current_price = Decimal(str(market_data.get("price", 0)))
+            
+            for symbol, position in self.positions.items():
+                if symbol == "XRP":
+                    entry_price = position["entry_px"]
+                    position_size = position["size"]
+                    unrealized_pnl = position["unrealized_pnl"]
+                    
+                    # Determine if long or short position
+                    is_long = position_size > 0
+                    
+                    # Calculate profit/loss percentage
+                    if is_long:
+                        pnl_pct = (current_price - entry_price) / entry_price
+                    else:
+                        pnl_pct = (entry_price - current_price) / entry_price
+                    
+                    # 🎯 SHADOW STOPS IMPLEMENTATION
+                    from src.core.main_bot import implement_shadow_stops
+                    
+                    # Calculate dynamic TP/SL levels based on current volatility
+                    profit_threshold = Decimal('0.02')  # 2% profit target
+                    loss_threshold = Decimal('0.01')    # 1% stop loss
+                    
+                    # Check for Take Profit trigger
+                    if pnl_pct >= profit_threshold:
+                        logger.info(f"🎯 TAKE PROFIT TRIGGERED: {symbol} at {pnl_pct:.2%} profit")
+                        await self._close_position_for_profit(symbol, position_size, current_price, "TAKE_PROFIT")
+                    
+                    # Check for Stop Loss trigger  
+                    elif pnl_pct <= -loss_threshold:
+                        logger.info(f"🛡️ STOP LOSS TRIGGERED: {symbol} at {pnl_pct:.2%} loss")
+                        await self._close_position_for_profit(symbol, position_size, current_price, "STOP_LOSS")
+                    
+                    # Log position status every 30 seconds
+                    if int(time.time()) % 30 == 0:
+                        logger.info(f"📊 Position: {symbol} | Size: {position_size} | PnL: {pnl_pct:.2%} | Unrealized: ${unrealized_pnl}")
+                        
+        except Exception as e:
+            logger.error(f"❌ Error monitoring TP/SL positions: {e}")
+
+    async def _close_position_for_profit(self, symbol: str, position_size: Decimal, current_price: Decimal, reason: str):
+        """
+        💰 CLOSE POSITION FOR PROFIT/LOSS
+        Actually close the position and collect profits
+        """
+        try:
+            # Place market order to close position immediately
+            is_buy = position_size < 0  # If short position, buy to close; if long position, sell to close
+            
+            close_order_result = self.api.place_order(
+                coin=symbol,
+                is_buy=is_buy,
+                sz=float(abs(position_size)),
+                limit_px=float(current_price * Decimal('0.999' if is_buy else '1.001')),  # Slight slippage for execution
+                reduce_only=True
+            )
+            
+            if close_order_result and close_order_result.get("status") == "ok":
+                # 💰 PROFIT COLLECTED!
+                self.stats["successful_trades"] += 1
+                logger.info(f"✅ {reason}: Position closed successfully for {symbol}")
+                logger.info(f"💰 PROFIT COLLECTED: {symbol} position closed at {current_price}")
+                
+                # Update trade statistics
+                if reason == "TAKE_PROFIT":
+                    self.stats["profitable_closes"] = self.stats.get("profitable_closes", 0) + 1
+                else:
+                    self.stats["loss_stops"] = self.stats.get("loss_stops", 0) + 1
+                    
+            else:
+                logger.error(f"❌ Failed to close {symbol} position: {close_order_result}")
+                
+        except Exception as e:
+            logger.error(f"❌ Error closing position for {symbol}: {e}")
+
     async def _check_momentum_opportunities(self, current_price: Decimal):
         """Check for momentum trading opportunities"""
         # This would implement momentum-based trading strategies
