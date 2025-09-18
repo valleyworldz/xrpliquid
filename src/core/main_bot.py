@@ -22560,7 +22560,7 @@ class MultiAssetTradingBot:
             if local_min_rr < 1.05:  # Reduced from 1.15 to 1.05
                 local_min_rr = 1.05
             # Calculate risk and reward with fee adjustments
-            fee_adjustment = entry_price * (abs(est_fee) + abs(spread))
+            fee_adjustment = float(entry_price) * (abs(est_fee) + abs(spread))
             is_long = tp_price > entry_price
 
             if is_long:

@@ -181,7 +181,7 @@ class RealTimeRiskEngine:
             max_drawdown = (self.peak_portfolio_value - portfolio_value) / self.peak_portfolio_value
             
             # Calculate exposure
-            total_exposure = sum(abs(pos.get('value', 0)) for pos in positions.values())
+            total_exposure = sum(abs(safe_float(pos.get('value', 0))) for pos in positions.values())
             
             # Calculate volatility (simplified)
             self.portfolio_history.append(portfolio_value)
@@ -205,7 +205,7 @@ class RealTimeRiskEngine:
             
             # Calculate concentration risk
             if total_exposure > 0:
-                max_position_value = max((abs(pos.get('value', 0)) for pos in positions.values()), default=0)
+                max_position_value = max((abs(safe_float(pos.get('value', 0))) for pos in positions.values()), default=0)
                 concentration_risk = max_position_value / total_exposure
             else:
                 concentration_risk = 0.0
