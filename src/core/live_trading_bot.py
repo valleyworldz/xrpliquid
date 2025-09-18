@@ -29,7 +29,7 @@ class LiveXRPBot:
     Live XRP Trading Bot with Real Hyperliquid Integration
     """
     
-    def __init__(self, config_path: str = "config/secure_creds.env"):
+    def __init__(self, config_path: str = "config/environments/secure_creds.env"):
         self.running = False
         self.positions = {}
         self.balance = Decimal('0.0')  # Will be fetched from exchange
@@ -58,8 +58,10 @@ class LiveXRPBot:
             "max_position_size": Decimal('100.0'),  # Max XRP position
             "risk_limit": Decimal('0.02'),  # 2% risk per trade
             "funding_threshold": Decimal('0.0001'),  # 0.01% funding threshold
-            "api_key": os.getenv("HYPERLIQUID_API_KEY", ""),
-            "secret_key": os.getenv("HYPERLIQUID_SECRET_KEY", ""),
+            "private_key": os.getenv("HYPERLIQUID_PRIVATE_KEY", ""),
+            "address": os.getenv("HYPERLIQUID_ADDRESS", ""),
+            "api_key": os.getenv("HYPERLIQUID_API_KEY", ""),  # Fallback
+            "secret_key": os.getenv("HYPERLIQUID_SECRET_KEY", ""),  # Fallback
             "testnet": os.getenv("HYPERLIQUID_TESTNET", "false").lower() == "true"
         }
         
@@ -70,6 +72,9 @@ class LiveXRPBot:
                     for line in f:
                         if '=' in line and not line.startswith('#'):
                             key, value = line.strip().split('=', 1)
+                            # Remove 'export ' prefix if present
+                            if key.startswith('export '):
+                                key = key[7:]
                             if key in config:
                                 if key in ["max_position_size", "risk_limit", "funding_threshold"]:
                                     config[key] = Decimal(value)
@@ -86,17 +91,29 @@ class LiveXRPBot:
             # Import Hyperliquid SDK
             from hyperliquid.exchange import Exchange
             
-            if not self.config["api_key"] or not self.config["secret_key"]:
+            # Check for credentials in order of preference
+            if self.config["private_key"] and self.config["address"]:
+                # Use private key and address (preferred method)
+                logger.info("🔑 Using private key and address for Hyperliquid connection")
+                # Note: Hyperliquid SDK typically uses private key directly
+                # We'll need to check the SDK documentation for the exact initialization
+                self.api = Exchange(
+                    private_key=self.config["private_key"],
+                    testnet=self.config["testnet"]
+                )
+            elif self.config["api_key"] and self.config["secret_key"]:
+                # Fallback to API key method
+                logger.info("🔑 Using API key and secret for Hyperliquid connection")
+                self.api = Exchange(
+                    api_key=self.config["api_key"],
+                    secret_key=self.config["secret_key"],
+                    testnet=self.config["testnet"]
+                )
+            else:
                 logger.error("❌ Hyperliquid API credentials not found!")
-                logger.error("Please set HYPERLIQUID_API_KEY and HYPERLIQUID_SECRET_KEY environment variables")
+                logger.error("Please set HYPERLIQUID_PRIVATE_KEY and HYPERLIQUID_ADDRESS environment variables")
+                logger.error("Or set HYPERLIQUID_API_KEY and HYPERLIQUID_SECRET_KEY environment variables")
                 return False
-            
-            # Initialize Exchange
-            self.api = Exchange(
-                api_key=self.config["api_key"],
-                secret_key=self.config["secret_key"],
-                testnet=self.config["testnet"]
-            )
             
             logger.info("✅ Hyperliquid API initialized successfully")
             return True
