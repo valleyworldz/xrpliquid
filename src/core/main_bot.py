@@ -18010,7 +18010,7 @@ class MultiAssetTradingBot:
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating static TP/SL: {e}")
-            return entry_price * 1.02, entry_price * 0.98, 0.01  # Safe fallback
+            return safe_float(entry_price) * 1.02, safe_float(entry_price) * 0.98, 0.01  # Safe fallback
 
     def calculate_enhanced_static_tpsl(self, entry_price, signal_type):
         """Enhanced static TP/SL calculation with better error handling"""
@@ -23182,7 +23182,7 @@ class MultiAssetTradingBot:
                 return True
             
             # Now safely calculate the time difference
-            time_since_last_trade = current_time - last_trade_time
+            time_since_last_trade = current_time - float(last_trade_time)
             
             # Check minimum time between trades
             # Force 45-second hard cooldown regardless of minutes setting
