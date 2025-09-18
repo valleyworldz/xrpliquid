@@ -72,7 +72,7 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 from utils.decimal_boundary_guard import safe_float, safe_decimal, enforce_global_decimal_context
-from utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub
+from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
