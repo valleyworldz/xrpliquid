@@ -80,6 +80,11 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub, decimal_power, decimal_sqrt, decimal_abs, decimal_sum, decimal_avg
+from src.utils.decimal_converter import (
+    to_decimal, decimal_safe_position, decimal_safe_account, decimal_safe_trade, 
+    decimal_safe_market_data, calculate_position_value, calculate_pnl, 
+    calculate_margin_ratio, calculate_leverage, validate_decimal_precision
+)
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
@@ -9832,20 +9837,33 @@ class MultiAssetTradingBot:
             account_value = 0
             total_margin_used = 0
             
-            # Check for nested structure (new API format)
+            # CRITICAL FIX: Convert all account data to Decimal at API ingest
             if "marginSummary" in us:
                 margin_summary = us.get("marginSummary", {})
-                account_value = safe_float(margin_summary.get("accountValue", 0))
-                total_margin_used = safe_float(margin_summary.get("totalMarginUsed", 0))
-                withdrawable = safe_float(us.get("withdrawable", account_value))
+                # Convert to Decimal first, then to float for display
+                account_value_decimal = to_decimal(margin_summary.get("accountValue", 0))
+                total_margin_used_decimal = to_decimal(margin_summary.get("totalMarginUsed", 0))
+                withdrawable_decimal = to_decimal(us.get("withdrawable", account_value_decimal))
+                
+                # Convert to float for compatibility with existing code
+                account_value = float(account_value_decimal)
+                total_margin_used = float(total_margin_used_decimal)
+                withdrawable = float(withdrawable_decimal)
+                
                 # Improve UX: if withdrawable is 0, derive approx free collateral from account_value - total_margin_used
                 free_collateral = withdrawable if withdrawable > 0 else max(0.0, account_value - total_margin_used)
             else:
-                # Legacy structure
-                withdrawable = safe_float(us.get("withdrawable", 0))
-                free_collateral = safe_float(us.get("freeCollateral", withdrawable))
-                account_value = safe_float(us.get("accountValue", free_collateral))
-                total_margin_used = safe_float(us.get("totalMarginUsed", 0))
+                # Legacy structure - also convert to Decimal first
+                withdrawable_decimal = to_decimal(us.get("withdrawable", 0))
+                free_collateral_decimal = to_decimal(us.get("freeCollateral", withdrawable_decimal))
+                account_value_decimal = to_decimal(us.get("accountValue", free_collateral_decimal))
+                total_margin_used_decimal = to_decimal(us.get("totalMarginUsed", 0))
+                
+                # Convert to float for compatibility
+                withdrawable = float(withdrawable_decimal)
+                free_collateral = float(free_collateral_decimal)
+                account_value = float(account_value_decimal)
+                total_margin_used = float(total_margin_used_decimal)
             
             self.logger.info(f"💰 Account values - Withdrawable: ${withdrawable:.2f}, Free Collateral: ${free_collateral:.2f}, Account Value: ${account_value:.2f}")
             
@@ -9879,14 +9897,19 @@ class MultiAssetTradingBot:
                 self.dd_peak = max(safe_float(self.dd_peak or 0.0), safe_float(current_capital))
             except Exception:
                 self.dd_peak = safe_float(current_capital or 0.0)
-            # Compute drawdown against unified peak with non-negative guard
+            # CRITICAL FIX: Compute drawdown with Decimal precision to prevent false triggers
             try:
-                peak_for_dd = safe_float(self.peak_capital or 0.0)
-                if peak_for_dd > 0:
-                    drawdown_pct = max(0.0, (peak_for_dd - safe_float(current_capital)) / peak_for_dd)
+                peak_for_dd_decimal = to_decimal(self.peak_capital or 0.0)
+                current_capital_decimal = to_decimal(current_capital or 0.0)
+                
+                if peak_for_dd_decimal > 0:
+                    # Use Decimal arithmetic for precise calculation
+                    drawdown_decimal = (peak_for_dd_decimal - current_capital_decimal) / peak_for_dd_decimal
+                    drawdown_pct = max(0.0, float(drawdown_decimal))
                 else:
                     drawdown_pct = 0.0
-            except Exception:
+            except Exception as e:
+                self.logger.warning(f"⚠️ Drawdown calculation error: {e}")
                 drawdown_pct = 0.0
             
             # Risk Engine Integration - Update portfolio state with ENHANCED KILL-SWITCHES
@@ -9897,13 +9920,15 @@ class MultiAssetTradingBot:
                         pos = ap.get("position") or {}
                         if pos:
                             symbol = pos.get("coin", "")
-                            size = safe_float(pos.get("szi", 0))
+                            # CRITICAL FIX: Convert position data to Decimal at API ingest
+                            size_decimal = to_decimal(pos.get("szi", 0))
+                            size = float(size_decimal)
                             if size != 0:
                                 positions[symbol] = {
                                     'size': size,
-                                    'entry_price': safe_float(pos.get("entryPx", 0)),
-                                    'unrealized_pnl': safe_float(pos.get("unrealizedPnl", 0)),
-                                    'position_value': safe_float(pos.get("positionValue", 0)),
+                                    'entry_price': float(to_decimal(pos.get("entryPx", 0))),
+                                    'unrealized_pnl': float(to_decimal(pos.get("unrealizedPnl", 0))),
+                                    'position_value': float(to_decimal(pos.get("positionValue", 0))),
                                     'returnOnEquity': pos.get("returnOnEquity", "0")  # CRITICAL FIX: Include returnOnEquity for kill switch
                                 }
                     
@@ -13957,19 +13982,27 @@ class MultiAssetTradingBot:
             else:
                 self.logger.info("🚀 TIME RESTRICTIONS DISABLED: Trading allowed at all times and days")
             
-            # RESET DAILY LOSS TRACKING FOR FRESH START
+            # CRITICAL FIX: Proper daily loss reset with Decimal-safe comparison
             reset_daily_loss = os.environ.get("BOT_RESET_DAILY_LOSS", "false").lower() in ("true", "1", "yes")
             if reset_daily_loss:
                 # Reset peak capital to current account value for fresh start
                 try:
                     account_status = self.get_account_status()
-                    current_capital = safe_float(account_status.get('account_value', 0) if account_status else 0)
-                    if current_capital > 0:
-                        self.peak_capital = current_capital
-                        self.drawdown_pct = 0.0
-                        self.daily_loss_pct = 0.0
-                        self.daily_pnl = 0.0
-                        self.logger.info(f"🔄 DAILY LOSS RESET: Peak capital reset to ${current_capital:.2f} - Fresh start!")
+                    if account_status:
+                        # Convert to Decimal for precise comparison
+                        current_capital_decimal = to_decimal(account_status.get('account_value', 0))
+                        current_capital = float(current_capital_decimal)
+                        
+                        if current_capital > 0:
+                            # CRITICAL FIX: Use Decimal comparison to prevent false resets
+                            if to_decimal(current_capital) > to_decimal(self.peak_capital):
+                                self.peak_capital = current_capital
+                                self.drawdown_pct = 0.0
+                                self.daily_loss_pct = 0.0
+                                self.daily_pnl = 0.0
+                                self.logger.info(f"🔄 DAILY LOSS RESET: Peak capital reset to ${current_capital:.2f} - Fresh start!")
+                            else:
+                                self.logger.debug(f"🔧 Daily loss reset skipped: current ${current_capital:.2f} <= peak ${self.peak_capital:.2f}")
                 except Exception as e:
                     self.logger.warning(f"⚠️ Could not reset daily loss tracking: {e}")
             
@@ -18505,11 +18538,16 @@ class MultiAssetTradingBot:
             return False
 
     def _optimize_confidence_threshold(self):
-        """CRITICAL FIX: Dynamic confidence threshold optimization"""
+        """CRITICAL FIX: Dynamic confidence threshold optimization with warm-start"""
         try:
             if not hasattr(self, 'recent_trades') or len(self.recent_trades) < 3:
-                self.logger.info("📊 Confidence optimization skipped: insufficient trade data")
-                return False
+                # WARM-START: Run lightweight optimization even with partial data
+                if hasattr(self, 'recent_trades') and len(self.recent_trades) >= 1:
+                    self.logger.info("📊 Running warm-start confidence optimization with partial data")
+                    return self._warm_start_confidence_optimization()
+                else:
+                    self.logger.info("📊 Confidence optimization skipped: insufficient trade data")
+                    return False
             
             # Calculate optimal threshold based on recent performance
             recent_trades = self.recent_trades[-10:] if len(self.recent_trades) >= 10 else self.recent_trades
@@ -18535,12 +18573,45 @@ class MultiAssetTradingBot:
             self.logger.error(f"❌ Confidence threshold optimization failed: {e}")
             return False
 
+    def _warm_start_confidence_optimization(self):
+        """Warm-start optimization for partial trade history"""
+        try:
+            if not hasattr(self, 'recent_trades') or len(self.recent_trades) < 1:
+                return False
+            
+            # Use available trade data for lightweight optimization
+            recent_trades = self.recent_trades[-5:] if len(self.recent_trades) >= 5 else self.recent_trades
+            win_rate = sum(1 for trade in recent_trades if trade) / len(recent_trades) if recent_trades else 0.5
+            
+            # Conservative threshold adjustment based on limited data
+            if win_rate > 0.6:
+                new_threshold = max(0.6, self.base_confidence_threshold - 0.05)
+            elif win_rate < 0.4:
+                new_threshold = min(0.9, self.base_confidence_threshold + 0.05)
+            else:
+                new_threshold = self.base_confidence_threshold
+            
+            if abs(new_threshold - self.base_confidence_threshold) > 0.01:
+                self.base_confidence_threshold = new_threshold
+                self.logger.info(f"🎯 Warm-start confidence threshold adjusted to {new_threshold:.3f} (win rate: {win_rate:.1%})")
+                return True
+            
+            return False
+        except Exception as e:
+            self.logger.warning(f"⚠️ Warm-start confidence optimization failed: {e}")
+            return False
+
     def _optimize_position_sizing(self):
-        """CRITICAL FIX: Dynamic position sizing optimization"""
+        """CRITICAL FIX: Dynamic position sizing optimization with warm-start"""
         try:
             if not hasattr(self, 'recent_trades') or len(self.recent_trades) < 5:
-                self.logger.info("📊 Position sizing optimization skipped: insufficient trade data")
-                return False
+                # WARM-START: Run lightweight optimization even with partial data
+                if hasattr(self, 'recent_trades') and len(self.recent_trades) >= 2:
+                    self.logger.info("📊 Running warm-start position sizing optimization with partial data")
+                    return self._warm_start_position_sizing()
+                else:
+                    self.logger.info("📊 Position sizing optimization skipped: insufficient trade data")
+                    return False
             
             # Calculate optimal position size based on recent volatility
             recent_trades = self.recent_trades[-10:] if len(self.recent_trades) >= 10 else self.recent_trades
@@ -18564,6 +18635,38 @@ class MultiAssetTradingBot:
             return True
         except Exception as e:
             self.logger.error(f"❌ Position sizing optimization failed: {e}")
+            return False
+
+    def _warm_start_position_sizing(self):
+        """Warm-start position sizing optimization for partial trade history"""
+        try:
+            if not hasattr(self, 'recent_trades') or len(self.recent_trades) < 2:
+                return False
+            
+            # Use available trade data for lightweight optimization
+            recent_trades = self.recent_trades[-3:] if len(self.recent_trades) >= 3 else self.recent_trades
+            recent_volatility = np.std(recent_trades) if len(recent_trades) >= 2 else 0.02
+            
+            old_size = getattr(self.config, 'position_size_pct', 0.05)
+            
+            # Conservative position size adjustment based on limited data
+            if recent_volatility > 0.04:  # High volatility - reduce position size
+                new_size = max(0.02, old_size * 0.9)
+                self.logger.info(f"🎯 Warm-start: High volatility ({recent_volatility:.3f}) - reducing position size to {new_size:.1%}")
+            elif recent_volatility < 0.015:  # Low volatility - slight increase
+                new_size = min(0.15, old_size * 1.1)
+                self.logger.info(f"🎯 Warm-start: Low volatility ({recent_volatility:.3f}) - increasing position size to {new_size:.1%}")
+            else:  # Moderate volatility - no change
+                new_size = old_size
+                self.logger.info(f"🎯 Warm-start: Moderate volatility ({recent_volatility:.3f}) - maintaining position size")
+            
+            if abs(new_size - old_size) > 0.005:  # Only update if significant change
+                self.config.position_size_pct = new_size
+                return True
+            
+            return False
+        except Exception as e:
+            self.logger.warning(f"⚠️ Warm-start position sizing optimization failed: {e}")
             return False
 
     def _optimize_risk_parameters(self):
