@@ -7022,9 +7022,9 @@ class MultiAssetTradingBot:
         if not hasattr(self, 'startup_config') or self.startup_config is None:
             return
             
-        # Apply leverage setting
+        # CRITICAL FIX: Apply leverage setting with Decimal precision
         if hasattr(self.startup_config, 'leverage'):
-            self.default_leverage = self.startup_config.leverage
+            self.default_leverage = float(D(self.startup_config.leverage))
             
         # CRITICAL FIX: Apply risk profile settings with Decimal precision
         if hasattr(self.startup_config, 'position_risk_pct'):

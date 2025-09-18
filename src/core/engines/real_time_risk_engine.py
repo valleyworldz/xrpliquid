@@ -18,7 +18,7 @@ Features:
 """
 
 from src.core.utils.decimal_boundary_guard import safe_float
-from src.utils.decimal_tools import D, normalize_balance, normalize_price, decimal_mul, decimal_add, decimal_sub, decimal_div
+from src.utils.decimal_tools import D, normalize_balance, normalize_price, decimal_mul, decimal_add, decimal_sub, decimal_div, decimal_abs
 import time
 import logging
 import numpy as np
