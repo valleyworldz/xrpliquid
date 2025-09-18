@@ -191,13 +191,25 @@ def main():
         subprocess.run([sys.executable, bot_file], check=True)
     except subprocess.CalledProcessError as e:
         print(f"❌ Bot exited with error code: {e.returncode}")
-        sys.exit(e.returncode)
+        print("🔄 Trying simple bot fallback...")
+        try:
+            from src.core.simple_bot import main as simple_main
+            simple_main()
+        except Exception as simple_e:
+            print(f"❌ Simple bot also failed: {simple_e}")
+            sys.exit(1)
     except KeyboardInterrupt:
         print("\n🛑 Bot stopped by user")
         sys.exit(0)
     except Exception as e:
         print(f"❌ Unexpected error: {e}")
-        sys.exit(1)
+        print("🔄 Trying simple bot fallback...")
+        try:
+            from src.core.simple_bot import main as simple_main
+            simple_main()
+        except Exception as simple_e:
+            print(f"❌ Simple bot also failed: {simple_e}")
+            sys.exit(1)
 
 if __name__ == "__main__":
     main()

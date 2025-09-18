@@ -62,14 +62,12 @@ to achieve 10/10 scores across all aspects:
 - World-class performance analytics and attribution
 """
 # FIXED: Optional SSL context override (gate via env ALLOW_INSECURE_SSL)
-from src.core.utils.decimal_boundary_guard from src.core.utils.decimal_boundary_guard from src.core.validation.hard_feasibility_enforcer from src.core.monitoring.crown_tier_monitor from src.core.utils.decimal_boundary_guard from src.core.validation.hard_feasibility_enforcer from src.core.monitoring.crown_tier_monitor import log_decimal_error, log_engine_failure, log_feasibility_block, log_guardian_invocation, log_order_submitted, log_order_blocked, update_performance_score, get_crown_tier_report
-import check_order_feasibility
-import safe_float, safe_decimal, enforce_global_decimal_context
-import log_decimal_error, log_engine_failure, log_feasibility_block, log_guardian_invocation, log_order_submitted, log_order_blocked, update_performance_score, get_crown_tier_report
-import check_order_feasibility
-import safe_float, safe_decimal, enforce_global_decimal_context
-import safe_decimal
-from src.core.utils.decimal_boundary_guard import safe_float
+# Core imports
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils.decimal_boundary_guard import safe_float, safe_decimal, enforce_global_decimal_context
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
