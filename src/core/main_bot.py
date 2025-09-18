@@ -17995,16 +17995,16 @@ class MultiAssetTradingBot:
                 return tp_price, sl_price, 0.01
             except Exception as e:
                 self.logger.error(f"❌ Error calculating static TP/SL: {e}")
-                return entry_price * 1.02, entry_price * 0.98, 0.01
+                return safe_float(entry_price) * 1.02, safe_float(entry_price) * 0.98, 0.01
         
         # Fallback implementation
         try:
             if signal_type == 'BUY':
-                tp_price = entry_price * 1.035  # 3.5% profit
-                sl_price = entry_price * 0.975  # 2.5% loss
+                tp_price = safe_float(entry_price) * 1.035  # 3.5% profit
+                sl_price = safe_float(entry_price) * 0.975  # 2.5% loss
             else:
-                tp_price = entry_price * 0.965  # 3.5% profit
-                sl_price = entry_price * 1.025  # 2.5% loss
+                tp_price = safe_float(entry_price) * 0.965  # 3.5% profit
+                sl_price = safe_float(entry_price) * 1.025  # 2.5% loss
 
             return tp_price, sl_price, 0.01
             
@@ -18036,11 +18036,11 @@ class MultiAssetTradingBot:
             
             # Ensure minimum profit/loss percentages
             if signal_type == 'BUY':
-                tp_price = max(tp_price, entry_price * 1.02)  # Minimum 2% profit
-                sl_price = min(sl_price, entry_price * 0.988)  # Maximum 1.2% loss
+                tp_price = max(tp_price, safe_float(entry_price) * 1.02)  # Minimum 2% profit
+                sl_price = min(sl_price, safe_float(entry_price) * 0.988)  # Maximum 1.2% loss
             else:
-                tp_price = min(tp_price, entry_price * 0.98)  # Minimum 2% profit
-                sl_price = max(sl_price, entry_price * 1.012)  # Maximum 1.2% loss
+                tp_price = min(tp_price, safe_float(entry_price) * 0.98)  # Minimum 2% profit
+                sl_price = max(sl_price, safe_float(entry_price) * 1.012)  # Maximum 1.2% loss
             
             self.logger.info(f"🎯 Enhanced static TP/SL: TP={tp_price:.4f}, SL={sl_price:.4f} (ATR={atr:.4f})")
             return tp_price, sl_price, 0.01
@@ -18049,9 +18049,9 @@ class MultiAssetTradingBot:
             self.logger.error(f"❌ Error calculating enhanced static TP/SL: {e}")
             # Safe fallback
             if signal_type == 'BUY':
-                return entry_price * 1.025, entry_price * 0.988, 0.01
+                return safe_float(entry_price) * 1.025, safe_float(entry_price) * 0.988, 0.01
             else:
-                return entry_price * 0.975, entry_price * 1.012, 0.01
+                return safe_float(entry_price) * 0.975, safe_float(entry_price) * 1.012, 0.01
 
     def validate_tpsl_prices(self, entry_price: float, tp_price: float, sl_price: float, is_long: bool = True) -> bool:
         """
