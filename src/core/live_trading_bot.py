@@ -67,6 +67,11 @@ class LiveXRPBot:
         self.observability_engine = None
         self._init_observability_engine()
         
+        # ⚡ Initialize High-Frequency Data Streaming
+        self.data_feed_manager = None
+        self.streaming_pipeline = None
+        self._init_streaming_infrastructure()
+        
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from environment or config file"""
         # Load secure credentials with fail-closed design
@@ -264,6 +269,57 @@ class LiveXRPBot:
             logger.error(f"❌ Failed to initialize Observability Engine: {e}")
             self.observability_engine = None
     
+    def _init_streaming_infrastructure(self):
+        """Initialize high-frequency data streaming infrastructure"""
+        try:
+            from src.streaming import MarketDataFeedManager
+            from src.data_pipelines import StreamingDataPipeline
+            
+            # Configure streaming
+            streaming_config = {
+                'symbols': ['XRP'],
+                'analysis_interval': 1.0,  # 1 second
+                'arbitrage_scan_interval': 5.0,  # 5 seconds
+                'hyperliquid_config': {
+                    'monitoring_interval': 1,
+                    'max_reconnect_attempts': 5
+                }
+            }
+            
+            # Configure data pipeline
+            pipeline_config = {
+                'database_path': 'data/streaming/market_data.db',
+                'archive_path': 'data/streaming/archive',
+                'max_processing_threads': 2,  # Conservative for live trading
+                'batch_size': 50,
+                'archival_days': 7,
+                'quality_threshold': 0.8
+            }
+            
+            # Initialize streaming components
+            self.data_feed_manager = MarketDataFeedManager(streaming_config, logger)
+            self.streaming_pipeline = StreamingDataPipeline(pipeline_config, logger)
+            
+            # Register data pipeline with feed manager
+            from src.streaming.high_frequency_data_engine import DataType
+            
+            def handle_streaming_tick(tick):
+                """Handle ticks from data feed manager"""
+                if self.streaming_pipeline:
+                    self.streaming_pipeline.ingest_tick(tick)
+            
+            # Register callbacks for all data types
+            for engine in self.data_feed_manager.data_engines.values():
+                engine.register_callback(DataType.TRADE, handle_streaming_tick)
+                engine.register_callback(DataType.ORDER_BOOK, handle_streaming_tick)
+            
+            logger.info("⚡ High-Frequency Data Streaming infrastructure initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Streaming Infrastructure: {e}")
+            self.data_feed_manager = None
+            self.streaming_pipeline = None
+    
     async def start(self):
         """Start the live trading bot"""
         if not self.api:
@@ -282,6 +338,13 @@ class LiveXRPBot:
             # 📊 Start observability monitoring
             if self.observability_engine:
                 await self.observability_engine.start_monitoring()
+            
+            # ⚡ Start high-frequency data streaming
+            if self.data_feed_manager:
+                await self.data_feed_manager.start_feeds()
+            
+            if self.streaming_pipeline:
+                await self.streaming_pipeline.start_pipeline()
             
             while self.running:
                 try:

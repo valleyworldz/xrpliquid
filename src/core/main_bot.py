@@ -1104,6 +1104,16 @@ def calculate_enhanced_volatility_scaled_tpsl(entry_price, atr_value, current_vo
     """
     from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub
     
+    # Helper function to safely convert to float
+    def to_float(value):
+        """Safely convert any numeric value to float"""
+        if isinstance(value, (int, float)):
+            return float(value)
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return 0.0
+    
     # Convert inputs to Decimal for precision
     entry = D(entry_price)
     atr = D(atr_value)
