@@ -5824,10 +5824,10 @@ class UltimateProfileOptimizer:
             # Regime classification
             if short_trend > 0.02 and medium_trend > 0.01 and volume_trend > 0.1:
                 self.market_regime = "bull"
-                self.trend_strength = min(1.0, (short_trend + medium_trend) / 2)
+                self.trend_strength = min(1.0, (safe_float(short_trend) + safe_float(medium_trend)) / 2)
             elif short_trend < -0.02 and medium_trend < -0.01 and volume_trend > 0.1:
                 self.market_regime = "bear"
-                self.trend_strength = max(-1.0, (short_trend + medium_trend) / 2)
+                self.trend_strength = max(-1.0, (safe_float(short_trend) + safe_float(medium_trend)) / 2)
             elif volatility > volatility_ma * 1.5:
                 self.market_regime = "volatile"
                 self.trend_strength = 0.0
@@ -14148,7 +14148,7 @@ class MultiAssetTradingBot:
                                 tm = safe_float(getattr(self, 'current_trail_mult', 1.4) or 1.4)
                                 # CRITICAL FIX: Import asyncio at module level to prevent local variable error
                                 import asyncio
-                                asyncio.create_task(self.activate_offchain_guardian(tp_px, sl_px, abs(safe_safe_float(position.get('size', 0))), is_long,
+                                asyncio.create_task(self.activate_offchain_guardian(tp_px, sl_px, abs(safe_float(position.get('size', 0))), is_long,
                                                                                      entry_price=entry_px, atr_now=atr_now,
                                                                                      tp1_px=tp1_px, trail_mult=tm,
                                                                                      tp1_fraction=0.3 if getattr(self, 'trend_regime', False) else 0.0))
@@ -17892,7 +17892,7 @@ class MultiAssetTradingBot:
 
                 # Adjust TP up (or down for shorts) if RR below floor, with a small epsilon buffer
                 try:
-                    rr_ratio = abs(tp_price - entry_price) / max(1e-12, abs(sl_price - entry_price))
+                    rr_ratio = abs(tp_price - safe_float(entry_price)) / max(1e-12, abs(sl_price - safe_float(entry_price)))
                     if rr_ratio < local_min_rr:
                         self.logger.warning(f"⚠️ RR ratio {rr_ratio:.2f} below minimum {local_min_rr}, adjusting")
                         rr_epsilon = getattr(self, 'rr_epsilon', 0.01)
