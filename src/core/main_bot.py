@@ -7026,9 +7026,9 @@ class MultiAssetTradingBot:
         if hasattr(self.startup_config, 'leverage'):
             self.default_leverage = self.startup_config.leverage
             
-        # Apply risk profile settings
+        # CRITICAL FIX: Apply risk profile settings with Decimal precision
         if hasattr(self.startup_config, 'position_risk_pct'):
-            self.position_size_pct = self.startup_config.position_risk_pct / 100.0  # Convert % to decimal
+            self.position_size_pct = float(decimal_div(D(self.startup_config.position_risk_pct), D("100.0")))  # Convert % to decimal
             
         # Apply trading mode settings
         if hasattr(self.startup_config, 'trading_mode'):

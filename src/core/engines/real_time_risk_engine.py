@@ -18,6 +18,7 @@ Features:
 """
 
 from src.core.utils.decimal_boundary_guard import safe_float
+from src.utils.decimal_tools import D, normalize_balance, normalize_price, decimal_mul, decimal_add, decimal_sub, decimal_div
 import time
 import logging
 import numpy as np
@@ -168,24 +169,33 @@ class RealTimeRiskEngine:
     
     def update_portfolio_state(self, portfolio_value: float, positions: Dict[str, Any], 
                              unrealized_pnl: float = 0.0) -> RiskMetrics:
-        """Update portfolio state and calculate risk metrics"""
+        """Update portfolio state and calculate risk metrics with Decimal precision"""
         try:
             current_time = time.time()
             
-            # Ensure portfolio_value is a float
-            portfolio_value = safe_float(portfolio_value)
-            unrealized_pnl = safe_float(unrealized_pnl)
+            # CRITICAL FIX: Convert to Decimal for precise calculations
+            portfolio_value_decimal = normalize_balance(portfolio_value)
+            unrealized_pnl_decimal = normalize_balance(unrealized_pnl)
+            
+            # Convert to float for compatibility with existing code
+            portfolio_value = float(portfolio_value_decimal)
+            unrealized_pnl = float(unrealized_pnl_decimal)
             
             # Update portfolio tracking
             if portfolio_value > self.peak_portfolio_value:
                 self.peak_portfolio_value = portfolio_value
             
-            # Calculate drawdown
-            current_drawdown = (self.peak_portfolio_value - portfolio_value) / self.peak_portfolio_value
-            max_drawdown = (self.peak_portfolio_value - portfolio_value) / self.peak_portfolio_value
+            # CRITICAL FIX: Calculate drawdown with Decimal precision
+            peak_decimal = D(self.peak_portfolio_value)
+            current_decimal = portfolio_value_decimal
+            current_drawdown = float(decimal_div(decimal_sub(peak_decimal, current_decimal), peak_decimal))
+            max_drawdown = current_drawdown
             
-            # Calculate exposure
-            total_exposure = sum(abs(safe_float(pos.get('value', 0))) for pos in positions.values())
+            # CRITICAL FIX: Calculate exposure with Decimal precision
+            total_exposure = 0.0
+            for pos in positions.values():
+                pos_value = normalize_balance(pos.get('value', 0))
+                total_exposure += float(decimal_abs(pos_value))
             
             # Calculate volatility (simplified)
             self.portfolio_history.append(portfolio_value)
@@ -195,27 +205,32 @@ class RealTimeRiskEngine:
             else:
                 volatility = 0.0
             
-            # Calculate VaR (simplified)
+            # CRITICAL FIX: Calculate VaR with Decimal precision
             if len(self.portfolio_history) > 10:
                 returns = np.diff(list(self.portfolio_history)) / list(self.portfolio_history)[:-1]
-                var_95 = np.percentile(returns, (1 - self.var_confidence) * 100) * safe_float(portfolio_value)
-                expected_shortfall = np.mean(returns[returns <= np.percentile(returns, (1 - self.var_confidence) * 100)]) * safe_float(portfolio_value)
+                var_percentile = np.percentile(returns, (1 - self.var_confidence) * 100)
+                var_95 = float(decimal_mul(D(var_percentile), portfolio_value_decimal))
+                expected_shortfall_percentile = np.mean(returns[returns <= np.percentile(returns, (1 - self.var_confidence) * 100)])
+                expected_shortfall = float(decimal_mul(D(expected_shortfall_percentile), portfolio_value_decimal))
             else:
-                var_95 = -safe_float(portfolio_value) * 0.02  # Conservative estimate
-                expected_shortfall = -safe_float(portfolio_value) * 0.03  # Conservative estimate
+                var_95 = float(decimal_mul(portfolio_value_decimal, D("-0.02")))  # Conservative estimate
+                expected_shortfall = float(decimal_mul(portfolio_value_decimal, D("-0.03")))  # Conservative estimate
             
             # Calculate correlation risk (simplified)
             correlation_risk = 0.1  # Placeholder
             
-            # Calculate concentration risk
+            # CRITICAL FIX: Calculate concentration risk with Decimal precision
             if total_exposure > 0:
-                max_position_value = max((abs(safe_float(pos.get('value', 0))) for pos in positions.values()), default=0)
-                concentration_risk = max_position_value / total_exposure
+                max_position_value = 0.0
+                for pos in positions.values():
+                    pos_value = normalize_balance(pos.get('value', 0))
+                    max_position_value = max(max_position_value, float(decimal_abs(pos_value)))
+                concentration_risk = float(decimal_div(D(max_position_value), D(total_exposure)))
             else:
                 concentration_risk = 0.0
             
-            # Calculate leverage ratio
-            leverage_ratio = total_exposure / portfolio_value if portfolio_value > 0 else 0.0
+            # CRITICAL FIX: Calculate leverage ratio with Decimal precision
+            leverage_ratio = float(decimal_div(D(total_exposure), portfolio_value_decimal)) if portfolio_value > 0 else 0.0
             
             # Calculate margin ratio (simplified)
             margin_ratio = 2.0  # Placeholder - should be calculated from actual margin
