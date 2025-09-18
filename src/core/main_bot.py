@@ -11250,7 +11250,7 @@ class MultiAssetTradingBot:
                 # Compute TP1/TP2 for partials and trailing (trend-aware)
                 tp_distance = abs(tp_price - entry_price)
                 # Always enable TP1/Trail by default
-                tp1_price = (entry_price + (0.6 * tp_distance if is_long else -0.6 * tp_distance))
+                tp1_price = (safe_float(entry_price) + (0.6 * tp_distance if is_long else -0.6 * tp_distance))
                 tm = safe_float(getattr(self, 'current_trail_mult', 1.4) or 1.4)
                 asyncio.create_task(self.activate_offchain_guardian(tp_price, sl_price, position_size, is_long,
                                                                      entry_price=entry_price, atr_now=atr,
@@ -11471,11 +11471,11 @@ class MultiAssetTradingBot:
                 tp_pct = getattr(self.config, 'profit_target_pct', 0.03)  # Use profit target, default 3%
                 sl_pct = self.config.stop_loss_pct  # Use instance config
                 if is_long:
-                    tp_price = entry_price * (1 + tp_pct)
-                    sl_price = entry_price * (1 - sl_pct)
+                    tp_price = safe_float(entry_price) * (1 + tp_pct)
+                    sl_price = safe_float(entry_price) * (1 - sl_pct)
                 else:
-                    tp_price = entry_price * (1 - tp_pct)
-                    sl_price = entry_price * (1 + sl_pct)
+                    tp_price = safe_float(entry_price) * (1 - tp_pct)
+                    sl_price = safe_float(entry_price) * (1 + sl_pct)
             self.logger.info(f"[TP/SL] Calculated TP={tp_price:.4f}, SL={sl_price:.4f} for {'LONG' if is_long else 'SHORT'}")
             # Step 1: Place new triggers (keep old ones active)
             self.logger.info("⏹️ Native TP/SL pair placement skipped (guardian-only mode)")
@@ -11660,12 +11660,12 @@ class MultiAssetTradingBot:
         if self.tp1_filled and self.tp_sl_active:
             buffer = 0.005  # 0.5% buffer for fees/volatility
             if self.is_long_position:
-                new_sl = self.entry_price * (1 + buffer)
+                new_sl = safe_float(self.entry_price) * (1 + buffer)
                 if new_sl > self.sl_price:
                     self.sl_price = new_sl
                     self.logger.info(f"🔄 Shifted SL to breakeven @ {(new_sl or 0):.4f}")
             else:
-                new_sl = self.entry_price * (1 - buffer)
+                new_sl = safe_float(self.entry_price) * (1 - buffer)
                 if new_sl < self.sl_price:
                     self.sl_price = new_sl
                     self.logger.info(f"🔄 Shifted SL to breakeven @ {(new_sl or 0):.4f}")
@@ -16337,7 +16337,7 @@ class MultiAssetTradingBot:
                 try:
                     # Calculate basic position size using risk engine
                     entry_price = current_price
-                    stop_loss_price = entry_price * 0.97  # 3% stop loss as default
+                    stop_loss_price = safe_float(entry_price) * 0.97  # 3% stop loss as default
                     risk_per_trade = 0.02  # 2% risk per trade
                     
                     position_size = self.risk_engine.calculate_position_size(
@@ -17671,15 +17671,15 @@ class MultiAssetTradingBot:
         
         # ATR-calibrated levels
         if signal_type == "BUY":  # Long position
-            sl_price = entry_price - (2 * atr)  # SL = entry - 2×ATR
-            tp1_price = entry_price + (3 * atr)  # TP1 = entry + 3×ATR
-            tp2_price = entry_price + (5 * atr)  # TP2 = entry + 5×ATR
-            tp3_price = entry_price + (7 * atr)  # TP3 = entry + 7×ATR
+            sl_price = safe_float(entry_price) - (2 * atr)  # SL = entry - 2×ATR
+            tp1_price = safe_float(entry_price) + (3 * atr)  # TP1 = entry + 3×ATR
+            tp2_price = safe_float(entry_price) + (5 * atr)  # TP2 = entry + 5×ATR
+            tp3_price = safe_float(entry_price) + (7 * atr)  # TP3 = entry + 7×ATR
         else:  # SELL - Short position
-            sl_price = entry_price + (2 * atr)  # SL = entry + 2×ATR
-            tp1_price = entry_price - (3 * atr)  # TP1 = entry - 3×ATR
-            tp2_price = entry_price - (5 * atr)  # TP2 = entry - 5×ATR
-            tp3_price = entry_price - (7 * atr)  # TP3 = entry - 7×ATR
+            sl_price = safe_float(entry_price) + (2 * atr)  # SL = entry + 2×ATR
+            tp1_price = safe_float(entry_price) - (3 * atr)  # TP1 = entry - 3×ATR
+            tp2_price = safe_float(entry_price) - (5 * atr)  # TP2 = entry - 5×ATR
+            tp3_price = safe_float(entry_price) - (7 * atr)  # TP3 = entry - 7×ATR
         
         return {
             'sl_price': sl_price,
@@ -17856,19 +17856,19 @@ class MultiAssetTradingBot:
                 except Exception:
                     # Fallback to simple calculation
                     if signal_type == 'BUY':
-                        tp_price = entry_price + (atr * 2.0)
-                        sl_price = entry_price - (atr * 1.0)
+                        tp_price = safe_float(entry_price) + (atr * 2.0)
+                        sl_price = safe_float(entry_price) - (atr * 1.0)
                     else:
-                        tp_price = entry_price - (atr * 2.0)
-                        sl_price = entry_price + (atr * 1.0)
+                        tp_price = safe_float(entry_price) - (atr * 2.0)
+                        sl_price = safe_float(entry_price) + (atr * 1.0)
             else:
                 # Simple calculation when indicators not available
                 if signal_type == 'BUY':
-                    tp_price = entry_price + (atr * 2.0)
-                    sl_price = entry_price - (atr * 1.0)
+                    tp_price = safe_float(entry_price) + (atr * 2.0)
+                    sl_price = safe_float(entry_price) - (atr * 1.0)
                 else:
-                    tp_price = entry_price - (atr * 2.0)
-                    sl_price = entry_price + (atr * 1.0)
+                    tp_price = safe_float(entry_price) - (atr * 2.0)
+                    sl_price = safe_float(entry_price) + (atr * 1.0)
                 
                 # Ensure RR meets local minimum threshold before validation
                 try:
@@ -18028,11 +18028,11 @@ class MultiAssetTradingBot:
             
             # Enhanced TP/SL calculation with ATR
             if signal_type == 'BUY':
-                tp_price = entry_price + (atr * 2.5)  # 2.5x ATR profit
-                sl_price = entry_price - (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
+                tp_price = safe_float(entry_price) + (atr * 2.5)  # 2.5x ATR profit
+                sl_price = safe_float(entry_price) - (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
             else:
-                tp_price = entry_price - (atr * 2.5)  # 2.5x ATR profit
-                sl_price = entry_price + (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
+                tp_price = safe_float(entry_price) - (atr * 2.5)  # 2.5x ATR profit
+                sl_price = safe_float(entry_price) + (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
             
             # Ensure minimum profit/loss percentages
             if signal_type == 'BUY':
