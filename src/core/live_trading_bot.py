@@ -92,17 +92,26 @@ class LiveXRPBot:
             from hyperliquid.exchange import Exchange
             
             # Check for credentials in order of preference
-            if self.config["private_key"] and self.config["address"]:
-                # Use private key and address (preferred method)
-                logger.info("🔑 Using private key and address for Hyperliquid connection")
-                # Note: Hyperliquid SDK typically uses private key directly
-                # We'll need to check the SDK documentation for the exact initialization
-                self.api = Exchange(
-                    private_key=self.config["private_key"],
-                    testnet=self.config["testnet"]
-                )
+            if self.config["private_key"]:
+                # Use private key (preferred method)
+                logger.info("🔑 Using private key for Hyperliquid connection")
+                from eth_account import Account
+                
+                # Set base URL based on testnet flag
+                if self.config["testnet"]:
+                    base_url = "https://api.hyperliquid-testnet.xyz"
+                else:
+                    base_url = "https://api.hyperliquid.xyz"
+                
+                # Create wallet from private key
+                self.wallet = Account.from_key(self.config["private_key"])
+                logger.info(f"🔑 Wallet address: {self.wallet.address}")
+                
+                # Initialize Exchange with wallet
+                self.api = Exchange(self.wallet, base_url=base_url)
+                
             elif self.config["api_key"] and self.config["secret_key"]:
-                # Fallback to API key method
+                # Fallback to API key method (if supported)
                 logger.info("🔑 Using API key and secret for Hyperliquid connection")
                 self.api = Exchange(
                     api_key=self.config["api_key"],
@@ -111,7 +120,7 @@ class LiveXRPBot:
                 )
             else:
                 logger.error("❌ Hyperliquid API credentials not found!")
-                logger.error("Please set HYPERLIQUID_PRIVATE_KEY and HYPERLIQUID_ADDRESS environment variables")
+                logger.error("Please set HYPERLIQUID_PRIVATE_KEY environment variable")
                 logger.error("Or set HYPERLIQUID_API_KEY and HYPERLIQUID_SECRET_KEY environment variables")
                 return False
             

@@ -72,6 +72,13 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 from utils.decimal_boundary_guard import safe_float, safe_decimal, enforce_global_decimal_context
+import sys
+import os
+# Add the project root to the path for imports
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub
 import ssl
 import os
