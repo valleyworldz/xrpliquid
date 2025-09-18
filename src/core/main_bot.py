@@ -10001,7 +10001,7 @@ class MultiAssetTradingBot:
                         except Exception:
                             # Fallback heuristic by tier
                             base_m, base_t = 0.00015, 0.00045
-                            step = min(max(tier, 0), 5)
+                            step = min(max(float(tier), 0), 5)  # CRITICAL FIX: Ensure step is float
                             self.maker_fee = max(0.00005, base_m - step * 0.00002)
                             self.taker_fee = max(0.00020, base_t - step * 0.00004)
                             self.logger.info(f"🔖 Heuristic tier {tier} fees: maker={self.maker_fee:.6f}, taker={self.taker_fee:.6f}")
