@@ -6167,6 +6167,9 @@ class UltimateProfileOptimizer:
             if len(price_data) < 2:
                 return 0.0
             
+            # Ensure all price data is converted to float
+            price_data = [safe_float(p) for p in price_data]
+            
             x = np.arange(len(price_data))
             y = np.array(price_data)
             
@@ -6187,6 +6190,9 @@ class UltimateProfileOptimizer:
         try:
             if len(price_data) < 2:
                 return 0.0
+            
+            # Ensure all price data is converted to float
+            price_data = [safe_float(p) for p in price_data]
             
             returns = np.diff(np.log(price_data))
             volatility = np.std(returns)
@@ -9912,7 +9918,7 @@ class MultiAssetTradingBot:
                     risk_metrics = self.risk_engine.update_portfolio_state(
                         portfolio_value=safe_float(account_value),
                         positions=positions,
-                        unrealized_pnl=sum(pos.get('unrealized_pnl', 0) for pos in positions.values())
+                        unrealized_pnl=sum(safe_float(pos.get('unrealized_pnl', 0)) for pos in positions.values())
                     )
                     
                     # Record risk metrics in observability engine
