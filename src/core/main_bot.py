@@ -80,11 +80,11 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.utils.decimal_tools import (
-    D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub, 
+    D, decimal_mul, decimal_add, decimal_sub, decimal_div, decimal_percentage_add, decimal_percentage_sub, 
     decimal_power, decimal_sqrt, decimal_abs, decimal_sum, decimal_avg, ensure_decimal,
     normalize_price, normalize_atr, normalize_balance, normalize_position_size,
     calculate_risk_amount, calculate_position_value, calculate_pnl, 
-    calculate_leverage, calculate_margin_ratio
+    calculate_leverage, calculate_margin_ratio, decimal_max
 )
 from src.utils.decimal_converter import (
     to_decimal, decimal_safe_position, decimal_safe_account, decimal_safe_trade, 
@@ -9992,6 +9992,9 @@ class MultiAssetTradingBot:
                             if ft and len(ft) > tier:
                                 mf_bps = int(ft[tier].get('makerFeeBps', 15))
                                 tf_bps = int(ft[tier].get('takerFeeBps', 45))
+                                # CRITICAL FIX: Ensure non-zero fees to prevent divide-by-zero
+                                mf_bps = max(mf_bps, 2)  # Minimum 2 bps (0.02%)
+                                tf_bps = max(tf_bps, 5)  # Minimum 5 bps (0.05%)
                                 self.maker_fee = mf_bps / 10000.0
                                 self.taker_fee = tf_bps / 10000.0
                                 self.logger.info(f"🔖 Applied tier {tier} fees: maker={self.maker_fee:.6f}, taker={self.taker_fee:.6f}")
@@ -17981,18 +17984,30 @@ class MultiAssetTradingBot:
                 except Exception:
                     pass
 
-                # Adjust TP up (or down for shorts) if RR below floor, with a small epsilon buffer
+                # CRITICAL FIX: Adjust TP up (or down for shorts) if RR below floor, with Decimal precision
                 try:
-                    rr_ratio = abs(tp_price - safe_float(entry_price)) / max(1e-12, abs(sl_price - safe_float(entry_price)))
+                    from src.common.num import D, safe_money_math
+                    
+                    # Convert all values to Decimal for precise calculations
+                    entry_price_decimal = D(entry_price)
+                    tp_price_decimal = D(tp_price)
+                    sl_price_decimal = D(sl_price)
+                    
+                    # Calculate RR ratio using Decimal arithmetic
+                    tp_distance = abs(tp_price_decimal - entry_price_decimal)
+                    sl_distance = abs(sl_price_decimal - entry_price_decimal)
+                    rr_ratio = float(safe_money_math('div', tp_distance, sl_distance)) if float(sl_distance) > 1e-12 else 0.0
+                    
                     if rr_ratio < local_min_rr:
                         self.logger.warning(f"⚠️ RR ratio {rr_ratio:.2f} below minimum {local_min_rr}, adjusting")
                         rr_epsilon = getattr(self, 'rr_epsilon', 0.01)
                         target_rr = local_min_rr + max(0.0, rr_epsilon)
-                        required_tp_distance = abs(safe_float(entry_price) - sl_price) * target_rr
+                        required_tp_distance = safe_money_math('mul', sl_distance, D(target_rr))
+                        
                         if signal_type == "BUY":
-                            tp_price = safe_float(entry_price) + required_tp_distance
+                            tp_price = float(entry_price_decimal + required_tp_distance)
                         else:
-                            tp_price = safe_float(entry_price) - required_tp_distance
+                            tp_price = float(entry_price_decimal - required_tp_distance)
                         # Round to 4 decimals for consistency
                         tp_price = round(tp_price, 4)
                 except Exception:
@@ -22719,89 +22734,99 @@ class MultiAssetTradingBot:
             if local_min_rr < 1.05:  # Reduced from 1.15 to 1.05
                 local_min_rr = 1.05
             # CRITICAL FIX: Calculate risk and reward with Decimal-safe fee adjustments
-            entry_price_decimal = normalize_price(entry_price)
-            fee_adjustment = float(entry_price_decimal) * (abs(est_fee) + abs(spread))
-            is_long = tp_price > entry_price
+            from src.common.num import D, safe_money_math
+            
+            # Convert all prices to Decimal for precise calculations
+            entry_price_decimal = D(entry_price)
+            tp_price_decimal = D(tp_price)
+            sl_price_decimal = D(sl_price)
+            atr_decimal = D(atr)
+            est_fee_decimal = D(est_fee)
+            spread_decimal = D(spread)
+            
+            # Calculate fee adjustment using Decimal arithmetic
+            fee_adjustment = safe_money_math('mul', entry_price_decimal, est_fee_decimal + spread_decimal)
+            is_long = tp_price_decimal > entry_price_decimal
 
             if is_long:
                 # For longs:
                 # - TP is lower by fees (SELL to close)
                 # - SL is lower by fees (SELL to close)
-                tp_adjusted = tp_price - fee_adjustment
-                sl_adjusted = sl_price - fee_adjustment
-                reward = tp_adjusted - entry_price
-                risk = entry_price - sl_adjusted
+                tp_adjusted = tp_price_decimal - fee_adjustment
+                sl_adjusted = sl_price_decimal - fee_adjustment
+                reward = tp_adjusted - entry_price_decimal
+                risk = entry_price_decimal - sl_adjusted
             else:
                 # For shorts:
                 # - TP is higher by fees (BUY to close)
                 # - SL is higher by fees (BUY to close)
-                tp_adjusted = tp_price + fee_adjustment
-                sl_adjusted = sl_price + fee_adjustment
-                reward = entry_price - tp_adjusted
-                risk = sl_adjusted - entry_price
+                tp_adjusted = tp_price_decimal + fee_adjustment
+                sl_adjusted = sl_price_decimal + fee_adjustment
+                reward = entry_price_decimal - tp_adjusted
+                risk = sl_adjusted - entry_price_decimal
             
             # Ensure positive reward/risk
             if reward <= 0 or risk <= 0:
-                self.logger.warning(f"⚠️ Invalid risk/reward in RR check (reward={reward:.6f}, risk={risk:.6f})")
+                self.logger.warning(f"⚠️ Invalid risk/reward in RR check (reward={float(reward):.6f}, risk={float(risk):.6f})")
                 return False
             
-            rr_ratio = reward / risk
+            # Calculate RR ratio using Decimal arithmetic
+            rr_ratio = safe_money_math('div', reward, risk)
             
             # Check minimum RR ratio (using configurable threshold)
-            if rr_ratio < local_min_rr:
-                self.logger.info(f"⚠️ RR ratio too low: {rr_ratio:.2f} < {local_min_rr}")
+            if float(rr_ratio) < local_min_rr:
+                self.logger.info(f"⚠️ RR ratio too low: {float(rr_ratio):.2f} < {local_min_rr}")
                 return False
             
             # Check if ATR is reasonable (not too small or too large)
-            atr_pct = atr / entry_price
-            if atr_pct < 0.0001:  # Less than 0.01% (relaxed for testing)
-                self.logger.info(f"⚠️ ATR too small: {atr_pct:.4f} < 0.0001")
+            atr_pct = safe_money_math('div', atr_decimal, entry_price_decimal)
+            if float(atr_pct) < 0.0001:  # Less than 0.01% (relaxed for testing)
+                self.logger.info(f"⚠️ ATR too small: {float(atr_pct):.4f} < 0.0001")
                 return False
-            elif atr_pct > 0.1:  # More than 10%
-                self.logger.info(f"⚠️ ATR too large: {atr_pct:.4f} > 0.1")
+            elif float(atr_pct) > 0.1:  # More than 10%
+                self.logger.info(f"⚠️ ATR too large: {float(atr_pct):.4f} > 0.1")
                 return False
             
             # Check if TP/SL distances are reasonable relative to ATR (dynamic thresholds)
-            tp_distance = abs(tp_adjusted - entry_price) / entry_price
-            sl_distance = abs(sl_adjusted - entry_price) / entry_price
-
-            atr_pct = atr / entry_price if entry_price > 0 else 0
+            tp_distance = safe_money_math('div', abs(tp_adjusted - entry_price_decimal), entry_price_decimal)
+            sl_distance = safe_money_math('div', abs(sl_adjusted - entry_price_decimal), entry_price_decimal)
             # Require TP at least ~1.2× ATR% and SL at least ~0.8× ATR%
             # Also apply very small absolute floors to avoid zero distances
             if is_small_equity:
-                min_tp_pct = max(0.0004, 1.0 * atr_pct)
-                min_sl_pct = max(0.0003, 0.6 * atr_pct)
+                min_tp_pct = max(0.0004, float(atr_pct))
+                min_sl_pct = max(0.0003, 0.6 * float(atr_pct))
             else:
-                min_tp_pct = max(0.0005, 1.2 * atr_pct)
-                min_sl_pct = max(0.0004, 0.8 * atr_pct)
+                min_tp_pct = max(0.0005, 1.2 * float(atr_pct))
+                min_sl_pct = max(0.0004, 0.8 * float(atr_pct))
 
-            if tp_distance < min_tp_pct:
-                self.logger.info(f"⚠️ TP distance too small: {tp_distance:.4f} < {min_tp_pct:.4f} (ATR%={atr_pct:.4f})")
+            if float(tp_distance) < min_tp_pct:
+                self.logger.info(f"⚠️ TP distance too small: {float(tp_distance):.4f} < {min_tp_pct:.4f} (ATR%={float(atr_pct):.4f})")
                 return False
-            if sl_distance < min_sl_pct:
-                self.logger.info(f"⚠️ SL distance too small: {sl_distance:.4f} < {min_sl_pct:.4f} (ATR%={atr_pct:.4f})")
+            if float(sl_distance) < min_sl_pct:
+                self.logger.info(f"⚠️ SL distance too small: {float(sl_distance):.4f} < {min_sl_pct:.4f} (ATR%={float(atr_pct):.4f})")
                 return False
             
             # V8 EMERGENCY FIX: Handle non-positive reward with fallback
             if position_size is None:
                 position_size = 10.0  # Default XRP position size for fee calculation
-            total_cost_dollars = abs(entry_price * position_size * (abs(est_fee) + abs(spread)))
-            reward_dollars = reward * position_size
+            position_size_decimal = D(position_size)
+            total_cost_dollars = abs(safe_money_math('mul', entry_price_decimal, position_size_decimal, est_fee_decimal + spread_decimal))
+            reward_dollars = safe_money_math('mul', reward, position_size_decimal)
             
             # V8: More permissive reward check with fallback
-            if reward_dollars <= 0:
+            if float(reward_dollars) <= 0:
                 self.logger.warning("⚠️ Non-positive reward after sizing; attempting fallback")
                 # V8: Use minimum viable reward instead of rejecting
-                reward_dollars = max(0.001, abs(reward) * position_size)  # Minimum $0.001 reward
-                self.logger.info(f"V8: Applied fallback reward: ${reward_dollars:.6f}")
-            cost_cap = 0.5 if is_small_equity else 0.25
-            if total_cost_dollars > (reward_dollars * cost_cap):  # Fees shouldn't exceed X% of reward
-                self.logger.info(f"⚠️ Total costs too high: ${total_cost_dollars:.4f} > ${max(reward_dollars * cost_cap, 0):.4f}")
+                reward_dollars = max(D("0.001"), abs(reward) * position_size_decimal)  # Minimum $0.001 reward
+                self.logger.info(f"V8: Applied fallback reward: ${float(reward_dollars):.6f}")
+            cost_cap = D("0.5") if is_small_equity else D("0.25")
+            if float(total_cost_dollars) > float(reward_dollars * cost_cap):  # Fees shouldn't exceed X% of reward
+                self.logger.info(f"⚠️ Total costs too high: ${float(total_cost_dollars):.4f} > ${float(reward_dollars * cost_cap):.4f}")
                 return False
             
-            self.logger.info(f"✅ RR/ATR check passed: RR={rr_ratio:.2f}, ATR%={atr_pct:.4f}, costs=${total_cost_dollars:.4f}")
+            self.logger.info(f"✅ RR/ATR check passed: RR={float(rr_ratio):.2f}, ATR%={float(atr_pct):.4f}, costs=${float(total_cost_dollars):.4f}")
             if (est_fee or 0) + (spread or 0) > 0:
-                self.logger.info(f"   Fee-adjusted prices - TP: {tp_adjusted:.4f}, SL: {sl_adjusted:.4f} (fee={fee_adjustment:.4f})")
+                self.logger.info(f"   Fee-adjusted prices - TP: {float(tp_adjusted):.4f}, SL: {float(sl_adjusted):.4f} (fee={float(fee_adjustment):.4f})")
             return True
             
         except Exception as e:
@@ -23572,10 +23597,14 @@ class MultiAssetTradingBot:
                 if fee_tiers and len(fee_tiers) > 0:
                     # Use tier 0 fees (most common)
                     tier_0 = fee_tiers[0]
-                    maker_fee_bps = tier_0.get('makerFeeBps', 0)
-                    taker_fee_bps = tier_0.get('takerFeeBps', 0)
+                    maker_fee_bps = tier_0.get('makerFeeBps', 15)  # Default to 15 bps (0.15%)
+                    taker_fee_bps = tier_0.get('takerFeeBps', 45)  # Default to 45 bps (0.45%)
                     
-                    # FIXED: Convert bps to decimals (divide by 10,000) - proper fee parsing
+                    # CRITICAL FIX: Ensure non-zero fees to prevent divide-by-zero and unrealistic PnL
+                    maker_fee_bps = max(maker_fee_bps, 2)  # Minimum 2 bps (0.02%)
+                    taker_fee_bps = max(taker_fee_bps, 5)  # Minimum 5 bps (0.05%)
+                    
+                    # Convert bps to decimals (divide by 10,000) - proper fee parsing
                     self.maker_fee = maker_fee_bps / 10000.0
                     self.taker_fee = taker_fee_bps / 10000.0
                     
