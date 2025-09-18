@@ -1015,12 +1015,21 @@ def analyze_market_regime(symbol: str, price_history: list) -> MarketRegime:
         return MarketRegime()  # Return default if insufficient data
     
     import statistics
-    from utils.decimal_tools import safe_float
+    
+    # Helper function to safely convert to float
+    def to_float(value):
+        """Safely convert any numeric value to float"""
+        if isinstance(value, (int, float)):
+            return float(value)
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return 0.0
     
     # Calculate volatility (standard deviation of recent price changes)
     recent_prices = price_history[-20:]
     # Convert to float to ensure compatibility with statistics module
-    recent_prices_float = [safe_float(p) for p in recent_prices]
+    recent_prices_float = [to_float(p) for p in recent_prices]
     price_changes = [(recent_prices_float[i] - recent_prices_float[i-1]) / recent_prices_float[i-1] for i in range(1, len(recent_prices_float))]
     volatility_pct = statistics.stdev(price_changes) * 100
     
@@ -1036,8 +1045,8 @@ def analyze_market_regime(symbol: str, price_history: list) -> MarketRegime:
     
     # Calculate trend (simple moving average comparison)
     # Convert to float for arithmetic operations with float literals
-    short_ma = safe_float(sum(price_history[-5:]) / 5)  # 5-period MA
-    long_ma = safe_float(sum(price_history[-15:]) / 15)  # 15-period MA
+    short_ma = to_float(sum(price_history[-5:]) / 5)  # 5-period MA
+    long_ma = to_float(sum(price_history[-15:]) / 15)  # 15-period MA
     
     if short_ma > long_ma * 1.02:
         trend = "BULL"
