@@ -191,25 +191,39 @@ def main():
         subprocess.run([sys.executable, bot_file], check=True)
     except subprocess.CalledProcessError as e:
         print(f"❌ Bot exited with error code: {e.returncode}")
-        print("🔄 Trying simple bot fallback...")
+        print("🔄 Trying live trading bot fallback...")
         try:
-            from src.core.simple_bot import main as simple_main
-            simple_main()
-        except Exception as simple_e:
-            print(f"❌ Simple bot also failed: {simple_e}")
-            sys.exit(1)
+            from src.core.live_trading_bot import main as live_main
+            import asyncio
+            asyncio.run(live_main())
+        except Exception as live_e:
+            print(f"❌ Live trading bot also failed: {live_e}")
+            print("🔄 Trying simple simulation bot as last resort...")
+            try:
+                from src.core.simple_bot import main as simple_main
+                simple_main()
+            except Exception as simple_e:
+                print(f"❌ All bots failed: {simple_e}")
+                sys.exit(1)
     except KeyboardInterrupt:
         print("\n🛑 Bot stopped by user")
         sys.exit(0)
     except Exception as e:
         print(f"❌ Unexpected error: {e}")
-        print("🔄 Trying simple bot fallback...")
+        print("🔄 Trying live trading bot fallback...")
         try:
-            from src.core.simple_bot import main as simple_main
-            simple_main()
-        except Exception as simple_e:
-            print(f"❌ Simple bot also failed: {simple_e}")
-            sys.exit(1)
+            from src.core.live_trading_bot import main as live_main
+            import asyncio
+            asyncio.run(live_main())
+        except Exception as live_e:
+            print(f"❌ Live trading bot also failed: {live_e}")
+            print("🔄 Trying simple simulation bot as last resort...")
+            try:
+                from src.core.simple_bot import main as simple_main
+                simple_main()
+            except Exception as simple_e:
+                print(f"❌ All bots failed: {simple_e}")
+                sys.exit(1)
 
 if __name__ == "__main__":
     main()

@@ -65,7 +65,11 @@ to achieve 10/10 scores across all aspects:
 # Core imports
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Add the src/core directory to the path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 from utils.decimal_boundary_guard import safe_float, safe_decimal, enforce_global_decimal_context
 import ssl
@@ -266,10 +270,7 @@ except ImportError as e:
     MODULAR_IMPORTS_AVAILABLE = False
 
 # Import decimal guard first
-from src.core.utils.decimal_guard import DECIMAL_GUARD_ACTIVE, DECIMAL_CONTEXT
-
-# Import engine availability guard
-from src.core.engines.engine_availability_guard import enforce_engine_availability
+from utils.decimal_guard import DECIMAL_GUARD_ACTIVE, DECIMAL_CONTEXT
 
 # Runbook banners for key systems
 print("🔢 DECIMAL_NORMALIZER_ACTIVE context=ROUND_HALF_EVEN precision=10")
@@ -290,9 +291,9 @@ if ENGINE_ENABLED:
         if current_dir not in sys.path:
             sys.path.insert(0, current_dir)
         
-        from src.core.engines.real_time_risk_engine import RealTimeRiskEngine
-        from src.core.engines.observability_engine import ObservabilityEngine
-        from src.core.engines.ml_engine import MLEngine
+        from engines.real_time_risk_engine import RealTimeRiskEngine
+        from engines.observability_engine import ObservabilityEngine
+        from engines.ml_engine import MLEngine
         ENGINE_IMPORTS_AVAILABLE = True
         logging.info("🚀 [ENGINE] High-performance engine components loaded successfully")
     except ImportError as e:
