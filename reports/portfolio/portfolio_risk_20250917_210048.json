@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-09-17T21:00:48.040031",
+  "portfolio_value": 7700.0,
+  "market_risks": {
+    "XRP": {
+      "position": 1000,
+      "mark_price": 0.65,
+      "notional": 650.0,
+      "weight": 0.08441558441558442
+    },
+    "BTC": {
+      "position": 0.1,
+      "mark_price": 45000,
+      "notional": 4500.0,
+      "weight": 0.5844155844155844
+    },
+    "ETH": {
+      "position": 0.5,
+      "mark_price": 3200,
+      "notional": 1600.0,
+      "weight": 0.2077922077922078
+    },
+    "SOL": {
+      "position": 10,
+      "mark_price": 95,
+      "notional": 950,
+      "weight": 0.12337662337662338
+    }
+  },
+  "portfolio_var_95": 253.33,
+  "portfolio_var_99": 358.204,
+  "portfolio_es_95": 303.996,
+  "portfolio_es_99": 465.6652,
+  "factor_exposures": {
+    "crypto_beta": 0.7707792207792208,
+    "defi_exposure": 0.0,
+    "layer1_exposure": 0.9155844155844155,
+    "layer2_exposure": 0.0
+  },
+  "correlation_matrix": {
+    "XRP": {
+      "XRP": 1.0,
+      "BTC": 0.6,
+      "ETH": 0.5,
+      "SOL": 0.4
+    },
+    "BTC": {
+      "XRP": 0.6,
+      "BTC": 1.0,
+      "ETH": 0.8,
+      "SOL": 0.7
+    },
+    "ETH": {
+      "XRP": 0.5,
+      "BTC": 0.8,
+      "ETH": 1.0,
+      "SOL": 0.8
+    },
+    "SOL": {
+      "XRP": 0.4,
+      "BTC": 0.7,
+      "ETH": 0.8,
+      "SOL": 1.0
+    }
+  }
+}

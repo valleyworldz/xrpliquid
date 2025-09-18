@@ -1,0 +1,14 @@
+{
+  "confidence": 0.95,
+  "VaR": -0.01,
+  "ES": -0.015,
+  "alloc": {"XRP-PERP": 1.0},
+  "timestamp": "2025-01-08T00:00:00Z",
+  "portfolio_value": 1000.0,
+  "risk_metrics": {
+    "max_drawdown": -0.04,
+    "sharpe_ratio": 2.1,
+    "sortino_ratio": 3.2,
+    "calmar_ratio": 1.8
+  }
+}

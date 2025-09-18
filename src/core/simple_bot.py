@@ -27,10 +27,27 @@ class SimpleXRPBot:
     Simple XRP Trading Bot
     """
     
-    def __init__(self):
+    def __init__(self, config=None):
         self.running = False
         self.positions = {}
         self.balance = Decimal('1000.0')  # Starting balance
+        
+        # Configuration
+        self.config = config or {
+            "trading_enabled": True,
+            "max_trade_amount": Decimal('50.0'),
+            "min_balance": Decimal('100.0'),
+            "trade_interval": 30,  # seconds
+            "log_level": "INFO"
+        }
+        
+        # Trading statistics
+        self.stats = {
+            "total_trades": 0,
+            "successful_trades": 0,
+            "failed_trades": 0,
+            "total_pnl": Decimal('0.0')
+        }
         
     def start(self):
         """Start the bot"""
@@ -69,20 +86,63 @@ class SimpleXRPBot:
     def simulate_trade(self):
         """Simulate a trade for testing"""
         try:
-            # Simulate a small trade
-            trade_amount = Decimal('10.0')
-            if self.balance >= trade_amount:
-                self.balance -= trade_amount
-                logger.info(f"📈 Simulated trade: -{trade_amount}, New balance: {self.balance}")
-            else:
-                logger.warning("⚠️ Insufficient balance for trade")
+            # Simulate different types of trades
+            import random
+            
+            trade_types = ["BUY", "SCALP", "FUNDING_ARBITRAGE"]
+            trade_type = random.choice(trade_types)
+            
+            if trade_type == "BUY":
+                trade_amount = Decimal('10.0')
+                if self.balance >= trade_amount:
+                    self.balance -= trade_amount
+                    logger.info(f"📈 BUY Order: -{trade_amount}, New balance: {self.balance}")
+                else:
+                    logger.warning("⚠️ Insufficient balance for BUY order")
+                    
+            elif trade_type == "SCALP":
+                trade_amount = Decimal('5.0')
+                if self.balance >= trade_amount:
+                    self.balance -= trade_amount
+                    logger.info(f"⚡ SCALP Trade: -{trade_amount}, New balance: {self.balance}")
+                else:
+                    logger.warning("⚠️ Insufficient balance for SCALP trade")
+                    
+            elif trade_type == "FUNDING_ARBITRAGE":
+                trade_amount = Decimal('8.0')
+                if self.balance >= trade_amount:
+                    self.balance -= trade_amount
+                    logger.info(f"💰 FUNDING ARBITRAGE: -{trade_amount}, New balance: {self.balance}")
+                else:
+                    logger.warning("⚠️ Insufficient balance for funding arbitrage")
                 
         except Exception as e:
             logger.error(f"Error in simulate_trade: {e}")
             
+    def get_status_report(self):
+        """Get current bot status report"""
+        return {
+            "running": self.running,
+            "balance": float(self.balance),
+            "positions": len(self.positions),
+            "stats": {
+                "total_trades": self.stats["total_trades"],
+                "successful_trades": self.stats["successful_trades"],
+                "failed_trades": self.stats["failed_trades"],
+                "total_pnl": float(self.stats["total_pnl"]),
+                "success_rate": (self.stats["successful_trades"] / max(1, self.stats["total_trades"])) * 100
+            },
+            "config": {
+                "trading_enabled": self.config["trading_enabled"],
+                "max_trade_amount": float(self.config["max_trade_amount"]),
+                "min_balance": float(self.config["min_balance"])
+            }
+        }
+    
     def stop(self):
         """Stop the bot"""
         logger.info("🛑 Stopping bot...")
+        logger.info(f"📊 Final Stats: {self.get_status_report()}")
         self.running = False
 
 def main():
