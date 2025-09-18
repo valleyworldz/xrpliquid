@@ -5,6 +5,7 @@ Ensures full Decimal discipline throughout the trading system
 
 from decimal import Decimal, getcontext, InvalidOperation, FloatOperation, ROUND_HALF_EVEN
 import logging
+import functools
 
 # Set high precision for financial calculations
 getcontext().prec = 18
