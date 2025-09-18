@@ -72,6 +72,7 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 from utils.decimal_boundary_guard import safe_float, safe_decimal, enforce_global_decimal_context
+from utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
@@ -11471,11 +11472,11 @@ class MultiAssetTradingBot:
                 tp_pct = getattr(self.config, 'profit_target_pct', 0.03)  # Use profit target, default 3%
                 sl_pct = self.config.stop_loss_pct  # Use instance config
                 if is_long:
-                    tp_price = safe_float(entry_price) * (1 + tp_pct)
-                    sl_price = safe_float(entry_price) * (1 - sl_pct)
+                    tp_price = decimal_percentage_add(entry_price, tp_pct)
+                    sl_price = decimal_percentage_sub(entry_price, sl_pct)
                 else:
-                    tp_price = safe_float(entry_price) * (1 - tp_pct)
-                    sl_price = safe_float(entry_price) * (1 + sl_pct)
+                    tp_price = decimal_percentage_sub(entry_price, tp_pct)
+                    sl_price = decimal_percentage_add(entry_price, sl_pct)
             self.logger.info(f"[TP/SL] Calculated TP={tp_price:.4f}, SL={sl_price:.4f} for {'LONG' if is_long else 'SHORT'}")
             # Step 1: Place new triggers (keep old ones active)
             self.logger.info("⏹️ Native TP/SL pair placement skipped (guardian-only mode)")
@@ -11660,12 +11661,12 @@ class MultiAssetTradingBot:
         if self.tp1_filled and self.tp_sl_active:
             buffer = 0.005  # 0.5% buffer for fees/volatility
             if self.is_long_position:
-                new_sl = safe_float(self.entry_price) * (1 + buffer)
+                new_sl = decimal_percentage_add(self.entry_price, buffer)
                 if new_sl > self.sl_price:
                     self.sl_price = new_sl
                     self.logger.info(f"🔄 Shifted SL to breakeven @ {(new_sl or 0):.4f}")
             else:
-                new_sl = safe_float(self.entry_price) * (1 - buffer)
+                new_sl = decimal_percentage_sub(self.entry_price, buffer)
                 if new_sl < self.sl_price:
                     self.sl_price = new_sl
                     self.logger.info(f"🔄 Shifted SL to breakeven @ {(new_sl or 0):.4f}")
@@ -16337,7 +16338,7 @@ class MultiAssetTradingBot:
                 try:
                     # Calculate basic position size using risk engine
                     entry_price = current_price
-                    stop_loss_price = safe_float(entry_price) * 0.97  # 3% stop loss as default
+                    stop_loss_price = decimal_percentage_sub(entry_price, 0.03)  # 3% stop loss as default
                     risk_per_trade = 0.02  # 2% risk per trade
                     
                     position_size = self.risk_engine.calculate_position_size(
@@ -17671,15 +17672,15 @@ class MultiAssetTradingBot:
         
         # ATR-calibrated levels
         if signal_type == "BUY":  # Long position
-            sl_price = safe_float(entry_price) - (2 * atr)  # SL = entry - 2×ATR
-            tp1_price = safe_float(entry_price) + (3 * atr)  # TP1 = entry + 3×ATR
-            tp2_price = safe_float(entry_price) + (5 * atr)  # TP2 = entry + 5×ATR
-            tp3_price = safe_float(entry_price) + (7 * atr)  # TP3 = entry + 7×ATR
+            sl_price = D(entry_price) - (D(2) * D(atr))  # SL = entry - 2×ATR
+            tp1_price = D(entry_price) + (D(3) * D(atr))  # TP1 = entry + 3×ATR
+            tp2_price = D(entry_price) + (D(5) * D(atr))  # TP2 = entry + 5×ATR
+            tp3_price = D(entry_price) + (D(7) * D(atr))  # TP3 = entry + 7×ATR
         else:  # SELL - Short position
-            sl_price = safe_float(entry_price) + (2 * atr)  # SL = entry + 2×ATR
-            tp1_price = safe_float(entry_price) - (3 * atr)  # TP1 = entry - 3×ATR
-            tp2_price = safe_float(entry_price) - (5 * atr)  # TP2 = entry - 5×ATR
-            tp3_price = safe_float(entry_price) - (7 * atr)  # TP3 = entry - 7×ATR
+            sl_price = D(entry_price) + (D(2) * D(atr))  # SL = entry + 2×ATR
+            tp1_price = D(entry_price) - (D(3) * D(atr))  # TP1 = entry - 3×ATR
+            tp2_price = D(entry_price) - (D(5) * D(atr))  # TP2 = entry - 5×ATR
+            tp3_price = D(entry_price) - (D(7) * D(atr))  # TP3 = entry - 7×ATR
         
         return {
             'sl_price': sl_price,
@@ -17856,19 +17857,19 @@ class MultiAssetTradingBot:
                 except Exception:
                     # Fallback to simple calculation
                     if signal_type == 'BUY':
-                        tp_price = safe_float(entry_price) + (atr * 2.0)
-                        sl_price = safe_float(entry_price) - (atr * 1.0)
+                        tp_price = D(entry_price) + (D(atr) * D(2.0))
+                        sl_price = D(entry_price) - (D(atr) * D(1.0))
                     else:
-                        tp_price = safe_float(entry_price) - (atr * 2.0)
-                        sl_price = safe_float(entry_price) + (atr * 1.0)
+                        tp_price = D(entry_price) - (D(atr) * D(2.0))
+                        sl_price = D(entry_price) + (D(atr) * D(1.0))
             else:
                 # Simple calculation when indicators not available
                 if signal_type == 'BUY':
-                    tp_price = safe_float(entry_price) + (atr * 2.0)
-                    sl_price = safe_float(entry_price) - (atr * 1.0)
+                    tp_price = D(entry_price) + (D(atr) * D(2.0))
+                    sl_price = D(entry_price) - (D(atr) * D(1.0))
                 else:
-                    tp_price = safe_float(entry_price) - (atr * 2.0)
-                    sl_price = safe_float(entry_price) + (atr * 1.0)
+                    tp_price = D(entry_price) - (D(atr) * D(2.0))
+                    sl_price = D(entry_price) + (D(atr) * D(1.0))
                 
                 # Ensure RR meets local minimum threshold before validation
                 try:
@@ -17995,22 +17996,22 @@ class MultiAssetTradingBot:
                 return tp_price, sl_price, 0.01
             except Exception as e:
                 self.logger.error(f"❌ Error calculating static TP/SL: {e}")
-                return safe_float(entry_price) * 1.02, safe_float(entry_price) * 0.98, 0.01
+                return decimal_percentage_add(entry_price, 0.02), decimal_percentage_sub(entry_price, 0.02), 0.01
         
         # Fallback implementation
         try:
             if signal_type == 'BUY':
-                tp_price = safe_float(entry_price) * 1.035  # 3.5% profit
-                sl_price = safe_float(entry_price) * 0.975  # 2.5% loss
+                tp_price = decimal_percentage_add(entry_price, 0.035)  # 3.5% profit
+                sl_price = decimal_percentage_sub(entry_price, 0.025)  # 2.5% loss
             else:
-                tp_price = safe_float(entry_price) * 0.965  # 3.5% profit
-                sl_price = safe_float(entry_price) * 1.025  # 2.5% loss
+                tp_price = decimal_percentage_sub(entry_price, 0.035)  # 3.5% profit
+                sl_price = decimal_percentage_add(entry_price, 0.025)  # 2.5% loss
 
             return tp_price, sl_price, 0.01
             
         except Exception as e:
             self.logger.error(f"❌ Error calculating static TP/SL: {e}")
-            return safe_float(entry_price) * 1.02, safe_float(entry_price) * 0.98, 0.01  # Safe fallback
+            return decimal_percentage_add(entry_price, 0.02), decimal_percentage_sub(entry_price, 0.02), 0.01  # Safe fallback
 
     def calculate_enhanced_static_tpsl(self, entry_price, signal_type):
         """Enhanced static TP/SL calculation with better error handling"""
@@ -18028,19 +18029,19 @@ class MultiAssetTradingBot:
             
             # Enhanced TP/SL calculation with ATR
             if signal_type == 'BUY':
-                tp_price = safe_float(entry_price) + (atr * 2.5)  # 2.5x ATR profit
-                sl_price = safe_float(entry_price) - (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
+                tp_price = D(entry_price) + (D(atr) * D(2.5))  # 2.5x ATR profit
+                sl_price = D(entry_price) - (D(atr) * D(1.2))  # 1.2x ATR loss (quantum optimal)
             else:
-                tp_price = safe_float(entry_price) - (atr * 2.5)  # 2.5x ATR profit
-                sl_price = safe_float(entry_price) + (atr * 1.2)  # 1.2x ATR loss (quantum optimal)
+                tp_price = D(entry_price) - (D(atr) * D(2.5))  # 2.5x ATR profit
+                sl_price = D(entry_price) + (D(atr) * D(1.2))  # 1.2x ATR loss (quantum optimal)
             
             # Ensure minimum profit/loss percentages
             if signal_type == 'BUY':
-                tp_price = max(tp_price, safe_float(entry_price) * 1.02)  # Minimum 2% profit
-                sl_price = min(sl_price, safe_float(entry_price) * 0.988)  # Maximum 1.2% loss
+                tp_price = max(tp_price, decimal_percentage_add(entry_price, 0.02))  # Minimum 2% profit
+                sl_price = min(sl_price, decimal_percentage_sub(entry_price, 0.012))  # Maximum 1.2% loss
             else:
-                tp_price = min(tp_price, safe_float(entry_price) * 0.98)  # Minimum 2% profit
-                sl_price = max(sl_price, safe_float(entry_price) * 1.012)  # Maximum 1.2% loss
+                tp_price = min(tp_price, decimal_percentage_sub(entry_price, 0.02))  # Minimum 2% profit
+                sl_price = max(sl_price, decimal_percentage_add(entry_price, 0.012))  # Maximum 1.2% loss
             
             self.logger.info(f"🎯 Enhanced static TP/SL: TP={tp_price:.4f}, SL={sl_price:.4f} (ATR={atr:.4f})")
             return tp_price, sl_price, 0.01
@@ -18049,9 +18050,9 @@ class MultiAssetTradingBot:
             self.logger.error(f"❌ Error calculating enhanced static TP/SL: {e}")
             # Safe fallback
             if signal_type == 'BUY':
-                return safe_float(entry_price) * 1.025, safe_float(entry_price) * 0.988, 0.01
+                return decimal_percentage_add(entry_price, 0.025), decimal_percentage_sub(entry_price, 0.012), 0.01
             else:
-                return safe_float(entry_price) * 0.975, safe_float(entry_price) * 1.012, 0.01
+                return decimal_percentage_sub(entry_price, 0.025), decimal_percentage_add(entry_price, 0.012), 0.01
 
     def validate_tpsl_prices(self, entry_price: float, tp_price: float, sl_price: float, is_long: bool = True) -> bool:
         """
@@ -18163,8 +18164,8 @@ class MultiAssetTradingBot:
             atr = self.calculate_atr(self.get_recent_price_data())
             
             # 1. Basic range validation (prices must be positive and reasonable)
-            min_valid = entry_price * 0.1  # Don't allow <10% of entry
-            max_valid = entry_price * 10   # Don't allow >1000% of entry
+            min_valid = decimal_percentage_sub(entry_price, 0.9)  # Don't allow <10% of entry
+            max_valid = decimal_percentage_add(entry_price, 9.0)  # Don't allow >1000% of entry
             
             if not (min_valid <= tp_price <= max_valid and min_valid <= sl_price <= max_valid):
                 self.logger.error(f"❌ TP/SL prices outside valid range: [{min_valid:.4f}, {max_valid:.4f}]")
@@ -20365,7 +20366,7 @@ class MultiAssetTradingBot:
         try:
             if not market_data:
                 # Fallback to basic TP if no market data
-                return entry_price * (1 + (0.035 if is_long else -0.035))
+                return decimal_percentage_add(entry_price, 0.035) if is_long else decimal_percentage_sub(entry_price, 0.035)
             
             # Extract market data
             trend_strength = market_data.get('trend_strength', 0.001)
@@ -20422,9 +20423,9 @@ class MultiAssetTradingBot:
             
             # Apply direction (CRITICAL FIX: Use percentage calculation)
             if is_long:
-                quantum_tp = entry_price * (1 + eff_tp_mult)
+                quantum_tp = decimal_percentage_add(entry_price, eff_tp_mult)
             else:
-                quantum_tp = entry_price * (1 - eff_tp_mult)
+                quantum_tp = decimal_percentage_sub(entry_price, eff_tp_mult)
             
             self.logger.info(f"🎯 Quantum TP calculated: {quantum_tp:.4f} (mult: {eff_tp_mult:.3f}, trend: {trend_strength:.4f}, vol: {volatility:.4f}, ml: {ml_confidence:.1f}, ml_boost: {ml_boost:.2f}, mtf: {mtf_multiplier:.2f}, corr: {correlation_multiplier:.2f})")
             return quantum_tp
@@ -20432,7 +20433,7 @@ class MultiAssetTradingBot:
         except Exception as e:
             self.logger.warning(f"⚠️ Error calculating quantum TP: {e}")
             # Fallback to basic TP
-            return entry_price * (1 + (0.035 if is_long else -0.035))
+            return decimal_percentage_add(entry_price, 0.035) if is_long else decimal_percentage_sub(entry_price, 0.035)
 
     def _get_ml_prediction_confidence(self) -> float:
         """PHASE 3: Get ML prediction confidence for TP/SL enhancement"""
@@ -20577,7 +20578,7 @@ class MultiAssetTradingBot:
         try:
             if not market_data:
                 # Fallback to basic SL if no market data
-                return entry_price * (1 - (0.012 if is_long else -0.012))
+                return decimal_percentage_sub(entry_price, 0.012) if is_long else decimal_percentage_add(entry_price, 0.012)
             
             # Extract market data
             volatility = market_data.get('volatility', 0.02)
@@ -20596,9 +20597,9 @@ class MultiAssetTradingBot:
             
             # Apply direction
             if is_long:
-                quantum_sl = entry_price * (1 - adaptive_sl_pct)
+                quantum_sl = decimal_percentage_sub(entry_price, adaptive_sl_pct)
             else:
-                quantum_sl = entry_price * (1 + adaptive_sl_pct)
+                quantum_sl = decimal_percentage_add(entry_price, adaptive_sl_pct)
             
             self.logger.info(f"🛑 Quantum SL calculated: {quantum_sl:.4f} (pct: {adaptive_sl_pct:.3f}, vol: {volatility:.4f})")
             return quantum_sl
@@ -20606,7 +20607,7 @@ class MultiAssetTradingBot:
         except Exception as e:
             self.logger.warning(f"⚠️ Error calculating quantum SL: {e}")
             # Fallback to basic SL
-            return entry_price * (1 - (0.012 if is_long else -0.012))
+            return decimal_percentage_sub(entry_price, 0.012) if is_long else decimal_percentage_add(entry_price, 0.012)
 
     def should_exit_quantum_advanced(self, position: dict, market_data: dict, current_price: float) -> tuple:
         """Advanced quantum exit logic for +213.6% performance"""
@@ -20764,7 +20765,7 @@ class MultiAssetTradingBot:
                 notional_ok = False
                 if self.mirror_tp_as_limit and entry_price and position_size:
                     try:
-                        notional_ok = (entry_price * abs(safe_float(position_size))) >= 10
+                        notional_ok = (D(entry_price) * D(abs(safe_float(position_size)))) >= D(10)
                     except Exception:
                         notional_ok = False
                 if notional_ok:
@@ -20800,7 +20801,7 @@ class MultiAssetTradingBot:
                     elif atr_pct > 0.020:
                         try:
                             # Compute probability-spaced tiers based on L2 heuristic and ML vol tiers if enabled
-                            if self.mirror_tp_as_limit and position_size and (entry_price * abs(safe_float(position_size))) >= 10:
+                            if self.mirror_tp_as_limit and position_size and (D(entry_price) * D(abs(safe_float(position_size)))) >= D(10):
                                 tick = self.get_tick_size(getattr(self.symbol_cfg, 'base', 'XRP') if hasattr(self.symbol_cfg, 'base') else 'XRP')
                                 # Decide number of tiers: ML or default 3
                                 try:
@@ -20958,7 +20959,7 @@ class MultiAssetTradingBot:
                                     # Move SL to BE+fees if entry/atr known
                                     if entry_price and atr_now:
                                         fee = getattr(self, "taker_fee", 0.0045)
-                                        be = entry_price * (1 + fee if is_long else 1 - fee)
+                                        be = decimal_percentage_add(entry_price, fee) if is_long else decimal_percentage_sub(entry_price, fee)
                                         sl_px = be - 0.1 * atr_now if is_long else be + 0.1 * atr_now
                         except Exception:
                             pass
