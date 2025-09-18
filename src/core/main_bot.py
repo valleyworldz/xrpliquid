@@ -16425,9 +16425,12 @@ class MultiAssetTradingBot:
                 except Exception as e:
                     self.logger.error(f"❌ [RISK_ENGINE] Error calculating position size: {e}")
             
-            # Fallback to basic calculation
-            risk_amount = portfolio_value * 0.02  # 2% risk
-            stop_loss_distance = current_price * 0.03  # 3% stop loss
+            # CRITICAL FIX: Fallback to basic calculation with Decimal-safe arithmetic
+            portfolio_value_float = float(to_decimal(portfolio_value))
+            current_price_float = float(to_decimal(current_price))
+            
+            risk_amount = portfolio_value_float * 0.02  # 2% risk
+            stop_loss_distance = current_price_float * 0.03  # 3% stop loss
             position_size = risk_amount / stop_loss_distance if stop_loss_distance > 0 else 0
             
             return position_size
@@ -18006,12 +18009,16 @@ class MultiAssetTradingBot:
                     # CRITICAL FIX: Instead of returning None, adjust TP for better RR
                     try:
                         min_rr = getattr(self, 'min_rr_ratio', 1.35)
+                        # CRITICAL FIX: Use Decimal-safe arithmetic for TP/SL adjustments
+                        entry_price_float = float(to_decimal(entry_price))
+                        sl_price_float = float(to_decimal(sl_price))
+                        
                         if signal_type == "BUY":
-                            required_tp_distance = abs(safe_float(entry_price) - sl_price) * min_rr
-                            tp_price = safe_float(entry_price) + required_tp_distance
+                            required_tp_distance = abs(entry_price_float - sl_price_float) * min_rr
+                            tp_price = entry_price_float + required_tp_distance
                         else:
-                            required_tp_distance = abs(safe_float(entry_price) - sl_price) * min_rr
-                            tp_price = safe_float(entry_price) - required_tp_distance
+                            required_tp_distance = abs(entry_price_float - sl_price_float) * min_rr
+                            tp_price = entry_price_float - required_tp_distance
                         
                         # Re-validate adjusted TP/SL
                         if self.rr_and_atr_check(entry_price, tp_price, sl_price, atr, position_size=position_size, est_fee=0.0, spread=0.0):
@@ -22695,8 +22702,8 @@ class MultiAssetTradingBot:
             local_min_rr = (base_min_rr - 0.30) if is_small_equity else (base_min_rr - 0.15)  # More lenient
             if local_min_rr < 1.05:  # Reduced from 1.15 to 1.05
                 local_min_rr = 1.05
-            # Calculate risk and reward with fee adjustments
-            fee_adjustment = float(entry_price) * (abs(est_fee) + abs(spread))
+            # CRITICAL FIX: Calculate risk and reward with Decimal-safe fee adjustments
+            fee_adjustment = float(to_decimal(entry_price)) * (abs(est_fee) + abs(spread))
             is_long = tp_price > entry_price
 
             if is_long:
