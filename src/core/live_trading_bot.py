@@ -53,17 +53,28 @@ class LiveXRPBot:
         
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from environment or config file"""
-        config = {
-            "trading_enabled": True,
-            "max_position_size": Decimal('100.0'),  # Max XRP position
-            "risk_limit": Decimal('0.02'),  # 2% risk per trade
-            "funding_threshold": Decimal('0.0001'),  # 0.01% funding threshold
-            "private_key": os.getenv("HYPERLIQUID_PRIVATE_KEY", ""),
-            "address": os.getenv("HYPERLIQUID_ADDRESS", ""),
-            "api_key": os.getenv("HYPERLIQUID_API_KEY", ""),  # Fallback
-            "secret_key": os.getenv("HYPERLIQUID_SECRET_KEY", ""),  # Fallback
-            "testnet": os.getenv("HYPERLIQUID_TESTNET", "false").lower() == "true"
-        }
+        # Load secure credentials with fail-closed design
+        try:
+            from src.utils.secrets_loader import load_secure_credentials
+            credentials = load_secure_credentials()
+            
+            config = {
+                "trading_enabled": True,
+                "max_position_size": Decimal(credentials.get("MAX_POSITION_SIZE", "100.0")),
+                "risk_limit": Decimal(credentials.get("RISK_LIMIT", "0.02")),
+                "funding_threshold": Decimal('0.0001'),  # 0.01% funding threshold
+                "private_key": credentials.get("HYPERLIQUID_PRIVATE_KEY", ""),
+                "address": credentials.get("HYPERLIQUID_ADDRESS", ""),
+                "api_key": credentials.get("HYPERLIQUID_API_KEY", ""),  # Fallback
+                "secret_key": credentials.get("HYPERLIQUID_SECRET_KEY", ""),  # Fallback
+                "testnet": credentials.get("HYPERLIQUID_TESTNET", "true").lower() == "true"
+            }
+        except SystemExit:
+            logger.error("❌ CRITICAL: Failed to load secure credentials - system exiting")
+            return False
+        except Exception as e:
+            logger.error(f"❌ Error loading credentials: {e}")
+            return False
         
         # Load from config file if it exists
         if os.path.exists(self.config_path):

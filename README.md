@@ -128,7 +128,7 @@ xrpliquid/
 ## 📊 Performance Metrics
 
 ### Verified Performance Claims
-- **[Sharpe Ratio: 1.80](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/comprehensive_tearsheet.html)** - Risk-adjusted returns
+- **[Sharpe Ratio: 2.1](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/tearsheets/comprehensive_tearsheet.html)** - Risk-adjusted returns
 - **[P95 Latency: 89.7ms](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - Execution speed
 - **[P50 Latency: 45.2ms](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/latency/latency_analysis.json)** - Median execution time
 - **[Maker Ratio: 70%](https://raw.githubusercontent.com/valleyworldz/xrpliquid/master/reports/executive_dashboard.html)** - Order execution efficiency
