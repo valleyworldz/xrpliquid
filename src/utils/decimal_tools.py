@@ -12,11 +12,11 @@ getcontext().rounding = ROUND_HALF_EVEN
 
 def D(x):
     """
-    Force float or int to Decimal safely.
-    This is the core utility for maintaining Decimal discipline.
+    CRITICAL: Safe Decimal wrapper - single source of truth for all conversions
+    This is the ONLY way to convert external data to Decimal
     
     Args:
-        x: Any numeric type (int, float, str, Decimal)
+        x: Any numeric type (int, float, str, Decimal, None)
         
     Returns:
         Decimal: Safe Decimal representation
@@ -28,18 +28,18 @@ def D(x):
         Decimal('3.14')
         >>> D(Decimal("3.14"))
         Decimal('3.14')
+        >>> D(None)
+        Decimal('0.0')
     """
     if isinstance(x, Decimal):
         return x
-    elif isinstance(x, (int, float)):
+    if x is None:
+        return Decimal('0.0')
+    try:
         return Decimal(str(x))
-    elif isinstance(x, str):
-        try:
-            return Decimal(x)
-        except:
-            return Decimal('0')
-    else:
-        return Decimal('0')
+    except Exception as e:
+        logging.warning(f"⚠️ Decimal conversion failed for {x} ({type(x)}): {e}")
+        return Decimal('0.0') # Fallback to Decimal zero on conversion error
 
 def safe_decimal_operation(operation, *args):
     """
@@ -175,3 +175,64 @@ def ensure_decimal_context():
 
 # Initialize Decimal context
 ensure_decimal_context()
+
+# Type enforcement decorator for debugging
+def ensure_decimal(func):
+    """
+    Decorator to ensure function results are Decimal-safe.
+    Used for debugging and catching type leaks.
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        # Convert float results to Decimal for consistency
+        if isinstance(result, float):
+            return D(result)
+        return result
+    return wrapper
+
+# Market data normalization functions
+def normalize_price(price):
+    """Normalize price data to Decimal."""
+    return D(price)
+
+def normalize_atr(atr_value):
+    """Normalize ATR data to Decimal."""
+    return D(atr_value)
+
+def normalize_balance(balance):
+    """Normalize account balance to Decimal."""
+    return D(balance)
+
+def normalize_position_size(size):
+    """Normalize position size to Decimal."""
+    return D(size)
+
+# Financial calculation helpers with Decimal discipline
+def calculate_risk_amount(portfolio_value, risk_percentage):
+    """Calculate risk amount with Decimal precision."""
+    return D(portfolio_value) * D(risk_percentage)
+
+def calculate_position_value(size, price):
+    """Calculate position value with Decimal precision."""
+    return D(size) * D(price)
+
+def calculate_pnl(current_price, entry_price, size, side):
+    """Calculate PnL with Decimal precision."""
+    price_diff = D(current_price) - D(entry_price)
+    if side.lower() == 'long':
+        return price_diff * D(size)
+    else:  # short
+        return -price_diff * D(size)
+
+def calculate_leverage(position_value, margin_used):
+    """Calculate leverage with Decimal precision."""
+    if D(margin_used) == 0:
+        return D(0)
+    return D(position_value) / D(margin_used)
+
+def calculate_margin_ratio(position_value, account_value):
+    """Calculate margin ratio with Decimal precision."""
+    if D(account_value) == 0:
+        return D(0)
+    return D(position_value) / D(account_value)

@@ -79,11 +79,16 @@ project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(_
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub, decimal_power, decimal_sqrt, decimal_abs, decimal_sum, decimal_avg
+from src.utils.decimal_tools import (
+    D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub, 
+    decimal_power, decimal_sqrt, decimal_abs, decimal_sum, decimal_avg, ensure_decimal,
+    normalize_price, normalize_atr, normalize_balance, normalize_position_size,
+    calculate_risk_amount, calculate_position_value, calculate_pnl, 
+    calculate_leverage, calculate_margin_ratio
+)
 from src.utils.decimal_converter import (
     to_decimal, decimal_safe_position, decimal_safe_account, decimal_safe_trade, 
-    decimal_safe_market_data, calculate_position_value, calculate_pnl, 
-    calculate_margin_ratio, calculate_leverage, validate_decimal_precision
+    decimal_safe_market_data, validate_decimal_precision
 )
 import ssl
 import os
@@ -16426,8 +16431,10 @@ class MultiAssetTradingBot:
                     self.logger.error(f"❌ [RISK_ENGINE] Error calculating position size: {e}")
             
             # CRITICAL FIX: Fallback to basic calculation with Decimal-safe arithmetic
-            portfolio_value_float = float(to_decimal(portfolio_value))
-            current_price_float = float(to_decimal(current_price))
+            portfolio_value_decimal = normalize_balance(portfolio_value)
+            current_price_decimal = normalize_price(current_price)
+            portfolio_value_float = float(portfolio_value_decimal)
+            current_price_float = float(current_price_decimal)
             
             risk_amount = portfolio_value_float * 0.02  # 2% risk
             stop_loss_distance = current_price_float * 0.03  # 3% stop loss
@@ -17520,44 +17527,46 @@ class MultiAssetTradingBot:
             return safe_decimal(str(round(price, 4)))
 
 
-    def calculate_atr(self, prices: list, period: int = 14) -> float:
-        """Calculate ATR with proper close-only variant - FIXED TR CALCULATION"""
+    @ensure_decimal
+    def calculate_atr(self, prices: list, period: int = 14):
+        """Calculate ATR with Decimal discipline - FIXED TR CALCULATION"""
         if MODULAR_IMPORTS_AVAILABLE:
-            # Use modular utility function
-            return calculate_atr(prices, period)
+            # Use modular utility function with Decimal conversion
+            atr_result = calculate_atr(prices, period)
+            return normalize_atr(atr_result)
         else:
-            # Fallback to local implementation
+            # Fallback to local implementation with Decimal discipline
             try:
                 if len(prices) < period + 1:
                     # CRITICAL: Clamp to at least tick_size * 2 to prevent invalid orders
-                    tick_size = 0.0001  # XRP tick size
-                    min_atr_ticks = tick_size * 2  # At least 2 ticks
-                    min_atr_pct = prices[-1] * (self.min_sl_distance_pct / 100) if prices else 0.001  # Minimum SL percentage
-                    min_atr = max(min_atr_ticks, min_atr_pct)
-                    return min_atr if prices else 0.001
+                    tick_size = D("0.0001")  # XRP tick size as Decimal
+                    min_atr_ticks = tick_size * D("2")  # At least 2 ticks
+                    min_atr_pct = D(prices[-1]) * D(self.min_sl_distance_pct / 100) if prices else D("0.001")  # Minimum SL percentage
+                    min_atr = decimal_max(min_atr_ticks, min_atr_pct)
+                    return min_atr if prices else D("0.001")
                 
-                # FIXED: Use proper close-only ATR variant
+                # CRITICAL FIX: Use proper close-only ATR variant with Decimal discipline
                 # If you only have closes, treat TR as abs(close[i] - close[i-1])
                 true_ranges = []
                 for i in range(1, len(prices)):
-                    prev_close = prices[i-1]
-                    curr_close = prices[i]
-                    true_range = abs(curr_close - prev_close)  # Simple close-to-close range
+                    prev_close = D(prices[i-1])
+                    curr_close = D(prices[i])
+                    true_range = decimal_abs(curr_close - prev_close)  # Simple close-to-close range
                     true_ranges.append(true_range)
                 
-                # Calculate ATR as simple moving average of true ranges
+                # Calculate ATR as simple moving average of true ranges with Decimal precision
                 if len(true_ranges) >= period:
-                    atr = sum(true_ranges[-period:]) / period
+                    atr = decimal_avg(true_ranges[-period:])
                 else:
-                    atr = sum(true_ranges) / len(true_ranges) if true_ranges else 0.001
+                    atr = decimal_avg(true_ranges) if true_ranges else D("0.001")
                 
                 # Use percentage-based minimum instead of fixed dollar amount
-                min_atr_pct = 0.001  # 0.1% of current price
-                min_atr = prices[-1] * min_atr_pct if prices else 0.001
-                return max(atr, min_atr)
+                min_atr_pct = D("0.001")  # 0.1% of current price
+                min_atr = D(prices[-1]) * min_atr_pct if prices else D("0.001")
+                return decimal_max(atr, min_atr)
                 
             except Exception:
-                return 0.001
+                return D("0.001")
 
     # ---- Testing helpers and internal utilities ----
     def _band_tp_sl(self, entry_price: float, atr: float, tp_px: float, sl_px: float, is_long: bool) -> tuple[float, float]:
@@ -18010,8 +18019,10 @@ class MultiAssetTradingBot:
                     try:
                         min_rr = getattr(self, 'min_rr_ratio', 1.35)
                         # CRITICAL FIX: Use Decimal-safe arithmetic for TP/SL adjustments
-                        entry_price_float = float(to_decimal(entry_price))
-                        sl_price_float = float(to_decimal(sl_price))
+                        entry_price_decimal = normalize_price(entry_price)
+                        sl_price_decimal = normalize_price(sl_price)
+                        entry_price_float = float(entry_price_decimal)
+                        sl_price_float = float(sl_price_decimal)
                         
                         if signal_type == "BUY":
                             required_tp_distance = abs(entry_price_float - sl_price_float) * min_rr
@@ -22703,7 +22714,8 @@ class MultiAssetTradingBot:
             if local_min_rr < 1.05:  # Reduced from 1.15 to 1.05
                 local_min_rr = 1.05
             # CRITICAL FIX: Calculate risk and reward with Decimal-safe fee adjustments
-            fee_adjustment = float(to_decimal(entry_price)) * (abs(est_fee) + abs(spread))
+            entry_price_decimal = normalize_price(entry_price)
+            fee_adjustment = float(entry_price_decimal) * (abs(est_fee) + abs(spread))
             is_long = tp_price > entry_price
 
             if is_long:
