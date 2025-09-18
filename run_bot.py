@@ -194,7 +194,6 @@ def main():
         print("🔄 Trying live trading bot fallback...")
         try:
             from src.core.live_trading_bot import main as live_main
-            import asyncio
             asyncio.run(live_main())
         except Exception as live_e:
             print(f"❌ Live trading bot also failed: {live_e}")
@@ -213,7 +212,6 @@ def main():
         print("🔄 Trying live trading bot fallback...")
         try:
             from src.core.live_trading_bot import main as live_main
-            import asyncio
             asyncio.run(live_main())
         except Exception as live_e:
             print(f"❌ Live trading bot also failed: {live_e}")

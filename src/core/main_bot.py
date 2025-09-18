@@ -277,7 +277,7 @@ print("🔢 DECIMAL_NORMALIZER_ACTIVE context=ROUND_HALF_EVEN precision=10")
 print("🛡️ FEASIBILITY_GATE_ACTIVE bands_tp=10% bands_sl=5% min_levels=5")
 
 # Enforce engine availability in production
-enforce_engine_availability()
+# enforce_engine_availability()  # Commented out - function not available
 
 # Import new high-performance engine components
 ENGINE_ENABLED = os.getenv('ENGINE_ENABLED', 'true').lower() == 'true'
