@@ -14079,8 +14079,16 @@ class MultiAssetTradingBot:
                             pass
                         if adjusted != original_config:
                             self.startup_config = adjusted
-                            self._apply_startup_configuration()
-                            self.logger.info("🤖 Mid-session configuration adjusted for regime change")
+                            try:
+                                self._apply_startup_configuration()
+                                self.logger.info("🤖 Mid-session configuration adjusted for regime change")
+                            except Exception as config_error:
+                                self.logger.error(f"🔧 Configuration application failed: {config_error}")
+                                self.logger.error(f"🔧 Error type: {type(config_error)}")
+                                import traceback
+                                self.logger.error(f"🔧 Traceback: {traceback.format_exc()}")
+                                # Continue with original config to prevent system failure
+                                self.startup_config = original_config
                         self._last_regime_key = regime_key
             except Exception as _e:
                 # CRITICAL FIX: Suppress regime reconfiguration error to prevent spam
