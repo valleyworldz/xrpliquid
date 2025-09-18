@@ -17168,16 +17168,21 @@ class MultiAssetTradingBot:
                 "b": is_buy
             }
             
-            # Add order type
+            # CRITICAL FIX: Add order type with proper market order handling
             if order_type == "limit":
                 order["orderType"] = {"limit": {"tif": "Gtc"}}
             elif order_type == "market":
-                order["orderType"] = {"limit": {"tif": "Ioc"}}
-                # For market orders, use aggressive pricing
+                # CRITICAL FIX: Market orders should not have a price field
+                order["orderType"] = {"market": {}}
+                # Remove price field for market orders
+                if "p" in order:
+                    del order["p"]
+                # For logging purposes, use current market price
                 if is_buy:
-                    order["p"] = f"{aligned_price_float * 1.01:.4f}"  # 1% above
+                    estimated_price = aligned_price_float * 1.01  # 1% above for logging
                 else:
-                    order["p"] = f"{aligned_price_float * 0.99:.4f}"  # 1% below
+                    estimated_price = aligned_price_float * 0.99  # 1% below for logging
+                self.logger.info(f"💰 ESTIMATED ORDER VALUE: ${aligned_size_float * estimated_price:.2f} (market order)")
             else:
                 self.logger.error(f"❌ Unsupported order type: {order_type}")
                 return {"success": False, "oid": None, "error": f"Unsupported order type: {order_type}"}

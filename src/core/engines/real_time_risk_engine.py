@@ -280,29 +280,44 @@ class RealTimeRiskEngine:
             
             # Check position loss kill switch
             if self.kill_switches['position_loss_kill'].enabled:
-                # CRITICAL FIX: Use returnOnEquity from positions instead of calculated percentage
-                position_loss_pct = 0.0
+                # CRITICAL FIX: Fix kill-switch polarity bug - only trigger on actual losses
+                from src.common.num import D
+                
+                position_loss_detected = False
                 for pos in positions.values():
                     if isinstance(pos, dict):
                         # Check for returnOnEquity in position data
                         if 'returnOnEquity' in pos:
-                            position_loss_pct = abs(safe_float(pos['returnOnEquity']))
-                            self.logger.debug(f"🔍 [RISK_ENGINE] Position loss check: ROE={pos['returnOnEquity']}, calculated={position_loss_pct:.4f}, threshold={self.kill_switches['position_loss_kill'].threshold:.4f}")
-                            break
+                            roe_decimal = D(pos['returnOnEquity'])
+                            loss_threshold = D(self.kill_switches['position_loss_kill'].threshold)
+                            # CRITICAL FIX: Only trigger if ROE is negative and exceeds loss threshold
+                            if roe_decimal <= -loss_threshold:
+                                position_loss_detected = True
+                                self.logger.error(f"🚨 [RISK_ENGINE] POSITION LOSS KILL SWITCH TRIGGERED: {roe_decimal:.4f} <= -{loss_threshold:.4f}")
+                                break
                         elif 'position' in pos and isinstance(pos['position'], dict):
                             if 'returnOnEquity' in pos['position']:
-                                position_loss_pct = abs(safe_float(pos['position']['returnOnEquity']))
-                                self.logger.debug(f"🔍 [RISK_ENGINE] Position loss check: ROE={pos['position']['returnOnEquity']}, calculated={position_loss_pct:.4f}, threshold={self.kill_switches['position_loss_kill'].threshold:.4f}")
-                                break
+                                roe_decimal = D(pos['position']['returnOnEquity'])
+                                loss_threshold = D(self.kill_switches['position_loss_kill'].threshold)
+                                # CRITICAL FIX: Only trigger if ROE is negative and exceeds loss threshold
+                                if roe_decimal <= -loss_threshold:
+                                    position_loss_detected = True
+                                    self.logger.error(f"🚨 [RISK_ENGINE] POSITION LOSS KILL SWITCH TRIGGERED: {roe_decimal:.4f} <= -{loss_threshold:.4f}")
+                                    break
                 
                 # Fallback to calculated percentage if returnOnEquity not available
-                if position_loss_pct == 0.0:
-                    position_loss_pct = abs(risk_metrics.unrealized_pnl) / risk_metrics.portfolio_value if risk_metrics.portfolio_value > 0 else 0.0
-                    self.logger.debug(f"🔍 [RISK_ENGINE] Position loss check: fallback={position_loss_pct:.4f}, threshold={self.kill_switches['position_loss_kill'].threshold:.4f}")
+                if not position_loss_detected:
+                    unrealized_pnl_decimal = D(risk_metrics.unrealized_pnl)
+                    portfolio_value_decimal = D(risk_metrics.portfolio_value)
+                    if portfolio_value_decimal > 0:
+                        loss_pct = unrealized_pnl_decimal / portfolio_value_decimal
+                        loss_threshold = D(self.kill_switches['position_loss_kill'].threshold)
+                        if loss_pct <= -loss_threshold:
+                            position_loss_detected = True
+                            self.logger.error(f"🚨 [RISK_ENGINE] POSITION LOSS KILL SWITCH TRIGGERED: {loss_pct:.4f} <= -{loss_threshold:.4f}")
                 
-                if position_loss_pct >= self.kill_switches['position_loss_kill'].threshold:
-                    self.logger.warning(f"🚨 [RISK_ENGINE] POSITION LOSS KILL SWITCH TRIGGERED: {position_loss_pct:.4f} >= {self.kill_switches['position_loss_kill'].threshold:.4f}")
-                    self._activate_kill_switch('position_loss_kill', position_loss_pct)
+                if position_loss_detected:
+                    self._activate_kill_switch('position_loss_kill', 0.0)
             
             # Check daily loss kill switch
             if self.kill_switches['daily_loss_kill'].enabled:
