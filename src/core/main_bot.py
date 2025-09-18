@@ -17897,11 +17897,11 @@ class MultiAssetTradingBot:
                         self.logger.warning(f"⚠️ RR ratio {rr_ratio:.2f} below minimum {local_min_rr}, adjusting")
                         rr_epsilon = getattr(self, 'rr_epsilon', 0.01)
                         target_rr = local_min_rr + max(0.0, rr_epsilon)
-                        required_tp_distance = abs(entry_price - sl_price) * target_rr
+                        required_tp_distance = abs(safe_float(entry_price) - sl_price) * target_rr
                         if signal_type == "BUY":
-                            tp_price = entry_price + required_tp_distance
+                            tp_price = safe_float(entry_price) + required_tp_distance
                         else:
-                            tp_price = entry_price - required_tp_distance
+                            tp_price = safe_float(entry_price) - required_tp_distance
                         # Round to 4 decimals for consistency
                         tp_price = round(tp_price, 4)
                 except Exception:
@@ -17933,11 +17933,11 @@ class MultiAssetTradingBot:
                     try:
                         min_rr = getattr(self, 'min_rr_ratio', 1.35)
                         if signal_type == "BUY":
-                            required_tp_distance = abs(entry_price - sl_price) * min_rr
-                            tp_price = entry_price + required_tp_distance
+                            required_tp_distance = abs(safe_float(entry_price) - sl_price) * min_rr
+                            tp_price = safe_float(entry_price) + required_tp_distance
                         else:
-                            required_tp_distance = abs(entry_price - sl_price) * min_rr
-                            tp_price = entry_price - required_tp_distance
+                            required_tp_distance = abs(safe_float(entry_price) - sl_price) * min_rr
+                            tp_price = safe_float(entry_price) - required_tp_distance
                         
                         # Re-validate adjusted TP/SL
                         if self.rr_and_atr_check(entry_price, tp_price, sl_price, atr, position_size=position_size, est_fee=0.0, spread=0.0):
