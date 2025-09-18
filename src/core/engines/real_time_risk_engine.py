@@ -194,11 +194,11 @@ class RealTimeRiskEngine:
             # Calculate VaR (simplified)
             if len(self.portfolio_history) > 10:
                 returns = np.diff(list(self.portfolio_history)) / list(self.portfolio_history)[:-1]
-                var_95 = np.percentile(returns, (1 - self.var_confidence) * 100) * portfolio_value
-                expected_shortfall = np.mean(returns[returns <= np.percentile(returns, (1 - self.var_confidence) * 100)]) * portfolio_value
+                var_95 = np.percentile(returns, (1 - self.var_confidence) * 100) * safe_float(portfolio_value)
+                expected_shortfall = np.mean(returns[returns <= np.percentile(returns, (1 - self.var_confidence) * 100)]) * safe_float(portfolio_value)
             else:
-                var_95 = -portfolio_value * 0.02  # Conservative estimate
-                expected_shortfall = -portfolio_value * 0.03  # Conservative estimate
+                var_95 = -safe_float(portfolio_value) * 0.02  # Conservative estimate
+                expected_shortfall = -safe_float(portfolio_value) * 0.03  # Conservative estimate
             
             # Calculate correlation risk (simplified)
             correlation_risk = 0.1  # Placeholder
@@ -395,16 +395,16 @@ class RealTimeRiskEngine:
                 return False, "Emergency mode active"
             
             # Check position size limits
-            if position_value > portfolio_value * self.risk_limits['max_position_loss']:
+            if position_value > safe_float(portfolio_value) * self.risk_limits['max_position_loss']:
                 return False, f"Position size exceeds {self.risk_limits['max_position_loss']:.1%} limit"
             
             # Check concentration limits
-            total_exposure = sum(abs(pos.get('value', 0)) for pos in self.positions.values())
-            if (total_exposure + position_value) > portfolio_value * self.risk_limits['max_concentration']:
+            total_exposure = sum(abs(safe_float(pos.get('value', 0))) for pos in self.positions.values())
+            if (total_exposure + position_value) > safe_float(portfolio_value) * self.risk_limits['max_concentration']:
                 return False, f"Concentration exceeds {self.risk_limits['max_concentration']:.1%} limit"
             
             # Check portfolio risk limits
-            if position_value > portfolio_value * self.risk_limits['max_portfolio_risk']:
+            if position_value > safe_float(portfolio_value) * self.risk_limits['max_portfolio_risk']:
                 return False, f"Portfolio risk exceeds {self.risk_limits['max_portfolio_risk']:.1%} limit"
             
             return True, "Position allowed"
@@ -423,13 +423,13 @@ class RealTimeRiskEngine:
                 return 0.0
             
             # Calculate maximum risk amount
-            max_risk_amount = portfolio_value * risk_per_trade
+            max_risk_amount = safe_float(portfolio_value) * risk_per_trade
             
             # Calculate position size
             position_size = max_risk_amount / risk_per_share
             
             # Apply position size limits
-            max_position_value = portfolio_value * self.risk_limits['max_position_loss']
+            max_position_value = safe_float(portfolio_value) * self.risk_limits['max_position_loss']
             max_position_size = max_position_value / entry_price
             
             position_size = min(position_size, max_position_size)
