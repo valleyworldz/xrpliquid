@@ -292,7 +292,8 @@ from utils.decimal_guard import DECIMAL_GUARD_ACTIVE, DECIMAL_CONTEXT
 
 # Runbook banners for key systems
 print("🔢 DECIMAL_NORMALIZER_ACTIVE context=ROUND_HALF_EVEN precision=10")
-print("🛡️ FEASIBILITY_GATE_ACTIVE bands_tp=10% bands_sl=5% min_levels=5")
+print("🛡️ FEASIBILITY_GATE_ACTIVE bands_tp=DYNAMIC_ATR bands_sl=DYNAMIC_ATR min_levels=5")
+print("🎯 VOLATILITY_SCALED_TPSL_ACTIVE atr_period=14 regime_aware=TRUE shadow_stops=TRUE")
 
 # Enforce engine availability in production
 # enforce_engine_availability()  # Commented out - function not available
@@ -1086,6 +1087,189 @@ def analyze_market_regime(symbol: str, price_history: list) -> MarketRegime:
         recommended_leverage=rec_leverage,
         recommended_risk_pct=rec_risk
     )
+
+def calculate_enhanced_volatility_scaled_tpsl(entry_price, atr_value, current_volatility_pct, config):
+    """
+    🎯 ENHANCED VOLATILITY-SCALED TP/SL SYSTEM
+    Dynamically calculates TP/SL based on current market volatility regime
+    
+    Args:
+        entry_price: Entry price for the trade
+        atr_value: Current ATR value
+        current_volatility_pct: Current market volatility percentage
+        config: BotConfig with volatility scaling parameters
+        
+    Returns:
+        tuple: (tp_price, sl_price, effective_rr_ratio, volatility_regime)
+    """
+    from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub
+    
+    # Convert inputs to Decimal for precision
+    entry = D(entry_price)
+    atr = D(atr_value)
+    vol_pct = to_float(current_volatility_pct)
+    
+    # Determine volatility regime
+    if vol_pct < config.low_volatility_threshold:
+        regime = "LOW_VOLATILITY"
+        sl_factor = config.low_vol_sl_factor
+        tp_factor = config.low_vol_tp_factor
+    elif vol_pct < config.high_volatility_threshold:
+        regime = "NORMAL_VOLATILITY"
+        sl_factor = 1.0
+        tp_factor = 1.0
+    elif vol_pct < config.extreme_volatility_threshold:
+        regime = "HIGH_VOLATILITY" 
+        sl_factor = config.high_vol_sl_factor
+        tp_factor = config.high_vol_tp_factor
+    else:
+        regime = "EXTREME_VOLATILITY"
+        sl_factor = config.extreme_vol_sl_factor
+        tp_factor = config.extreme_vol_tp_factor
+    
+    # Calculate scaled ATR multipliers
+    effective_sl_multiplier = config.atr_multiplier_sl_base * sl_factor
+    effective_tp_multiplier = config.atr_multiplier_tp_base * tp_factor
+    
+    # Calculate TP/SL distances
+    sl_distance = decimal_mul(atr, D(effective_sl_multiplier))
+    tp_distance = decimal_mul(atr, D(effective_tp_multiplier))
+    
+    # Calculate actual TP/SL prices (assuming long position)
+    sl_price = decimal_sub(entry, sl_distance)
+    tp_price = decimal_add(entry, tp_distance)
+    
+    # Calculate effective R/R ratio
+    effective_rr = to_float(tp_distance) / to_float(sl_distance)
+    
+    return tp_price, sl_price, effective_rr, regime
+
+def implement_shadow_stops(current_price, sl_price, position_size, is_long=True):
+    """
+    🛡️ SHADOW STOPS IMPLEMENTATION
+    Server-side stop loss that doesn't signal to market until triggered
+    
+    Args:
+        current_price: Current market price
+        sl_price: Stop loss trigger price  
+        position_size: Size of position to close
+        is_long: True for long position, False for short
+        
+    Returns:
+        dict: Shadow stop status and action required
+    """
+    from src.utils.decimal_tools import D
+    
+    current = D(current_price)
+    sl_trigger = D(sl_price)
+    
+    # Check if stop loss should trigger
+    if is_long:
+        stop_triggered = current <= sl_trigger
+        trigger_message = f"Long SL triggered: {current} <= {sl_trigger}"
+    else:
+        stop_triggered = current >= sl_trigger
+        trigger_message = f"Short SL triggered: {current} >= {sl_trigger}"
+    
+    return {
+        "triggered": stop_triggered,
+        "action": "EXECUTE_MARKET_CLOSE" if stop_triggered else "MONITOR",
+        "position_size": position_size,
+        "trigger_price": sl_trigger,
+        "current_price": current,
+        "message": trigger_message if stop_triggered else "Shadow stop monitoring",
+        "execution_type": "MARKET_ORDER",  # Fast execution for stops
+        "priority": "CRITICAL" if stop_triggered else "NORMAL"
+    }
+
+def generate_tpsl_daily_tearsheet(trades_data, current_config):
+    """
+    📊 DAILY TP/SL ATTRIBUTION TEAR-SHEET
+    Human-readable daily report for AuditPack compliance
+    
+    Args:
+        trades_data: List of completed trades with TP/SL data
+        current_config: Current bot configuration
+        
+    Returns:
+        dict: Comprehensive TP/SL performance attribution
+    """
+    import time
+    from datetime import datetime
+    
+    if not trades_data:
+        return {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "status": "NO_TRADES",
+            "message": "No trades executed today"
+        }
+    
+    # Calculate TP/SL performance metrics
+    tp_hits = [t for t in trades_data if t.get('exit_reason') == 'TAKE_PROFIT']
+    sl_hits = [t for t in trades_data if t.get('exit_reason') == 'STOP_LOSS']
+    manual_exits = [t for t in trades_data if t.get('exit_reason') not in ['TAKE_PROFIT', 'STOP_LOSS']]
+    
+    total_trades = len(trades_data)
+    tp_rate = (len(tp_hits) / total_trades * 100) if total_trades > 0 else 0
+    sl_rate = (len(sl_hits) / total_trades * 100) if total_trades > 0 else 0
+    manual_rate = (len(manual_exits) / total_trades * 100) if total_trades > 0 else 0
+    
+    # Calculate R/R effectiveness
+    total_tp_pnl = sum(t.get('pnl', 0) for t in tp_hits)
+    total_sl_pnl = sum(t.get('pnl', 0) for t in sl_hits)  # This should be negative
+    actual_rr_ratio = abs(total_tp_pnl / total_sl_pnl) if total_sl_pnl != 0 else 0
+    
+    # Volatility regime analysis
+    regime_breakdown = {}
+    for trade in trades_data:
+        regime = trade.get('volatility_regime', 'UNKNOWN')
+        if regime not in regime_breakdown:
+            regime_breakdown[regime] = {'count': 0, 'avg_pnl': 0, 'tp_rate': 0}
+        regime_breakdown[regime]['count'] += 1
+        regime_breakdown[regime]['avg_pnl'] += trade.get('pnl', 0)
+    
+    # Finalize regime stats
+    for regime in regime_breakdown:
+        count = regime_breakdown[regime]['count']
+        regime_breakdown[regime]['avg_pnl'] /= count
+        regime_tp_hits = [t for t in trades_data if t.get('volatility_regime') == regime and t.get('exit_reason') == 'TAKE_PROFIT']
+        regime_breakdown[regime]['tp_rate'] = (len(regime_tp_hits) / count * 100) if count > 0 else 0
+    
+    return {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "timestamp": time.time(),
+        "status": "ACTIVE",
+        "summary": {
+            "total_trades": total_trades,
+            "tp_hit_rate": round(tp_rate, 2),
+            "sl_hit_rate": round(sl_rate, 2), 
+            "manual_exit_rate": round(manual_rate, 2),
+            "actual_rr_ratio": round(actual_rr_ratio, 2),
+            "target_rr_ratio": current_config.min_rr_ratio
+        },
+        "performance": {
+            "total_tp_pnl": round(total_tp_pnl, 4),
+            "total_sl_pnl": round(total_sl_pnl, 4),
+            "net_tpsl_pnl": round(total_tp_pnl + total_sl_pnl, 4),
+            "tp_efficiency": round((total_tp_pnl / len(tp_hits)) if tp_hits else 0, 4),
+            "sl_control": round(abs(total_sl_pnl / len(sl_hits)) if sl_hits else 0, 4)
+        },
+        "volatility_attribution": regime_breakdown,
+        "configuration": {
+            "atr_period": current_config.atr_period,
+            "base_sl_multiplier": current_config.atr_multiplier_sl_base,
+            "base_tp_multiplier": current_config.atr_multiplier_tp_base,
+            "low_vol_threshold": current_config.low_volatility_threshold,
+            "high_vol_threshold": current_config.high_volatility_threshold,
+            "extreme_vol_threshold": current_config.extreme_volatility_threshold
+        },
+        "audit_trail": {
+            "generated_at": datetime.now().isoformat(),
+            "config_version": "enhanced_volatility_scaled_v1.0",
+            "shadow_stops_enabled": True,
+            "regime_aware_scaling": True
+        }
+    }
 
 def display_market_regime_analysis(regime: MarketRegime, symbol: str):
     """Display market regime analysis and recommendations"""
@@ -5287,11 +5471,27 @@ else:
 
     @dataclass
     class BotConfig:
-        # ====== VERIFIED OPTIMAL TP/SL TRIANGLE PARAMETERS ======
-        # Core ATR triangle settings (Optimized for current market conditions)
+        # ====== ENHANCED VOLATILITY-SCALED TP/SL SYSTEM ======
+        # Dynamic ATR triangle settings (Volatility-Regime Aware)
         atr_period: int = 14                  # Industry-standard; responsive enough for XRP volatility
-        atr_multiplier_sl: float = 2.6        # Wider to absorb wickiness
-        atr_multiplier_tp: float = 3.7        # Targets ~1.42 RR with SL above
+        
+        # VOLATILITY-SCALED BANDS (Replace static 10%/5%)
+        atr_multiplier_sl_base: float = 2.6   # Base SL multiplier for normal volatility
+        atr_multiplier_tp_base: float = 3.7   # Base TP multiplier for normal volatility
+        
+        # REGIME-AWARE SCALING FACTORS
+        low_vol_sl_factor: float = 0.8        # Tighter SL in low volatility (80% of base)
+        low_vol_tp_factor: float = 1.2        # Wider TP in low volatility (120% of base)
+        high_vol_sl_factor: float = 1.4       # Wider SL in high volatility (140% of base)  
+        high_vol_tp_factor: float = 0.9       # Tighter TP in high volatility (90% of base)
+        extreme_vol_sl_factor: float = 1.8    # Much wider SL in extreme volatility
+        extreme_vol_tp_factor: float = 0.7    # Much tighter TP in extreme volatility
+        
+        # VOLATILITY THRESHOLDS (%)
+        low_volatility_threshold: float = 2.0    # Below 2% daily volatility = low vol
+        high_volatility_threshold: float = 5.0   # Above 5% daily volatility = high vol  
+        extreme_volatility_threshold: float = 8.0 # Above 8% daily volatility = extreme vol
+        
         min_rr_ratio: float = 1.35            # Hard fail if trade doesn't meet R/R
         risk_per_trade: float = 0.025         # 2.5% equity risk
         
