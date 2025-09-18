@@ -3,11 +3,12 @@ Decimal Tools - Comprehensive Decimal/float handling utilities
 Ensures full Decimal discipline throughout the trading system
 """
 
-from decimal import Decimal, getcontext, InvalidOperation, FloatOperation
+from decimal import Decimal, getcontext, InvalidOperation, FloatOperation, ROUND_HALF_EVEN
 import logging
 
 # Set high precision for financial calculations
-getcontext().prec = 28
+getcontext().prec = 18
+getcontext().rounding = ROUND_HALF_EVEN
 
 def D(x):
     """
@@ -142,10 +143,32 @@ def decimal_round(value, precision=4):
     """Round Decimal to specified precision."""
     return D(value).quantize(Decimal('0.' + '0' * precision))
 
+def decimal_power(base, exponent):
+    """Raise a Decimal to a power."""
+    return D(base) ** D(exponent)
+
+def decimal_sqrt(value):
+    """Calculate square root of a Decimal."""
+    return D(value).sqrt()
+
+def decimal_abs(value):
+    """Get absolute value of a Decimal."""
+    return abs(D(value))
+
+def decimal_sum(values):
+    """Sum a list of values as Decimals."""
+    return sum(D(v) for v in values)
+
+def decimal_avg(values):
+    """Calculate average of values as Decimals."""
+    if not values:
+        return D(0)
+    return decimal_sum(values) / D(len(values))
+
 def ensure_decimal_context():
     """Ensure proper Decimal context for financial calculations."""
-    getcontext().prec = 28
-    getcontext().rounding = 'ROUND_HALF_EVEN'
+    getcontext().prec = 18
+    getcontext().rounding = ROUND_HALF_EVEN
     # Disable specific traps instead of all exceptions
     getcontext().traps[InvalidOperation] = False
     getcontext().traps[FloatOperation] = False

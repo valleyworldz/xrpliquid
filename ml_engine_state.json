@@ -1,0 +1,24 @@
+{
+  "current_params": {
+    "confidence_threshold": 0.7,
+    "position_size_multiplier": 1.0,
+    "stop_loss_multiplier": 1.0,
+    "take_profit_multiplier": 1.0,
+    "risk_multiplier": 1.0,
+    "momentum_threshold": 0.5,
+    "trend_threshold": 0.6,
+    "volatility_threshold": 0.02
+  },
+  "performance_metrics": {
+    "total_trades": 0,
+    "winning_trades": 0,
+    "total_pnl": 0.0,
+    "max_drawdown": 0.0,
+    "sharpe_ratio": 0.0,
+    "win_rate": 0.0,
+    "avg_trade_duration": 0.0
+  },
+  "learning_rate": 0.01,
+  "exploration_rate": 0.1,
+  "discount_factor": 0.95
+}

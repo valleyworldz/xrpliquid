@@ -79,7 +79,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(_
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub
+from src.utils.decimal_tools import D, decimal_mul, decimal_add, decimal_sub, decimal_percentage_add, decimal_percentage_sub, decimal_power, decimal_sqrt, decimal_abs, decimal_sum, decimal_avg
 import ssl
 import os
 if os.getenv("ALLOW_INSECURE_SSL", "").lower() in ("1", "true", "yes"):
@@ -6479,6 +6479,15 @@ class ConsciousnessUploader:
             logging.warning(f"Intuitive boost calculation failed: {e}")
             return {'boost': 0.5, 'direction': 'hold', 'confidence': 0.5}
 
+class MockIPFS:
+    """Mock IPFS client for fallback when real IPFS is not available"""
+    def add(self, *args, **kwargs): 
+        return {"Hash": "QmMock"}
+    def get(self, *args, **kwargs): 
+        return b"mock_data"
+    def cat(self, *args, **kwargs): 
+        return b"mock_content"
+
 class HolographicStorage:
     """Holographic data storage with IPFS"""
     def __init__(self):
@@ -8128,14 +8137,14 @@ class MultiAssetTradingBot:
         # Log startup configuration details
         if hasattr(self, 'startup_config') and self.startup_config:
             self.logger.info("⚙️  CONFIGURATION:")
-            self.logger.info(f"   ⚡ Leverage: {getattr(self.startup_config, 'leverage', 'Default')}x")
-            self.logger.info(f"   🛡️ Risk Profile: {getattr(self.startup_config, 'risk_profile', 'Default').title()} "
-                           f"({getattr(self.startup_config, 'position_risk_pct', 'Default')}% per trade)")
-            self.logger.info(f"   📈 Trading Mode: {getattr(self.startup_config, 'trading_mode', 'Default').title()}")
-            self.logger.info(f"   🛑 Stop Loss: {getattr(self.startup_config, 'stop_loss_type', 'Default').title()}")
-            self.logger.info(f"   ⏰ Session: {getattr(self.startup_config, 'session_duration_hours', 'Default')} hours")
-            self.logger.info(f"   🌊 Market Pref: {getattr(self.startup_config, 'market_preference', 'Default').title()}")
-            self.logger.info(f"   📢 Notifications: {getattr(self.startup_config, 'notification_level', 'Default').replace('_', ' ').title()}")
+            self.logger.info(f"   ⚡ Leverage: {getattr(self.startup_config, 'leverage', 8)}x")
+            self.logger.info(f"   🛡️ Risk Profile: {getattr(self.startup_config, 'risk_profile', 'Balanced').title()} "
+                           f"({getattr(self.startup_config, 'position_risk_pct', 4.0)}% per trade)")
+            self.logger.info(f"   📈 Trading Mode: {getattr(self.startup_config, 'trading_mode', 'Adaptive').title()}")
+            self.logger.info(f"   🛑 Stop Loss: {getattr(self.startup_config, 'stop_loss_type', 'Dynamic').title()}")
+            self.logger.info(f"   ⏰ Session: {getattr(self.startup_config, 'session_duration_hours', 24)} hours")
+            self.logger.info(f"   🌊 Market Pref: {getattr(self.startup_config, 'market_preference', 'Trend').title()}")
+            self.logger.info(f"   📢 Notifications: {getattr(self.startup_config, 'notification_level', 'Important').replace('_', ' ').title()}")
         
         self.logger.info("=" * 70)
         
@@ -8612,9 +8621,27 @@ class MultiAssetTradingBot:
                 fee_tiers = meta["feeTiers"]
                 self.logger.info(f"✅ Fee tiers loaded: {len(fee_tiers)} tiers")
             else:
-                self.logger.warning("⚠️ No fee tiers found in meta, using default fees")
+                self.logger.warning("⚠️ No fee tiers found in meta, loading fallback fees")
+                # Load fallback fees from JSON file
+                try:
+                    import json
+                    with open('data/meta/fees.json', 'r') as f:
+                        fallback_fees = json.load(f)
+                        fee_tiers = fallback_fees.get('fee_tiers', [])
+                        self.logger.info(f"✅ Fallback fee tiers loaded: {len(fee_tiers)} tiers")
+                except Exception as fallback_e:
+                    self.logger.warning(f"⚠️ Could not load fallback fees: {fallback_e}")
         except Exception as e:
             self.logger.warning(f"⚠️ Could not load fee tiers: {e}")
+            # Load fallback fees from JSON file
+            try:
+                import json
+                with open('data/meta/fees.json', 'r') as f:
+                    fallback_fees = json.load(f)
+                    fee_tiers = fallback_fees.get('fee_tiers', [])
+                    self.logger.info(f"✅ Fallback fee tiers loaded: {len(fee_tiers)} tiers")
+            except Exception as fallback_e:
+                self.logger.warning(f"⚠️ Could not load fallback fees: {fallback_e}")
         
         # Initialize resilient clients for basic functionality
         self.resilient_info = ResilientHyperliquidClient(self.info_client)
@@ -20683,9 +20710,9 @@ class MultiAssetTradingBot:
             
             # Calculate volatility (standard deviation of recent prices)
             if len(recent_prices) >= 12:
-                mean_price = sum(recent_prices[-12:]) / 12
-                variance = sum((float(p) - float(mean_price)) ** 2 for p in recent_prices[-12:]) / 12
-                volatility = variance ** 0.5 / float(mean_price)
+                mean_price = decimal_avg(recent_prices[-12:])
+                variance = decimal_avg([decimal_power(D(p) - mean_price, 2) for p in recent_prices[-12:]])
+                volatility = float(decimal_sqrt(variance) / mean_price)
             else:
                 volatility = 0.02
             
@@ -23398,8 +23425,16 @@ class MultiAssetTradingBot:
                     fee_tiers = meta["feeTiers"]
                 else:
                     # Fallback to default fees if meta doesn't have feeTiers
-                    self.logger.warning("⚠️ No fee tiers found in meta, using default fees")
-                    fee_tiers = [{"makerFeeBps": 15, "takerFeeBps": 45}]  # Default 0.015%/0.045%
+                    self.logger.warning("⚠️ No fee tiers found in meta, loading fallback fees")
+                    try:
+                        import json
+                        with open('data/meta/fees.json', 'r') as f:
+                            fallback_fees = json.load(f)
+                            fee_tiers = fallback_fees.get('fee_tiers', [])
+                            self.logger.info(f"✅ Fallback fee tiers loaded: {len(fee_tiers)} tiers")
+                    except Exception as fallback_e:
+                        self.logger.warning(f"⚠️ Could not load fallback fees: {fallback_e}")
+                        fee_tiers = [{"makerFeeBps": 15, "takerFeeBps": 45}]  # Default 0.015%/0.045%
                 
                 if fee_tiers and len(fee_tiers) > 0:
                     # Use tier 0 fees (most common)
