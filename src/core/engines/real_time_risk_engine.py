@@ -172,6 +172,10 @@ class RealTimeRiskEngine:
         try:
             current_time = time.time()
             
+            # Ensure portfolio_value is a float
+            portfolio_value = safe_float(portfolio_value)
+            unrealized_pnl = safe_float(unrealized_pnl)
+            
             # Update portfolio tracking
             if portfolio_value > self.peak_portfolio_value:
                 self.peak_portfolio_value = portfolio_value
