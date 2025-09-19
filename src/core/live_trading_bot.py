@@ -76,6 +76,26 @@ class LiveXRPBot:
         self.network_engine = None
         self._init_network_resilience()
         
+        # 📋 Initialize Regulatory Compliance Engine
+        self.compliance_engine = None
+        self._init_compliance_engine()
+        
+        # 🔥 Initialize Chaos Engineering Framework
+        self.chaos_framework = None
+        self._init_chaos_framework()
+        
+        # 📝 Initialize Event Sourcing Engine
+        self.event_sourcing_engine = None
+        self._init_event_sourcing()
+        
+        # 🤖 Initialize Advanced AI Engine
+        self.ai_engine = None
+        self._init_advanced_ai()
+        
+        # ⚛️ Initialize Quantum Computing Engine
+        self.quantum_engine = None
+        self._init_quantum_computing()
+        
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from environment or config file"""
         # Load secure credentials with fail-closed design
@@ -347,6 +367,141 @@ class LiveXRPBot:
         except Exception as e:
             logger.error(f"❌ Failed to initialize Network Resilience Engine: {e}")
             self.network_engine = None
+
+    def _init_compliance_engine(self):
+        """Initialize Regulatory Compliance Engine"""
+        try:
+            from src.core.compliance.regulatory_compliance_engine import RegulatoryComplianceEngine
+            
+            compliance_config = {
+                'compliance_check_interval': 60,  # Check every minute
+                'reporting_interval': 3600,  # Report every hour
+                'position_limit_percentage': 0.05,  # 5% position limit
+                'concentration_limit_percentage': 0.25,  # 25% concentration limit
+                'regulatory_reporting_enabled': True,
+                'report_output_dir': 'reports/compliance/',
+                'alert_channels': {
+                    'slack_webhook': self.config.get('slack_webhook', ''),
+                    'email_alerts': self.config.get('compliance_email', '')
+                }
+            }
+            
+            self.compliance_engine = RegulatoryComplianceEngine(compliance_config, logger)
+            logger.info("📋 Regulatory Compliance Engine initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Regulatory Compliance Engine: {e}")
+            self.compliance_engine = None
+
+    def _init_chaos_framework(self):
+        """Initialize Chaos Engineering Framework"""
+        try:
+            from src.core.chaos.chaos_engineering_framework import ChaosEngineeringFramework
+            
+            chaos_config = {
+                'max_concurrent_experiments': 1,
+                'safety_threshold_cpu': 90.0,
+                'safety_threshold_memory': 90.0,
+                'monitoring_interval': 60,
+                'experiment_scheduling_enabled': False,  # Disabled by default for safety
+                'emergency_stop_enabled': True
+            }
+            
+            self.chaos_framework = ChaosEngineeringFramework(chaos_config, logger)
+            logger.info("🔥 Chaos Engineering Framework initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Chaos Engineering Framework: {e}")
+            self.chaos_framework = None
+
+    def _init_event_sourcing(self):
+        """Initialize Event Sourcing Engine"""
+        try:
+            from src.core.audit.event_sourcing_engine import EventSourcingEngine
+            
+            event_config = {
+                'event_store_path': 'data/events/',
+                'snapshot_interval': 10000,  # Every 10,000 events
+                'max_replay_events': 100000,
+                'replication_enabled': False,
+                'replication_targets': []
+            }
+            
+            self.event_sourcing_engine = EventSourcingEngine(event_config, logger)
+            logger.info("📝 Event Sourcing Engine initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Event Sourcing Engine: {e}")
+            self.event_sourcing_engine = None
+
+    def _init_advanced_ai(self):
+        """Initialize Advanced AI Engine"""
+        try:
+            from src.core.ai.advanced_ml_engine import AdvancedMLEngine
+            
+            ai_config = {
+                'enable_rl': True,
+                'enable_sentiment': True,
+                'enable_patterns': True,
+                'update_frequency': 300,  # 5 minutes
+                'rl_config': {
+                    'replay_buffer_size': 100000,
+                    'batch_size': 256,
+                    'learning_rate': 3e-4,
+                    'gamma': 0.99,
+                    'tau': 0.005
+                },
+                'sentiment_config': {
+                    'sentiment_model': 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+                },
+                'pattern_config': {
+                    'pattern_threshold': 0.7
+                },
+                'fusion_weights': {
+                    'technical': 0.4,
+                    'sentiment': 0.2,
+                    'pattern': 0.2,
+                    'regime': 0.2
+                }
+            }
+            
+            self.ai_engine = AdvancedMLEngine(ai_config, logger)
+            logger.info("🤖 Advanced AI Engine initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Advanced AI Engine: {e}")
+            self.ai_engine = None
+
+    def _init_quantum_computing(self):
+        """Initialize Quantum Computing Engine"""
+        try:
+            from src.core.quantum.quantum_computing_engine import QuantumComputingEngine
+            
+            quantum_config = {
+                'portfolio_config': {
+                    'num_qubits': 8,
+                    'qaoa_layers': 3,
+                    'max_iterations': 1000,
+                    'max_assets': 10,
+                    'risk_tolerance': 0.1,
+                    'target_return': 0.15
+                },
+                'ml_config': {
+                    'ml_qubits': 4,
+                    'ml_layers': 2
+                },
+                'crypto_config': {
+                    'quantum_key_length': 256,
+                    'security_level': 'military_grade'
+                }
+            }
+            
+            self.quantum_engine = QuantumComputingEngine(quantum_config, logger)
+            logger.info("⚛️ Quantum Computing Engine initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Quantum Computing Engine: {e}")
+            self.quantum_engine = None
     
     async def start(self):
         """Start the live trading bot"""
@@ -377,6 +532,26 @@ class LiveXRPBot:
             # 🌐 Start network resilience monitoring
             if self.network_engine:
                 await self.network_engine.start_monitoring()
+            
+            # 📋 Start Regulatory Compliance Engine
+            if self.compliance_engine:
+                await self.compliance_engine.start_compliance_monitoring()
+            
+            # 🔥 Start Chaos Engineering Framework (monitoring only - experiments manual)
+            if self.chaos_framework:
+                await self.chaos_framework.start_chaos_framework()
+            
+            # 📝 Start Event Sourcing Engine
+            if self.event_sourcing_engine:
+                await self.event_sourcing_engine.start_engine()
+            
+            # 🤖 Start Advanced AI Engine
+            if self.ai_engine:
+                await self.ai_engine.start_learning()
+            
+            # ⚛️ Start Quantum Computing Engine
+            if self.quantum_engine:
+                await self.quantum_engine.start_quantum_engine()
             
             while self.running:
                 try:
