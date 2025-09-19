@@ -72,6 +72,10 @@ class LiveXRPBot:
         self.streaming_pipeline = None
         self._init_streaming_infrastructure()
         
+        # 🌐 Initialize Network Resilience Engine
+        self.network_engine = None
+        self._init_network_resilience()
+        
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from environment or config file"""
         # Load secure credentials with fail-closed design
@@ -320,6 +324,30 @@ class LiveXRPBot:
             self.data_feed_manager = None
             self.streaming_pipeline = None
     
+    def _init_network_resilience(self):
+        """Initialize network resilience and failover system"""
+        try:
+            from src.core.network.network_resilience_engine import NetworkResilienceEngine
+            
+            # Configure network resilience
+            network_config = {
+                'failover_strategy': 'health_based',
+                'circuit_breaker_enabled': True,
+                'circuit_breaker_threshold': 0.6,  # 60% failure rate
+                'circuit_breaker_timeout': 120,    # 2 minutes
+                'offline_mode_enabled': True,
+                'max_cache_age': 300,  # 5 minutes
+                'dns_servers': ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9']
+            }
+            
+            self.network_engine = NetworkResilienceEngine(network_config, logger)
+            
+            logger.info("🌐 Network Resilience Engine initialized successfully")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize Network Resilience Engine: {e}")
+            self.network_engine = None
+    
     async def start(self):
         """Start the live trading bot"""
         if not self.api:
@@ -345,6 +373,10 @@ class LiveXRPBot:
             
             if self.streaming_pipeline:
                 await self.streaming_pipeline.start_pipeline()
+            
+            # 🌐 Start network resilience monitoring
+            if self.network_engine:
+                await self.network_engine.start_monitoring()
             
             while self.running:
                 try:
@@ -390,10 +422,26 @@ class LiveXRPBot:
             await self._log_final_stats()
     
     async def _update_account_info(self):
-        """Update account balance and positions from Hyperliquid"""
+        """Update account balance and positions from Hyperliquid with network resilience"""
         try:
-            # Get account info
-            account_info = self.api.get_account_info()
+            # Use network resilience engine if available
+            if self.network_engine:
+                try:
+                    account_data = await self.network_engine.make_request("/info", "POST", {
+                        "type": "clearinghouseState", 
+                        "user": self.config.get("HYPERLIQUID_ADDRESS", "")
+                    })
+                    if account_data:
+                        account_info = account_data
+                    else:
+                        # Fallback to direct API call
+                        account_info = self.api.get_account_info()
+                except Exception as e:
+                    logger.warning(f"🌐 Network engine failed, using direct API: {e}")
+                    account_info = self.api.get_account_info()
+            else:
+                # Get account info directly
+                account_info = self.api.get_account_info()
             
             if account_info:
                 # Update balance (USDC balance)
